@@ -1,0 +1,1183 @@
+/*
+ * Component styles. Mobile-first; the ≥760px query adds the desktop
+ * floating-panel layout. Everything measures against the 8pt grid.
+ */
+
+/* ---------- Header ---------- */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  height: var(--header-h);
+  padding: 0 var(--s-3);
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 30;
+}
+
+.wordmark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+/* Tiny crosswalk glyph: three stripes on an asphalt chip. */
+.wordmark__glyph {
+  display: flex;
+  gap: 3px;
+  padding: 4px 5px;
+  background: var(--ink);
+  border-radius: 5px;
+}
+
+.wordmark__glyph i {
+  width: 4px;
+  height: 14px;
+  border-radius: 1px;
+  background: var(--paper);
+}
+
+.wordmark__glyph i:nth-child(2) {
+  background: var(--yellow);
+}
+
+.wordmark__name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.header__mission {
+  color: var(--ink-soft);
+  font-size: 13px;
+  border-left: 1px solid var(--line);
+  padding-left: var(--s-3);
+  display: none;
+}
+
+.header__nav {
+  margin-left: auto;
+  display: flex;
+  gap: var(--s-1);
+  /* On narrow screens the nav scrolls sideways instead of clipping. */
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.header__nav::-webkit-scrollbar {
+  display: none;
+}
+
+.wordmark {
+  flex-shrink: 0;
+}
+
+.header__nav a {
+  text-decoration: none;
+  color: var(--ink-soft);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.header__nav a:hover {
+  background: var(--concrete);
+  color: var(--ink);
+}
+
+.header__nav a[aria-current='page'] {
+  color: var(--ink);
+  font-weight: 600;
+  background: var(--concrete);
+}
+
+@media (min-width: 1080px) {
+  .header__mission {
+    display: block;
+  }
+}
+
+/* ---------- Goal banner (the site's thesis — quiet authority) ---------- */
+
+.goal-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-2) var(--s-3);
+  background: var(--concrete);
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+  color: var(--ink);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 29;
+}
+
+.goal-banner p {
+  margin: 0;
+}
+
+.goal-banner__dismiss {
+  margin-left: auto;
+  border: 0;
+  background: none;
+  color: var(--ink-soft);
+  font-size: 18px;
+  line-height: 1;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.goal-banner__dismiss:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* ---------- Map stage & floating panels ---------- */
+
+.map-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  background: var(--concrete);
+}
+
+.map-canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.panel {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
+}
+
+/* Persistent map-route disclaimer. Bottom-left on desktop (nav controls and
+   attribution sit bottom-right); on mobile it rides just above the sheet. */
+.map-disclaimer {
+  position: absolute;
+  left: var(--s-2);
+  bottom: calc(96px + var(--s-2)); /* clear the peek-height bottom sheet */
+  z-index: 8;
+  margin: 0;
+  max-width: min(92%, 340px);
+  padding: 5px 10px;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--ink-soft);
+  backdrop-filter: blur(3px);
+}
+
+.map-disclaimer a {
+  color: var(--ink);
+}
+
+@media (min-width: 760px) {
+  .map-disclaimer {
+    bottom: var(--s-2);
+    max-width: 320px;
+  }
+}
+
+/* Sample-data / data-missing warning — deliberately unmissable. */
+.data-banner {
+  position: absolute;
+  top: var(--s-2);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  max-width: min(92%, 560px);
+  padding: var(--s-2) var(--s-3);
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-2);
+  font-size: 13.5px;
+  text-align: center;
+}
+
+.data-banner code {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  background: rgba(255, 255, 255, 0.14);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+/* ---------- Stat strip ---------- */
+
+.stat-strip {
+  display: flex;
+  gap: var(--s-3);
+  padding: var(--s-2) var(--s-3);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+}
+
+.stat__num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.2;
+  /* Reserve width so the count-up animation doesn't reflow neighbors (CLS). */
+  min-width: 3.5ch;
+}
+
+.stat__label {
+  font-size: 11px;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Crosswalk stepper — the signature element ----------
+ *
+ * An asphalt-ink strip holding four thick crosswalk stripes. Stripes ahead
+ * of the project's progress are faint (unpainted road); reached stripes fill
+ * with the status color; the current stripe carries a sign-yellow edge.
+ * It should read as a crosswalk first and a progress meter half a second
+ * later — that double reading is the identity of the site.
+ */
+
+.stepper {
+  display: block;
+  width: 100%;
+}
+
+.stepper__track {
+  display: flex;
+  gap: 6px;
+  padding: 7px;
+  background: var(--ink);
+  border-radius: 9px;
+}
+
+.stepper__bar {
+  flex: 1;
+  height: 34px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.13);
+  position: relative;
+  overflow: hidden;
+}
+
+.stepper__bar::after {
+  /* the paint */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--fill, transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.stepper__bar--filled::after {
+  transform: scaleX(1);
+}
+
+.stepper--animate .stepper__bar--filled::after {
+  animation: stepper-paint 260ms ease-out both;
+}
+
+.stepper--animate .stepper__bar--filled:nth-child(2)::after {
+  animation-delay: 90ms;
+}
+
+.stepper--animate .stepper__bar--filled:nth-child(3)::after {
+  animation-delay: 180ms;
+}
+
+.stepper--animate .stepper__bar--filled:nth-child(4)::after {
+  animation-delay: 270ms;
+}
+
+@keyframes stepper-paint {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.stepper__bar--active {
+  box-shadow: inset 0 -4px 0 var(--yellow);
+}
+
+.stepper__bar--active::after {
+  bottom: 4px; /* keep the yellow edge visible under the paint */
+}
+
+.stepper__labels {
+  display: flex;
+  gap: 6px;
+  padding: 5px 7px 0;
+}
+
+.stepper__labels span {
+  flex: 1;
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.stepper__labels span[data-active='true'] {
+  color: var(--ink);
+}
+
+/* Mini stepper — list rows, chips, legend. Same anatomy, shrunk. */
+.stepper--mini .stepper__track {
+  gap: 2.5px;
+  padding: 3px;
+  border-radius: 4px;
+  width: max-content;
+}
+
+.stepper--mini .stepper__bar {
+  width: 9px;
+  flex: none;
+  height: 12px;
+  border-radius: 1.5px;
+}
+
+.stepper--mini .stepper__bar--active {
+  box-shadow: inset 0 -2px 0 var(--yellow);
+}
+
+.stepper--mini .stepper__bar--active::after {
+  bottom: 2px;
+}
+
+/* ---------- Status chip ---------- */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px 3px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.chip__swatch {
+  width: 9px;
+  height: 9px;
+  border-radius: 2.5px;
+  background: var(--swatch, var(--ink-soft));
+  flex-shrink: 0;
+}
+
+.chip--quiet {
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+/* EXAMPLE badge — placeholder entries must be impossible to mistake for real. */
+.badge-example {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border: 1.5px dashed var(--ink-soft);
+  border-radius: 6px;
+  background: var(--concrete);
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.btn:hover {
+  background: var(--concrete);
+}
+
+.btn--primary {
+  background: var(--yellow);
+  border-color: color-mix(in srgb, var(--yellow) 60%, var(--ink));
+}
+
+.btn--primary:hover {
+  background: color-mix(in srgb, var(--yellow) 90%, var(--ink));
+}
+
+.btn--small {
+  padding: 5px 10px;
+  min-height: 32px;
+  font-size: 13px;
+}
+
+/* ---------- Controls panel (layers, filters, legend) ---------- */
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.controls__section {
+  padding: var(--s-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.controls__section:last-child {
+  border-bottom: 0;
+}
+
+.controls__heading {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 var(--s-2);
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 32px;
+  font-size: 14px;
+}
+
+.check-row input[type='checkbox'] {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--ink);
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.check-row .spacer {
+  margin-left: auto;
+}
+
+.year-range {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: 13.5px;
+}
+
+.year-range select {
+  font: inherit;
+  font-family: var(--font-mono);
+  padding: 4px 6px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* ---------- Legend ---------- */
+
+.legend__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 28px;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.legend__glyph {
+  width: 22px;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.legend__glyph--wide {
+  width: auto;
+}
+
+.dot-ped {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--crash);
+  border: 1.5px solid #fff;
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.dot-bike {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: transparent;
+  border: 2.5px solid var(--crash);
+}
+
+.dot-fatal {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--crash);
+  border: 2px solid var(--ink);
+}
+
+.glyph-school {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  background: #5f6b76;
+  border: 1.5px solid #fff;
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+/* Legend swatches for the "example" map styles (dashed line + hollow point). */
+.legend-line--example {
+  display: inline-block;
+  width: 20px;
+  height: 0;
+  border-top: 3px dashed var(--st-design);
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.legend-dot--example {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 3px solid var(--st-design);
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+.legend__report {
+  margin-top: var(--s-2);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+
+/* ---------- Project list (drawer / sheet content) ---------- */
+
+.sort-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.sort-bar select {
+  font: inherit;
+  font-size: 13px;
+  padding: 4px 6px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.project-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  flex: 1;
+}
+
+.list-row {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: var(--s-3);
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.list-row:hover {
+  background: var(--concrete);
+}
+
+.list-row__top {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+}
+
+.list-row__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14.5px;
+  line-height: 1.3;
+}
+
+.list-row__days {
+  margin-left: auto;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.list-row__days .num {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.list-row__days small {
+  display: block;
+  font-size: 10.5px;
+  color: var(--ink-soft);
+}
+
+.list-row__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+
+.list-empty {
+  padding: var(--s-4) var(--s-3);
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+/* ---------- Project detail ---------- */
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.detail__body {
+  padding: var(--s-3) var(--s-3) var(--s-5);
+}
+
+.detail__topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  background: var(--paper);
+  z-index: 2;
+}
+
+.detail__title {
+  font-size: 21px;
+  margin: var(--s-2) 0 var(--s-2);
+}
+
+.detail__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-bottom: var(--s-3);
+}
+
+.detail h3 {
+  margin: var(--s-4) 0 var(--s-2);
+}
+
+.day-counter {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  margin: var(--s-3) 0 2px;
+}
+
+.day-counter .num {
+  font-size: 42px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.day-counter__label {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.day-counter--secondary .num {
+  font-size: 20px;
+}
+
+.source-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.source-list li {
+  padding: var(--s-2) 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+}
+
+.source-list li:last-child {
+  border-bottom: 0;
+}
+
+.detail__note {
+  font-size: 13px;
+  color: var(--ink-soft);
+  background: var(--concrete);
+  border-radius: var(--radius);
+  padding: var(--s-2) var(--s-3);
+}
+
+/* ---------- External links (Tools page and sources) ---------- */
+
+.ext::after {
+  content: ' \2197'; /* ↗ */
+  font-size: 0.85em;
+}
+
+.tools-grid {
+  display: grid;
+  gap: var(--s-3);
+  grid-template-columns: 1fr;
+  margin: var(--s-4) 0;
+}
+
+.tool-card {
+  padding: var(--s-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.tool-card h3 {
+  margin: 0;
+}
+
+.tool-card p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 14px;
+  flex: 1;
+}
+
+.tool-card .btn {
+  align-self: start;
+}
+
+@media (min-width: 700px) {
+  .tools-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ---------- Document pages (About, Tools, Changelog, 404) ---------- */
+
+.doc {
+  width: 100%;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: var(--s-5) var(--s-3) var(--s-7);
+  flex: 1;
+}
+
+.doc .lede {
+  font-size: 17px;
+  color: var(--ink-soft);
+  max-width: 60ch;
+}
+
+.doc section {
+  margin-bottom: var(--s-5);
+}
+
+.doc ul {
+  padding-left: 20px;
+}
+
+.doc li {
+  margin-bottom: var(--s-2);
+}
+
+.changelog-entry {
+  border-left: 3px solid var(--line);
+  padding-left: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+
+.changelog-entry h2 {
+  font-size: 16px;
+  margin-bottom: var(--s-2);
+}
+
+.disclaimer {
+  background: var(--concrete);
+  border-radius: var(--radius-lg);
+  padding: var(--s-3) var(--s-4);
+  font-size: 13.5px;
+  color: var(--ink);
+}
+
+/* ---------- Footer ---------- */
+
+.footer {
+  border-top: 1px solid var(--line);
+  padding: var(--s-4) var(--s-3) var(--s-5);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.footer__inner {
+  max-width: 780px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+/* ---------- Map popups ---------- */
+
+/* Keyboard "cursor": a crosshair at map center, shown only on canvas focus. */
+.map-crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+}
+
+.map-crosshair--on {
+  opacity: 1;
+}
+
+.map-crosshair::before,
+.map-crosshair::after {
+  content: '';
+  position: absolute;
+  background: var(--ink);
+  box-shadow: 0 0 0 2px var(--yellow);
+}
+
+.map-crosshair::before {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+.map-crosshair::after {
+  left: 50%;
+  top: 0;
+  height: 100%;
+  width: 2px;
+  transform: translateX(-50%);
+}
+
+/* Brand focus ring on MapLibre's own controls (overrides its stock blue). */
+.maplibregl-ctrl-group button:focus,
+.maplibregl-ctrl-group button:focus-visible,
+.maplibregl-ctrl-attrib-button:focus {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+  box-shadow: 0 0 0 5px var(--yellow);
+}
+
+.maplibregl-popup-content {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--ink);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-2);
+  padding: 10px 14px;
+  line-height: 1.45;
+}
+
+.maplibregl-popup-close-button {
+  font-size: 18px;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 4px 8px;
+}
+
+.sw-popup__kicker {
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 2px;
+}
+
+.sw-popup p {
+  margin: 0;
+}
+
+/* ---------- No-map fallback ---------- */
+
+.map-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s-4);
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      var(--concrete),
+      var(--concrete) 14px,
+      color-mix(in srgb, var(--concrete) 82%, var(--ink)) 14px,
+      color-mix(in srgb, var(--concrete) 82%, var(--ink)) 16px
+    );
+}
+
+.map-fallback .panel {
+  max-width: 420px;
+  padding: var(--s-4);
+  text-align: center;
+}
+
+/* ---------- Mobile bottom sheet ---------- */
+
+.sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 25;
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -6px 30px rgba(22, 24, 29, 0.16);
+  display: flex;
+  flex-direction: column;
+  height: 96px;
+  transition: height 240ms ease;
+}
+
+.sheet--dragging {
+  transition: none;
+}
+
+.sheet__handle {
+  touch-action: none; /* the handle drags; the content below still scrolls */
+}
+
+.sheet--half {
+  height: 48dvh;
+}
+
+.sheet--full {
+  height: calc(100% - var(--s-2));
+}
+
+.sheet__handle {
+  border: 0;
+  background: none;
+  padding: 0;
+  min-height: 44px; /* thumb-sized target */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.sheet__handle i {
+  width: 40px;
+  height: 5px;
+  border-radius: 3px;
+  /* ink-soft (7.8:1 on paper) so the grip clears WCAG 1.4.11 non-text contrast */
+  background: var(--ink-soft);
+}
+
+.sheet__header {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 0 var(--s-3) var(--s-2);
+  flex-shrink: 0;
+}
+
+.sheet__summary {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.sheet__content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Desktop hides the sheet and shows floating panels instead. */
+
+.stat-strip--floating,
+.controls--floating,
+.drawer,
+.drawer__toggle,
+.detail--floating {
+  display: none;
+}
+
+@media (min-width: 760px) {
+  .sheet {
+    display: none;
+  }
+
+  .stat-strip--floating {
+    display: flex;
+    position: absolute;
+    top: var(--s-2);
+    left: var(--s-2);
+    z-index: 10;
+  }
+
+  .controls--floating {
+    display: flex;
+    position: absolute;
+    top: var(--s-2);
+    right: var(--s-2);
+    z-index: 10;
+    width: var(--panel-w);
+    max-height: calc(100% - var(--s-4));
+  }
+
+  .drawer {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 68px;
+    left: var(--s-2);
+    bottom: var(--s-2);
+    z-index: 11;
+    width: var(--drawer-w);
+    max-width: calc(100% - var(--s-4));
+  }
+
+  .drawer__toggle {
+    display: inline-flex;
+    position: absolute;
+    top: 68px;
+    left: var(--s-2);
+    z-index: 10;
+  }
+
+  .detail--floating {
+    display: flex;
+    position: absolute;
+    top: var(--s-2);
+    right: var(--s-2);
+    bottom: var(--s-2);
+    z-index: 12;
+    width: var(--detail-w);
+    max-width: calc(100% - var(--s-4));
+    animation: detail-in 200ms ease-out;
+  }
+
+  @keyframes detail-in {
+    from {
+      transform: translateX(16px);
+      opacity: 0;
+    }
+    to {
+      transform: none;
+      opacity: 1;
+    }
+  }
+}
+
+/* Touch targets: small buttons grow to thumb size on touch layouts. */
+@media (max-width: 759px) {
+  .btn--small {
+    min-height: 44px;
+  }
+
+  .header__nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+  }
+}
+
+/* Very small screens: hide the mission line, tighten the header. */
+@media (max-width: 420px) {
+  .header {
+    padding: 0 var(--s-2);
+    gap: var(--s-2);
+  }
+
+  .header__nav a {
+    padding: 6px 7px;
+    font-size: 13px;
+  }
+
+  .wordmark__name {
+    font-size: 17px;
+  }
+}

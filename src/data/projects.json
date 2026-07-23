@@ -1,0 +1,132 @@
+[
+  {
+    "id": "example-sidewalk-three-chopt",
+    "name": "Example: Sidewalk segment, Street A to Street B",
+    "description": "EXAMPLE ENTRY — replace with a verified project from county documents. This placeholder shows how a sidewalk segment renders: a line on the map, a status stepper, a day counter, and sources.",
+    "district": "Three Chopt",
+    "status": "announced",
+    "statusNote": "Example status note: identified in the safety plan, not yet funded.",
+    "dateAnnounced": "2025-09-01",
+    "dateStatusUpdated": "2025-09-01",
+    "type": "sidewalk",
+    "sources": [
+      {
+        "label": "EXAMPLE — replace with a real citation (e.g. \"Henrico FY26 CIP, p. 12\")",
+        "url": "https://henrico.gov/budget/"
+      }
+    ],
+    "geometry": [
+      [-77.601, 37.6485],
+      [-77.5955, 37.6462],
+      [-77.5905, 37.6449]
+    ],
+    "placeholder": true
+  },
+  {
+    "id": "example-crosswalk-brookland",
+    "name": "Example: Crosswalk and refuge island, Road C at Road D",
+    "description": "EXAMPLE ENTRY — replace with a verified project from county documents. This placeholder shows how a single-point crossing project renders on the map.",
+    "district": "Brookland",
+    "status": "design",
+    "statusNote": "Example status note: design underway per a monthly district report.",
+    "dateAnnounced": "2025-10-15",
+    "dateStatusUpdated": "2026-03-10",
+    "estimatedCompletion": "2027",
+    "type": "crosswalk",
+    "sources": [
+      {
+        "label": "EXAMPLE — replace with a real citation (e.g. \"Word on the Street, March 2026 — Brookland\")",
+        "url": "https://henrico.gov/works/"
+      }
+    ],
+    "geometry": [-77.5065, 37.6312],
+    "placeholder": true
+  },
+  {
+    "id": "example-shared-use-path-varina",
+    "name": "Example: Shared-use path, Park E to School F",
+    "description": "EXAMPLE ENTRY — replace with a verified project from county documents. This placeholder shows a longer shared-use path under construction.",
+    "district": "Varina",
+    "status": "construction",
+    "statusNote": "Example status note: construction started; completion estimated next year.",
+    "dateAnnounced": "2025-08-20",
+    "dateStatusUpdated": "2026-05-04",
+    "estimatedCompletion": "2027",
+    "type": "shared-use-path",
+    "sources": [
+      {
+        "label": "EXAMPLE — replace with a real citation (e.g. \"Henrico FY26 CIP, p. 34\")",
+        "url": "https://henrico.gov/budget/"
+      },
+      {
+        "label": "EXAMPLE — second source to show how multiple citations render",
+        "url": "https://henrico.gov/works/"
+      }
+    ],
+    "geometry": [
+      [-77.328, 37.5095],
+      [-77.3205, 37.5122],
+      [-77.3138, 37.5171],
+      [-77.3092, 37.5236]
+    ],
+    "placeholder": true
+  },
+  {
+    "id": "example-signal-fairfield",
+    "name": "Example: Pedestrian signal, Road G at Road H",
+    "description": "EXAMPLE ENTRY — replace with a verified project from county documents. This placeholder shows a completed point project, so every stepper state is visible somewhere in the app.",
+    "district": "Fairfield",
+    "status": "complete",
+    "statusNote": "Example status note: signal activated.",
+    "dateAnnounced": "2025-08-05",
+    "dateStatusUpdated": "2026-06-15",
+    "type": "signal",
+    "sources": [
+      {
+        "label": "EXAMPLE — replace with a real citation (e.g. \"Word on the Street, June 2026 — Fairfield\")",
+        "url": "https://henrico.gov/works/"
+      }
+    ],
+    "geometry": [-77.4331, 37.6128],
+    "placeholder": true
+  },
+  {
+    "id": "example-sidewalk-tuckahoe",
+    "name": "Example: Sidewalk infill, Street J near School K",
+    "description": "EXAMPLE ENTRY — replace with a verified project from county documents. A second announced project so the default list sort (days since announced) has something to order.",
+    "district": "Tuckahoe",
+    "status": "announced",
+    "dateAnnounced": "2026-02-12",
+    "dateStatusUpdated": "2026-02-12",
+    "type": "sidewalk",
+    "sources": [
+      {
+        "label": "EXAMPLE — replace with a real citation",
+        "url": "https://henrico.gov/budget/"
+      }
+    ],
+    "geometry": [
+      [-77.5729, 37.5866],
+      [-77.5678, 37.5891]
+    ],
+    "placeholder": true
+  },
+  {
+    "id": "example-bus-shelter-varina",
+    "name": "Example: Bus shelter and crossing improvements, Route L",
+    "description": "EXAMPLE ENTRY — replace with a verified project from county documents. Uses the \"other\" project type to show how non-sidewalk work renders.",
+    "district": "Varina",
+    "status": "design",
+    "dateAnnounced": "2025-11-30",
+    "dateStatusUpdated": "2026-04-22",
+    "type": "other",
+    "sources": [
+      {
+        "label": "EXAMPLE — replace with a real citation",
+        "url": "https://henrico.gov/works/"
+      }
+    ],
+    "geometry": [-77.2745, 37.4779],
+    "placeholder": true
+  }
+]

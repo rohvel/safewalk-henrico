@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- SafeWalk Henrico: crosswalk stripes on asphalt -->
+  <rect width="64" height="64" rx="14" fill="#16181D"/>
+  <rect x="13" y="14" width="9" height="36" rx="2" fill="#FAFBFC"/>
+  <rect x="27.5" y="14" width="9" height="36" rx="2" fill="#F5B700"/>
+  <rect x="42" y="14" width="9" height="36" rx="2" fill="#FAFBFC"/>
+</svg>

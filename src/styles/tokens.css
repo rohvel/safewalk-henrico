@@ -1,0 +1,61 @@
+/*
+ * Design tokens — the single source of truth for color, type, and spacing.
+ *
+ * The palette comes from the world this site is about: civic wayfinding.
+ * Paper and concrete for surfaces, asphalt ink for text, sign-yellow for the
+ * few moments that deserve emphasis, and Okabe–Ito-derived status colors
+ * that stay distinguishable for colorblind readers.
+ *
+ * Rules encoded here:
+ *  - Yellow always carries ink text/borders, never yellow-on-light alone
+ *    (yellow fails contrast against paper, so it is never the only signal).
+ *  - Status colors are never the only encoding — every use pairs with a
+ *    label or the stepper shape. Crash types differ by SHAPE (dot vs ring),
+ *    not color.
+ */
+:root {
+  /* Surfaces & text */
+  --paper: #fafbfc;
+  --concrete: #eef1f4;
+  --ink: #16181d;
+  --ink-soft: #4a5158; /* secondary text — 7.3:1 on paper */
+  --line: #d9dee3; /* hairline borders */
+
+  /* Accent — road-sign yellow. Sparingly: focus, primary action, active stepper edge. */
+  --yellow: #f5b700;
+
+  /* Project status (Okabe–Ito derived, colorblind-safe) */
+  --st-announced: #0072b2;
+  --st-design: #56b4e9;
+  --st-construction: #e69f00;
+  --st-complete: #009e73;
+
+  /* Crashes — deep signal red, always with a white stroke on the map */
+  --crash: #b3261e;
+
+  /* Type */
+  --font-display: 'Overpass', 'Public Sans', system-ui, sans-serif;
+  --font-body: 'Public Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', monospace;
+
+  /* Spacing — 8pt grid (4 for tight gaps) */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 16px;
+  --s-4: 24px;
+  --s-5: 32px;
+  --s-6: 48px;
+  --s-7: 64px;
+
+  /* Shape & elevation */
+  --radius: 10px;
+  --radius-lg: 12px;
+  --shadow-1: 0 1px 2px rgba(22, 24, 29, 0.06), 0 2px 8px rgba(22, 24, 29, 0.08);
+  --shadow-2: 0 4px 12px rgba(22, 24, 29, 0.1), 0 12px 40px rgba(22, 24, 29, 0.12);
+
+  /* Layout */
+  --header-h: 56px;
+  --panel-w: 300px; /* right controls panel */
+  --drawer-w: 380px; /* left project list drawer */
+  --detail-w: 420px; /* project detail slide-over */
+}

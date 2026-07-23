@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>SafeWalk Henrico — Tracking promised pedestrian-safety projects</title>
+    <meta
+      name="description"
+      content="An independent tracker of every promised pedestrian-safety project in Henrico County, Virginia — sidewalks, crosswalks, and paths — alongside where pedestrian and cyclist crashes have happened."
+    />
+
+    <!-- Open Graph / Twitter card -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="SafeWalk Henrico" />
+    <meta
+      property="og:description"
+      content="Tracking every promised pedestrian-safety project in Henrico County — and the county's adopted goal of halving roadway deaths and serious injuries by 2035."
+    />
+    <meta property="og:site_name" content="SafeWalk Henrico" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="SafeWalk Henrico" />
+    <meta
+      name="twitter:description"
+      content="Tracking every promised pedestrian-safety project in Henrico County, Virginia."
+    />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#16181d" />
+
+    <!--
+      Type: Overpass (display — derived from U.S. Highway Gothic road signage),
+      Public Sans (body), IBM Plex Mono (counters/data).
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Loaded async (media swap trick) so fonts never block first paint;
+         font-display:swap shows system text until they arrive. -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Overpass:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Overpass:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap"
+      />
+    </noscript>
+
+    <!--
+      Analytics slot (intentionally empty).
+      If you ever want privacy-respecting analytics, paste a Plausible
+      (https://plausible.io) or Cloudflare Web Analytics snippet here.
+      Do not add anything that sets cookies or tracks individuals.
+    -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
