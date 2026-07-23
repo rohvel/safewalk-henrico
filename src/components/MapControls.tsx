@@ -158,7 +158,7 @@ export default function MapControls({ filters, onChange }: Props) {
           <span className="legend__glyph legend__glyph--wide">
             <CrosswalkStepper status="design" mini />
           </span>
-          <span>Project — bars fill as it advances</span>
+          <span>Project — the crossing paints in stripe by stripe as it advances</span>
         </div>
         {STATUSES.map((s) => (
           <div className="legend__item" key={s}>

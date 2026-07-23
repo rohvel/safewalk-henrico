@@ -34,6 +34,11 @@ import { navigate } from '../lib/router'
 
 const STYLE_URL = 'https://tiles.openfreemap.org/styles/positron'
 
+// Free fallback basemap (MapLibre's own demotiles) used only if the primary
+// style fails to load. Low detail, but it keeps the project/crash/school data
+// on a real map instead of a blank rectangle.
+const FALLBACK_STYLE = 'https://demotiles.maplibre.org/style.json'
+
 /** All of Henrico County comfortably in frame. */
 const HENRICO_BOUNDS: [[number, number], [number, number]] = [
   [-77.67, 37.4],
@@ -416,85 +421,128 @@ export default function MapView({ projects, crashes, schools, filters, selected,
     canvas.addEventListener('focus', () => crosshair.classList.add('map-crosshair--on'))
     canvas.addEventListener('blur', () => crosshair.classList.remove('map-crosshair--on'))
 
-    map.on('error', (e) => {
-      // A failure before first load means no basemap at all → list fallback.
-      if (!loadedRef.current && /style|fetch|network/i.test(String(e.error?.message ?? ''))) {
-        onMapFailed()
+    // ---- Layers: (re)installed for whichever basemap style is active.
+    // setStyle() (the fallback path) wipes custom sources/layers, so this must
+    // be safe to run again after a style swap; the getSource guard makes it
+    // idempotent within a single style.
+    const installLayers = (m: MLMap) => {
+      if (m.getSource('projects')) return
+      addProjectLayers(m)
+      sync(m)
+    }
+
+    // ---- Interactions: bound to the map, not the style, so attach once.
+    const interactive = [
+      'project-lines',
+      'project-lines-placeholder',
+      'project-points',
+      'project-points-placeholder',
+      'crash-ped',
+      'crash-bike',
+      'schools',
+    ]
+    for (const layer of interactive) {
+      map.on('mouseenter', layer, () => (map.getCanvas().style.cursor = 'pointer'))
+      map.on('mouseleave', layer, () => (map.getCanvas().style.cursor = ''))
+    }
+
+    /**
+     * Act on a feature: navigate for a project, or open a popup for a
+     * crash/school. `moveFocus` is set for keyboard activation so the popup
+     * receives focus (screen-reader users hear it; Escape/Tab work).
+     */
+    const activateFeature = (
+      f: maplibregl.MapGeoJSONFeature,
+      lngLat: maplibregl.LngLatLike,
+      moveFocus: boolean,
+    ) => {
+      if (f.layer.id.startsWith('project-')) {
+        navigate(`/project/${f.properties.id}`)
+        return
       }
+      const popup = new maplibregl.Popup({
+        offset: f.layer.id === 'schools' ? 10 : 8,
+        closeButton: f.layer.id !== 'schools',
+        focusAfterOpen: moveFocus,
+      }).setLngLat(lngLat)
+      popup.setHTML(
+        f.layer.id === 'schools'
+          ? `<div class="sw-popup"><p class="sw-popup__kicker">School</p><p>${esc(f.properties.name)}</p></div>`
+          : crashPopupHTML(f.properties),
+      )
+      popup.addTo(map)
+    }
+
+    const present = () => interactive.filter((l) => map.getLayer(l))
+
+    map.on('click', (e: MapMouseEvent) => {
+      const f = map.queryRenderedFeatures(e.point, { layers: present() })[0]
+      if (f) activateFeature(f, e.lngLat, false)
     })
+
+    // Keyboard activation: Enter/Space inspects the feature nearest the map
+    // center (marked by the crosshair that appears when the canvas is focused).
+    map.getCanvas().addEventListener('keydown', (ev: KeyboardEvent) => {
+      if (ev.key !== 'Enter' && ev.key !== ' ') return
+      const rect = map.getContainer().getBoundingClientRect()
+      const cx = rect.width / 2
+      const cy = rect.height / 2
+      // search a small box so features don't need pixel-perfect aim
+      const box: [maplibregl.PointLike, maplibregl.PointLike] = [
+        [cx - 16, cy - 16],
+        [cx + 16, cy + 16],
+      ]
+      const f = map.queryRenderedFeatures(box, { layers: present() })[0]
+      if (!f) return
+      ev.preventDefault()
+      // anchor the popup at the map center (where the crosshair sits)
+      activateFeature(f, map.getCenter(), true)
+    })
+
+    // ---- Basemap resilience. The map must never sit as a silent blank: if the
+    // primary style never loads, retry once with the free demotiles style; if
+    // that also fails, surface the on-voice fallback panel (onMapFailed). Data
+    // layers are re-installed over whichever style ends up loading.
+    let styleState: 'primary' | 'fallback' | 'failed' = 'primary'
+    const alive = () => mapRef.current === map // guard stale timers after unmount
+
+    const markLoaded = () => {
+      loadedRef.current = true
+      installLayers(map)
+    }
+    const giveUp = (reason: string) => {
+      if (styleState === 'failed' || !alive()) return
+      styleState = 'failed'
+      console.error('[SafeWalk] Basemap unavailable:', reason)
+      onMapFailed()
+    }
+    const goFallback = (reason: string) => {
+      if (styleState !== 'primary' || !alive()) return
+      styleState = 'fallback'
+      console.warn('[SafeWalk] Primary basemap failed, retrying with fallback:', reason)
+      map.once('style.load', markLoaded)
+      window.setTimeout(() => {
+        if (alive() && styleState === 'fallback' && !map.isStyleLoaded()) giveUp('fallback timeout')
+      }, 8000)
+      try {
+        map.setStyle(FALLBACK_STYLE)
+      } catch (err) {
+        giveUp(String(err))
+      }
+    }
 
     map.on('load', () => {
-      loadedRef.current = true
-      addProjectLayers(map)
-      sync(map)
-
-      const interactive = [
-        'project-lines',
-        'project-lines-placeholder',
-        'project-points',
-        'project-points-placeholder',
-        'crash-ped',
-        'crash-bike',
-        'schools',
-      ]
-      for (const layer of interactive) {
-        map.on('mouseenter', layer, () => (map.getCanvas().style.cursor = 'pointer'))
-        map.on('mouseleave', layer, () => (map.getCanvas().style.cursor = ''))
-      }
-
-      /**
-       * Act on a feature: navigate for a project, or open a popup for a
-       * crash/school. `moveFocus` is set for keyboard activation so the popup
-       * receives focus (screen-reader users hear it; Escape/Tab work).
-       */
-      const activateFeature = (
-        f: maplibregl.MapGeoJSONFeature,
-        lngLat: maplibregl.LngLatLike,
-        moveFocus: boolean,
-      ) => {
-        if (f.layer.id.startsWith('project-')) {
-          navigate(`/project/${f.properties.id}`)
-          return
-        }
-        const popup = new maplibregl.Popup({
-          offset: f.layer.id === 'schools' ? 10 : 8,
-          closeButton: f.layer.id !== 'schools',
-          focusAfterOpen: moveFocus,
-        }).setLngLat(lngLat)
-        popup.setHTML(
-          f.layer.id === 'schools'
-            ? `<div class="sw-popup"><p class="sw-popup__kicker">School</p><p>${esc(f.properties.name)}</p></div>`
-            : crashPopupHTML(f.properties),
-        )
-        popup.addTo(map)
-      }
-
-      const present = () => interactive.filter((l) => map.getLayer(l))
-
-      map.on('click', (e: MapMouseEvent) => {
-        const f = map.queryRenderedFeatures(e.point, { layers: present() })[0]
-        if (f) activateFeature(f, e.lngLat, false)
-      })
-
-      // Keyboard activation: Enter/Space inspects the feature nearest the map
-      // center (marked by the crosshair that appears when the canvas is focused).
-      map.getCanvas().addEventListener('keydown', (ev: KeyboardEvent) => {
-        if (ev.key !== 'Enter' && ev.key !== ' ') return
-        const rect = map.getContainer().getBoundingClientRect()
-        const cx = rect.width / 2
-        const cy = rect.height / 2
-        // search a small box so features don't need pixel-perfect aim
-        const box: [maplibregl.PointLike, maplibregl.PointLike] = [
-          [cx - 16, cy - 16],
-          [cx + 16, cy + 16],
-        ]
-        const f = map.queryRenderedFeatures(box, { layers: present() })[0]
-        if (!f) return
-        ev.preventDefault()
-        // anchor the popup at the map center (where the crosshair sits)
-        activateFeature(f, map.getCenter(), true)
-      })
+      if (styleState === 'primary') markLoaded()
     })
+    map.on('error', (e) => {
+      // Only errors BEFORE a style has loaded mean "no basemap". Once a style
+      // is up, stray tile errors are harmless and must not trigger a failover.
+      if (alive() && !map.isStyleLoaded()) goFallback(String(e?.error?.message ?? 'map error'))
+    })
+    // Watchdog: some failures (DNS, hang) never emit an error event.
+    window.setTimeout(() => {
+      if (alive() && styleState === 'primary' && !map.isStyleLoaded()) goFallback('primary timeout')
+    }, 8000)
 
     return () => {
       map.remove()

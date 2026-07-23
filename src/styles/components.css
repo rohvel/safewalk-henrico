@@ -154,7 +154,19 @@
   background: var(--concrete);
 }
 
-.map-canvas {
+/*
+ * The map container fills the map stage.
+ *
+ * MapLibre adds its own class `.maplibregl-map { position: relative }` to this
+ * element, and that stylesheet is bundled into the lazy MapView chunk, so it
+ * loads AFTER this file. At equal (0,1,0) specificity the later rule wins the
+ * cascade, flipping the container to `position: relative` — which makes
+ * `inset: 0` a no-op and collapses the container to 0 height, so the basemap
+ * paints into nothing (a silent blank map). Scoping to `.map-stage >` raises
+ * specificity to (0,2,0) so our positioning always wins, regardless of load
+ * order. Do not lower this back to a bare `.map-canvas`.
+ */
+.map-stage > .map-canvas {
   position: absolute;
   inset: 0;
 }
@@ -256,11 +268,14 @@
 
 /* ---------- Crosswalk stepper — the signature element ----------
  *
- * An asphalt-ink strip holding four thick crosswalk stripes. Stripes ahead
- * of the project's progress are faint (unpainted road); reached stripes fill
- * with the status color; the current stripe carries a sign-yellow edge.
- * It should read as a crosswalk first and a progress meter half a second
- * later — that double reading is the identity of the site.
+ * An asphalt-ink strip holding four thick crosswalk stripes. ALL four stripes
+ * are always visible — unreached ones as faint, unpainted road-paint; reached
+ * ones "painted in" with the status color; the current stripe carries a
+ * sign-yellow curb edge. Because the whole zebra crossing is present at once,
+ * it reads as a crosswalk first and a progress meter half a second later —
+ * that double reading is the identity of the site. (Keeping unreached stripes
+ * visible, not hidden, is what makes the crosswalk land rather than reading as
+ * a generic segmented progress bar.)
  */
 
 .stepper {
@@ -270,17 +285,18 @@
 
 .stepper__track {
   display: flex;
-  gap: 6px;
-  padding: 7px;
+  gap: 9px; /* asphalt gap between stripes — the zebra rhythm */
+  padding: 8px;
   background: var(--ink);
-  border-radius: 9px;
+  border-radius: 8px;
 }
 
 .stepper__bar {
   flex: 1;
-  height: 34px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.13);
+  height: 46px;
+  border-radius: 1.5px; /* crisp, paint-like — not a rounded UI pill */
+  /* faint unpainted stripe: always visible so the full crossing reads */
+  background: rgba(255, 255, 255, 0.26);
   position: relative;
   overflow: hidden;
 }
@@ -353,19 +369,21 @@
   color: var(--ink);
 }
 
-/* Mini stepper — list rows, chips, legend. Same anatomy, shrunk. */
+/* Mini stepper — list rows, chips, legend. Same anatomy, shrunk. The stripes
+   stay tall-and-narrow (portrait) so the crosswalk still reads at this size. */
 .stepper--mini .stepper__track {
-  gap: 2.5px;
+  gap: 3px;
   padding: 3px;
-  border-radius: 4px;
+  border-radius: 3px;
   width: max-content;
 }
 
 .stepper--mini .stepper__bar {
-  width: 9px;
+  width: 7px;
   flex: none;
-  height: 12px;
-  border-radius: 1.5px;
+  height: 15px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .stepper--mini .stepper__bar--active {
