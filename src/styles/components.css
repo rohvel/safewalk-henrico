@@ -484,6 +484,50 @@
   flex-direction: column;
   overflow-y: auto;
   overscroll-behavior: contain;
+
+  /*
+   * Scroll-shadow affordance: a soft shadow fades in at the top/bottom edge
+   * only when there's more content to scroll in that direction, and
+   * disappears at the true start/end. Pure CSS (no JS, no extra markup) —
+   * the classic "background-attachment: local vs scroll" trick. Needed
+   * because the legend has enough items to overflow short viewports with no
+   * other visual cue that it scrolls.
+   */
+  background-image:
+    linear-gradient(var(--paper) 30%, rgba(250, 251, 252, 0)),
+    linear-gradient(rgba(250, 251, 252, 0), var(--paper) 70%),
+    radial-gradient(farthest-side at 50% 0, rgba(22, 24, 29, 0.18), rgba(22, 24, 29, 0)),
+    radial-gradient(farthest-side at 50% 100%, rgba(22, 24, 29, 0.18), rgba(22, 24, 29, 0));
+  background-repeat: no-repeat;
+  background-color: var(--paper);
+  background-size:
+    100% 28px,
+    100% 28px,
+    100% 10px,
+    100% 10px;
+  background-position:
+    top,
+    bottom,
+    top,
+    bottom;
+  background-attachment: local, local, scroll, scroll;
+
+  /* Secondary affordance: a visible (not auto-hidden) thin scrollbar. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-soft) transparent;
+}
+
+.controls::-webkit-scrollbar {
+  width: 8px;
+}
+
+.controls::-webkit-scrollbar-thumb {
+  background: var(--ink-soft);
+  border-radius: 4px;
+}
+
+.controls::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .controls__section {

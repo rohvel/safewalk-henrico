@@ -11,7 +11,7 @@ import projects from '../data/projects'
 import type { Project } from '../types'
 import type { Filters } from '../lib/urlState'
 import { DEFAULT_FILTERS, YEAR_RANGE } from '../lib/urlState'
-import { useCrashData, useSchoolData } from '../lib/useGeoData'
+import { useCrashData, useSchoolData, useBoundaryData } from '../lib/useGeoData'
 import type { CrashProperties } from '../types'
 import StatStrip from '../components/StatStrip'
 import MapControls from '../components/MapControls'
@@ -135,6 +135,7 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
 
   const crash = useCrashData()
   const schools = useSchoolData()
+  const boundary = useBoundaryData()
 
   const filteredProjects = useMemo(
     () =>
@@ -204,6 +205,7 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
             projects={mapProjects}
             crashes={crash.collection}
             schools={filters.layers.schools ? schools : null}
+            boundary={boundary}
             filters={filters}
             selected={selected}
             onMapFailed={() => setMapFailed(true)}

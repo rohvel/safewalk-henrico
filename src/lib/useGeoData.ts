@@ -76,3 +76,22 @@ export function useSchoolData(): GeoJSON.FeatureCollection | null {
   }, [])
   return data
 }
+
+export function useBoundaryData(): GeoJSON.FeatureCollection | null {
+  const [data, setData] = useState<GeoJSON.FeatureCollection | null>(null)
+  useEffect(() => {
+    let cancelled = false
+    fetch('data/henrico-boundary.geojson')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((json) => {
+        if (!cancelled && json) setData(json)
+      })
+      .catch(() => {
+        /* the boundary is an orientation aid; the map works without it */
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+  return data
+}

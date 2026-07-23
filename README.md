@@ -58,6 +58,14 @@ npm run fetch-schools
 
 Regenerates `public/data/schools.geojson` (68 school points) from Henrico County's public ArcGIS "Schools Zones and School Locations" service. Rarely needs re-running.
 
+### Henrico County boundary (scripted, rarely needs re-running)
+
+```bash
+npm run fetch-boundary
+```
+
+Regenerates `public/data/henrico-boundary.geojson` (the outline rendered on the map, and the mask that dims everything outside the county) and `src/data/henricoBounds.json` (the map's initial camera bounds, computed from that same polygon so the two can never drift apart). Source: the US Census Bureau's TIGERweb "Counties" layer (GEOID 51087), server-side generalized to keep the file small. Re-run only if Census updates county boundaries (very rare) or you want a less-generalized outline.
+
 ### App icons (scripted, only if you change the mark)
 
 ```bash
@@ -65,6 +73,16 @@ node scripts/make-icons.mjs
 ```
 
 The PWA icons (`public/icon-192.png`, `icon-512.png`, `icon-maskable-512.png`) are generated from the same crosswalk mark as `public/favicon.svg`, with no image dependencies. Only re-run this if you change the favicon.
+
+## Before you deploy
+
+```bash
+npm run verify:map
+```
+
+Proves the map actually renders — not just that MapLibre reports `loaded()`, which can be true even when the map container has silently collapsed to zero (or near-zero) height and nothing is visible. The script builds the production bundle, serves it, opens it in headless Chromium, reads the real WebGL drawing buffer, and asserts: the frame isn't blank, basemap tiles painted, project/crash colors painted, and the canvas actually fills its container (not just a small rendered strip). Exits non-zero on any failure with a specific reason. Run it after any change that touches `src/components/MapView.tsx` or the CSS that positions it, and before every deploy.
+
+It uses [Playwright](https://playwright.dev/) (a devDependency only — never bundled into the deployed site) with just the Chromium browser installed. On this machine that's about 17&nbsp;MB in `node_modules` plus roughly 690&nbsp;MB of browser binaries cached in `~/AppData/Local/ms-playwright` (or `~/.cache/ms-playwright` on macOS/Linux), shared across any project on the machine that uses Playwright — it's a one-time cost per machine, not per project, and `npx playwright install chromium` only needs to run once.
 
 ## Deploying
 
@@ -86,8 +104,8 @@ The build is fully static — any static host works. Hash routing (`#/about`) me
 ## Project structure
 
 ```
-scripts/            data-fetch and icon-generation scripts (Node, no build coupling)
-public/data/        committed GeoJSON (crashes, schools)
+scripts/            data-fetch, icon-generation, and map-verification scripts (Node, no build coupling)
+public/data/        committed GeoJSON (crashes, schools, county boundary)
 src/data/           projects.json + changelog.json (hand-edited)
 src/lib/            hash router, URL filter state, date math, data loaders
 src/components/     map, crosswalk stepper, panels, list, detail

@@ -90,9 +90,20 @@ export default function AboutPage() {
             — the county's adopted safety goal and project priorities.
           </li>
           <li>
-            Henrico County GIS — school locations. Basemap: OpenFreeMap (Positron style), data ©
-            OpenStreetMap contributors.
+            Henrico County GIS — school locations.
           </li>
+          <li>
+            <a
+              href="https://tigerweb.geo.census.gov/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ext"
+            >
+              US Census Bureau, TIGERweb
+            </a>{' '}
+            — the Henrico County boundary line shown on the map.
+          </li>
+          <li>Basemap: OpenFreeMap (Positron style), data © OpenStreetMap contributors.</li>
         </ul>
       </section>
 
