@@ -5,3 +5,13 @@ dist/
 
 # TypeScript incremental build cache
 *.tsbuildinfo
+
+# Env / secrets (project uses none today — defense in depth)
+.env
+.env.*
+
+# Ad-hoc local verification scripts/screenshots (never meant to be committed)
+tmp-*
+
+# Raw VDOT statewide exports worked with locally — never committed
+*.xlsx
