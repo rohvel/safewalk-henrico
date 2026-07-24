@@ -8,12 +8,14 @@
  */
 import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import projects from '../data/projects'
+import crashContext from '../data/crashContext.json'
 import type { Project } from '../types'
 import type { Filters } from '../lib/urlState'
-import { DEFAULT_FILTERS, YEAR_RANGE } from '../lib/urlState'
+import { DEFAULT_FILTERS, isYearPossiblyPartial } from '../lib/urlState'
 import { useCrashData, useSchoolData, useBoundaryData } from '../lib/useGeoData'
 import type { CrashProperties } from '../types'
 import StatStrip from '../components/StatStrip'
+import type { CrashContextFigures } from '../components/StatStrip'
 import MapControls from '../components/MapControls'
 import ProjectList from '../components/ProjectList'
 import ProjectDetail from '../components/ProjectDetail'
@@ -77,6 +79,32 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
   useEffect(() => {
     if (selected) setSheet((s) => (s === 'peek' ? 'full' : s))
   }, [selected])
+
+  // The desktop drawer/toggle dock directly below the floating stat-strip
+  // panel. That panel's height isn't fixed — it grows when the crash-context
+  // paragraph wraps to more lines (narrower viewport, longer numbers) — so a
+  // hardcoded top offset silently drifts out of sync and the drawer ends up
+  // overlapping the stat strip's own text (caught during this exact change:
+  // adding the Task 4 paragraph grew the panel and did exactly that to a
+  // previously-fine hardcoded 68px). Measuring the real rendered height and
+  // publishing it as a CSS variable keeps the two panels correctly stacked
+  // regardless of what either one's content does in the future.
+  const statStripRef = useRef<HTMLDivElement>(null)
+  const mapStageRef = useRef<HTMLElement>(null)
+  useEffect(() => {
+    const panel = statStripRef.current
+    const stage = mapStageRef.current
+    if (!panel || !stage || typeof ResizeObserver === 'undefined') return
+    // offsetTop is relative to .map-stage (the nearest positioned ancestor,
+    // `position: relative`), so top + height is the panel's true bottom edge
+    // within the stage — not just its height.
+    const update = () =>
+      stage.style.setProperty('--stat-strip-bottom', `${panel.offsetTop + panel.offsetHeight}px`)
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(panel)
+    return () => ro.disconnect()
+  }, [])
 
   // When the detail panel closes, move focus back onto the map controls
   // rather than letting it fall to <body> (WCAG 2.4.3 Focus Order).
@@ -152,6 +180,7 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
     return crash.collection.features.filter((f) => {
       const p = f.properties as unknown as CrashProperties
       if (p.year < filters.yearMin || p.year > filters.yearMax) return false
+      if (filters.schoolZoneOnly && !p.schoolZone) return false
       const wantPed = filters.modes.includes('ped')
       const wantBike = filters.modes.includes('bike')
       if (p.mode === 'ped') return wantPed
@@ -175,10 +204,32 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
       listOpen: filters.listOpen,
     })
 
-  const crashYears =
-    filters.yearMin === YEAR_RANGE.min && filters.yearMax === YEAR_RANGE.max
-      ? `${YEAR_RANGE.min}–${YEAR_RANGE.max}`
-      : `${filters.yearMin}–${filters.yearMax}`
+  const crashYears = (() => {
+    const range =
+      filters.yearMin === filters.yearMax
+        ? `${filters.yearMin}`
+        : `${filters.yearMin}–${filters.yearMax}`
+    // Task 1: 2026 (or whatever the current year is) is a partial year, not
+    // an improvement — labeled everywhere it can appear, including here.
+    return isYearPossiblyPartial(filters.yearMax) ? `${range}, ${filters.yearMax} partial` : range
+  })()
+
+  // Task 4's two verified figures, computed at fetch time into
+  // crashContext.json (not hardcoded here) — see scripts/fetch-crashes.mjs.
+  const crashContextFigures: CrashContextFigures = {
+    pedBikeShare: {
+      count: crashContext.pedBikeInWindow,
+      total: crashContext.allCrashesTotal,
+      years: `${crashContext.allCrashesYears[0]}–${crashContext.allCrashesYears.at(-1)}`,
+      pct: Math.round((crashContext.pedBikeInWindow / crashContext.allCrashesTotal) * 100),
+    },
+    fatalShare: {
+      count: crashContext.fatalPedBikeCount,
+      total: crashContext.pedBikeTotal,
+      years: `${crashContext.fatalPedBikeYears[0]}–${crashContext.fatalPedBikeYears[1]}`,
+      pct: Math.round((crashContext.fatalPedBikeCount / crashContext.pedBikeTotal) * 100),
+    },
+  }
 
   const cycleSheet = () => {
     if (suppressClick.current) {
@@ -191,7 +242,7 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
   const mapOK = webgl && !mapFailed
 
   return (
-    <main id="main" className="map-stage">
+    <main id="main" className="map-stage" ref={mapStageRef}>
       <h1 className="visually-hidden">
         {selected
           ? `${selected.name} — SafeWalk Henrico`
@@ -258,11 +309,13 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
 
       {/* ---------- Desktop floating panels ---------- */}
       <StatStrip
+        ref={statStripRef}
         className="panel stat-strip--floating"
         projectCount={projects.length}
         projectsAllExample={projects.every((p) => p.placeholder)}
         crashCount={visibleCrashCount}
         crashYears={crashYears}
+        context={crashContextFigures}
       />
 
       {selected ? (

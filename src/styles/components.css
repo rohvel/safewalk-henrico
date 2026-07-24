@@ -238,10 +238,35 @@
 
 .stat-strip {
   display: flex;
-  gap: var(--s-3);
+  flex-direction: column;
+  gap: var(--s-1);
   padding: var(--s-2) var(--s-3);
+}
+
+.stat-strip__tiles {
+  display: flex;
+  gap: var(--s-3);
   overflow-x: auto;
   scrollbar-width: none;
+}
+
+/* Quiet supporting context — the crash-share framing that replaced the old
+   sidewalk-mileage lead tile. Deliberately plain text, not another big
+   tabular-mono number: two connected facts read better as a sentence than
+   as two more competing tiles, and this isn't meant to shout. */
+.stat-strip__context {
+  margin: 0;
+  padding-top: var(--s-1);
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 46ch;
+}
+
+.stat-strip__context strong {
+  color: var(--ink);
+  font-weight: 600;
 }
 
 .stat {
@@ -631,6 +656,15 @@
   border-radius: 50%;
   background: var(--crash);
   border: 2px solid var(--ink);
+}
+
+.dot-schoolzone {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: transparent;
+  border: 2px solid var(--yellow);
+  box-shadow: 0 0 0 1px var(--ink);
 }
 
 .glyph-school {
@@ -1369,11 +1403,19 @@
     max-height: calc(100% - var(--s-4));
   }
 
+  /*
+   * Docks directly below the floating stat-strip panel. --stat-strip-bottom
+   * is measured live (HomePage.tsx, ResizeObserver) since that panel's
+   * height varies with its content (the crash-context paragraph wraps
+   * differently by viewport/data) — a hardcoded offset here previously went
+   * stale the moment that paragraph was added and grew the panel. The 68px
+   * fallback only matters before the observer's first measurement lands.
+   */
   .drawer {
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: 68px;
+    top: calc(var(--stat-strip-bottom, 146px) + var(--s-3));
     left: var(--s-2);
     bottom: var(--s-2);
     z-index: 11;
@@ -1384,7 +1426,7 @@
   .drawer__toggle {
     display: inline-flex;
     position: absolute;
-    top: 68px;
+    top: calc(var(--stat-strip-bottom, 146px) + var(--s-3));
     left: var(--s-2);
     z-index: 10;
   }

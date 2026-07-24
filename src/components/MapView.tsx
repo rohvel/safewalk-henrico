@@ -76,6 +76,7 @@ const COLORS = {
   inkSoft: '#4a5158',
   paper: '#fafbfc',
   crash: '#b3261e',
+  yellow: '#f5b700', // sign-yellow accent — school-zone crash halo only
   announced: '#0072b2',
   design: '#56b4e9',
   construction: '#e69f00',
@@ -106,6 +107,7 @@ const STATUS_COLOR: ExpressionSpecification = [
 const LAYER_ORDER = [
   'henrico-mask-fill',
   'henrico-boundary-line',
+  'crash-schoolzone-halo',
   'crash-fatal-halo',
   'crash-ped',
   'crash-bike',
@@ -347,12 +349,16 @@ function yearAndMode(f: Filters, modes: string[]): ExpressionSpecification {
     modes.length === 0
       ? ['boolean', false]
       : ['match', ['get', 'mode'], modes, true, false]
-  return [
-    'all',
+  const clauses: ExpressionSpecification[] = [
     ['>=', ['get', 'year'], f.yearMin],
     ['<=', ['get', 'year'], f.yearMax],
     modeExpr,
   ]
+  // School zone is the one crash sub-filter that lives on the map too
+  // (Task 5) — every other one (severity, light, traffic control, hit-run,
+  // time band) is table-only, same reasoning as the `sev` URL param.
+  if (f.schoolZoneOnly) clauses.push(['==', ['get', 'schoolZone'], true])
+  return ['all', ...clauses]
 }
 
 /** Crash size: recedes at county-wide zoom, firms up in a neighborhood. */
@@ -445,7 +451,7 @@ export default function MapView({
     ]
     for (const id of projectLayers)
       if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', vis(filters.layers.projects))
-    for (const id of ['crash-fatal-halo', 'crash-ped', 'crash-bike'])
+    for (const id of ['crash-schoolzone-halo', 'crash-fatal-halo', 'crash-ped', 'crash-bike'])
       if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', vis(filters.layers.crashes))
     if (map.getLayer('schools'))
       map.setLayoutProperty('schools', 'visibility', vis(filters.layers.schools))
@@ -459,6 +465,18 @@ export default function MapView({
         'all',
         ['==', ['get', 'sev'], 'fatal'],
         yearAndMode(filters, anyShown),
+      ])
+    }
+    if (map.getLayer('crash-schoolzone-halo')) {
+      const anyShown = [...new Set([...sets.ped, ...sets.bike])]
+      // Not gated on filters.schoolZoneOnly — this halo IS the "which of the
+      // visible crashes are school-zone" signal, so it needs to render
+      // whether or not the isolate-only checkbox is on (when it is, every
+      // visible crash is school-zone and the halo is simply on every dot).
+      map.setFilter('crash-schoolzone-halo', [
+        'all',
+        ['==', ['get', 'schoolZone'], true],
+        yearAndMode({ ...filters, schoolZoneOnly: false }, anyShown),
       ])
     }
 
@@ -587,6 +605,25 @@ export default function MapView({
   }
 
   function addCrashLayers(map: MLMap) {
+    // Sign-yellow outer ring marking school-zone crashes (Task 5: the
+    // site's exact subject, 38 of 976 records 2017-2026 — surfaced with a
+    // filter AND this permanent visual marker, since a legend entry with no
+    // persistent encoding to explain wouldn't mean much; still just a
+    // categorical highlight, no rate/breakdown drawn from it). Drawn wider
+    // than the fatal halo so the two nest visibly on a crash that is both.
+    addLayerOrdered(map, {
+      id: 'crash-schoolzone-halo',
+      type: 'circle',
+      source: 'crashes',
+      filter: ['==', ['get', 'schoolZone'], true],
+      paint: {
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 7.5, 15, 12],
+        'circle-color': 'rgba(0,0,0,0)',
+        'circle-stroke-color': COLORS.yellow,
+        'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 9, 1.6, 15, 2.4],
+        'circle-stroke-opacity': ['interpolate', ['linear'], ['zoom'], 9, 0.55, 15, 0.95],
+      },
+    })
     // dark outline that marks fatal crashes, drawn under the dot itself.
     // Sized/opacity recede at county-wide zoom, firm up in a neighborhood —
     // crashes are context here, not the subject; see MapView's file header.

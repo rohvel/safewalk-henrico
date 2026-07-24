@@ -13,9 +13,20 @@
  * survive moving between the two views.
  */
 import { useMemo, useState } from 'react'
-import type { CrashProperties } from '../types'
+import type { CrashProperties, TimeBand } from '../types'
 import type { CrashSeverity, Filters } from '../lib/urlState'
-import { DEFAULT_FILTERS, SEVERITIES, SEVERITY_LABEL, YEAR_RANGE } from '../lib/urlState'
+import {
+  DEFAULT_FILTERS,
+  LATEST_CRASH_DATE,
+  LIGHT_CONDITIONS,
+  SEVERITIES,
+  SEVERITY_LABEL,
+  TIME_BANDS,
+  TIME_BAND_LABEL,
+  YEAR_RANGE,
+  isYearPossiblyPartial,
+} from '../lib/urlState'
+import { formatDate } from '../lib/format'
 import { useCrashData, useSchoolData } from '../lib/useGeoData'
 
 /** Neutral phrasing, matching the map popup's voice. */
@@ -25,7 +36,7 @@ const MODE_LABEL: Record<CrashProperties['mode'], string> = {
   both: 'People walking and biking',
 }
 
-type SortKey = 'year' | 'loc' | 'mode' | 'sev'
+type SortKey = 'year' | 'loc' | 'mode' | 'sev' | 'time' | 'light' | 'control' | 'school' | 'hitrun'
 type SortDir = 'asc' | 'desc'
 
 /** Severity ordered by seriousness so sorting is meaningful, not alphabetical. */
@@ -54,28 +65,55 @@ export default function CrashesPage({ filters, onFiltersChange }: Props) {
       if (!filters.severities.includes(c.sev)) return false
       const wantPed = filters.modes.includes('ped')
       const wantBike = filters.modes.includes('bike')
-      if (c.mode === 'ped') return wantPed
-      if (c.mode === 'bike') return wantBike
-      return wantPed || wantBike // 'both'
+      if (c.mode === 'ped' && !wantPed) return false
+      if (c.mode === 'bike' && !wantBike) return false
+      if (c.mode === 'both' && !wantPed && !wantBike) return false
+      if (filters.schoolZoneOnly && !c.schoolZone) return false
+      if (filters.hitRunOnly && !c.hitRun) return false
+      if (!filters.lights.includes(c.light)) return false
+      if (filters.trafficControl !== '' && c.trafficControl !== filters.trafficControl) return false
+      if (c.timeBand !== '' && !filters.timeBands.includes(c.timeBand)) return false
+      return true
     })
     const dir = sortDir === 'asc' ? 1 : -1
+    // blanks always last, regardless of direction
+    const compareText = (x: string, y: string) => {
+      if (!x && !y) return 0
+      if (!x) return 1
+      if (!y) return -1
+      return x.localeCompare(y) * dir
+    }
     return [...filtered].sort((a, b) => {
       switch (sortKey) {
         case 'year':
           return (a.year - b.year) * dir
         case 'loc':
-          // blanks always last, regardless of direction
-          if (!a.loc && !b.loc) return 0
-          if (!a.loc) return 1
-          if (!b.loc) return -1
-          return a.loc.localeCompare(b.loc) * dir
+          return compareText(a.loc, b.loc)
         case 'mode':
           return MODE_LABEL[a.mode].localeCompare(MODE_LABEL[b.mode]) * dir
         case 'sev':
           return (SEV_ORDER[a.sev] - SEV_ORDER[b.sev]) * dir
+        case 'time':
+          return compareText(a.time, b.time)
+        case 'light':
+          return compareText(a.light, b.light)
+        case 'control':
+          return compareText(a.trafficControl, b.trafficControl)
+        case 'school':
+          return (Number(a.schoolZone) - Number(b.schoolZone)) * dir
+        case 'hitrun':
+          return (Number(a.hitRun) - Number(b.hitRun)) * dir
       }
     })
   }, [all, filters, sortKey, sortDir])
+
+  const trafficControlOptions = useMemo(
+    () =>
+      Array.from(new Set(all.map((c) => c.trafficControl).filter(Boolean))).sort((a, b) =>
+        a.localeCompare(b),
+      ),
+    [all],
+  )
 
   const toggleSort = (key: SortKey) => {
     if (key === sortKey) {
@@ -101,23 +139,40 @@ export default function CrashesPage({ filters, onFiltersChange }: Props) {
     onFiltersChange({ ...filters, severities: next.length === 0 ? [...SEVERITIES] : next })
   }
 
+  const toggleLight = (l: string) => {
+    const has = filters.lights.includes(l)
+    const next = has ? filters.lights.filter((x) => x !== l) : [...filters.lights, l]
+    onFiltersChange({ ...filters, lights: next.length === 0 ? [...LIGHT_CONDITIONS] : next })
+  }
+
+  const toggleTimeBand = (t: TimeBand) => {
+    const has = filters.timeBands.includes(t)
+    const next = has ? filters.timeBands.filter((x) => x !== t) : [...filters.timeBands, t]
+    onFiltersChange({ ...filters, timeBands: next.length === 0 ? [...TIME_BANDS] : next })
+  }
+
   const years = Array.from(
     { length: YEAR_RANGE.max - YEAR_RANGE.min + 1 },
     (_, i) => YEAR_RANGE.min + i,
   )
 
   const yearCaption =
-    filters.yearMin === filters.yearMax
+    (filters.yearMin === filters.yearMax
       ? `${filters.yearMin}`
-      : `${filters.yearMin}–${filters.yearMax}`
+      : `${filters.yearMin}–${filters.yearMax}`) +
+    (isYearPossiblyPartial(filters.yearMax) ? ' (year-to-date)' : '')
 
   return (
     <main id="main" className="doc doc--wide">
       <h1>Reported crashes</h1>
       <p className="lede">
         Every crash in Henrico County involving a person walking or biking, as recorded by VDOT
-        for {YEAR_RANGE.min}–{YEAR_RANGE.max}. This is the same data the{' '}
-        <a href="#/">map</a> draws as dots, in a form you can read, sort, and search.
+        for {YEAR_RANGE.min}–{YEAR_RANGE.max}
+        {isYearPossiblyPartial(YEAR_RANGE.max) && (
+          <> ({YEAR_RANGE.max} is year-to-date, through {formatDate(LATEST_CRASH_DATE)})</>
+        )}
+        . This is the same data the <a href="#/">map</a> draws as dots, in a form you can read,
+        sort, and search.
       </p>
 
       {crash.isSample && (
@@ -148,7 +203,7 @@ export default function CrashesPage({ filters, onFiltersChange }: Props) {
             >
               {years.map((y) => (
                 <option key={y} value={y}>
-                  {y}
+                  {isYearPossiblyPartial(y) ? `${y} (year-to-date)` : y}
                 </option>
               ))}
             </select>{' '}
@@ -166,10 +221,16 @@ export default function CrashesPage({ filters, onFiltersChange }: Props) {
             >
               {years.map((y) => (
                 <option key={y} value={y}>
-                  {y}
+                  {isYearPossiblyPartial(y) ? `${y} (year-to-date)` : y}
                 </option>
               ))}
             </select>
+            {isYearPossiblyPartial(filters.yearMax) && (
+              <p className="filter-note">
+                {filters.yearMax} is year-to-date, not a full year — data runs through{' '}
+                {formatDate(LATEST_CRASH_DATE)}.
+              </p>
+            )}
           </fieldset>
 
           <fieldset>
@@ -205,6 +266,73 @@ export default function CrashesPage({ filters, onFiltersChange }: Props) {
               </label>
             ))}
           </fieldset>
+
+          <fieldset>
+            <legend>Light condition</legend>
+            {LIGHT_CONDITIONS.map((l) => (
+              <label className="check-row" key={l}>
+                <input
+                  type="checkbox"
+                  checked={filters.lights.includes(l)}
+                  onChange={() => toggleLight(l)}
+                />
+                {l}
+              </label>
+            ))}
+          </fieldset>
+
+          <fieldset>
+            <legend>Time of day</legend>
+            {TIME_BANDS.map((t) => (
+              <label className="check-row" key={t}>
+                <input
+                  type="checkbox"
+                  checked={filters.timeBands.includes(t)}
+                  onChange={() => toggleTimeBand(t)}
+                />
+                {TIME_BAND_LABEL[t]}
+              </label>
+            ))}
+          </fieldset>
+
+          <fieldset>
+            <legend>Traffic control</legend>
+            <label htmlFor="crash-traffic-control">Type at crash location</label>{' '}
+            <select
+              id="crash-traffic-control"
+              value={filters.trafficControl}
+              onChange={(e) => onFiltersChange({ ...filters, trafficControl: e.target.value })}
+            >
+              <option value="">All</option>
+              {trafficControlOptions.map((tc) => (
+                <option key={tc} value={tc}>
+                  {tc}
+                </option>
+              ))}
+            </select>
+          </fieldset>
+
+          <fieldset>
+            <legend>Other</legend>
+            <label className="check-row">
+              <input
+                type="checkbox"
+                checked={filters.schoolZoneOnly}
+                onChange={() =>
+                  onFiltersChange({ ...filters, schoolZoneOnly: !filters.schoolZoneOnly })
+                }
+              />
+              School zone crashes only
+            </label>
+            <label className="check-row">
+              <input
+                type="checkbox"
+                checked={filters.hitRunOnly}
+                onChange={() => onFiltersChange({ ...filters, hitRunOnly: !filters.hitRunOnly })}
+              />
+              Hit &amp; run only
+            </label>
+          </fieldset>
         </div>
       </section>
 
@@ -236,7 +364,7 @@ export default function CrashesPage({ filters, onFiltersChange }: Props) {
             <caption>
               Crashes involving a person walking or biking in Henrico County, {yearCaption}.
               Sortable by any column. Road name comes from VDOT's route records; where VDOT
-              recorded no road, the cell reads "Not recorded".
+              recorded no road or no time, the cell reads "Not recorded".
             </caption>
             <thead>
               <tr>
@@ -246,6 +374,11 @@ export default function CrashesPage({ filters, onFiltersChange }: Props) {
                     ['loc', 'Road'],
                     ['mode', 'People involved'],
                     ['sev', 'Severity'],
+                    ['time', 'Time'],
+                    ['light', 'Light condition'],
+                    ['control', 'Traffic control'],
+                    ['school', 'School zone'],
+                    ['hitrun', 'Hit & run'],
                   ] as [SortKey, string][]
                 ).map(([key, label]) => (
                   <th key={key} scope="col" aria-sort={ariaSort(key)}>
@@ -261,11 +394,16 @@ export default function CrashesPage({ filters, onFiltersChange }: Props) {
             </thead>
             <tbody>
               {rows.map((c, i) => (
-                <tr key={`${c.year}-${c.loc}-${c.mode}-${c.sev}-${i}`}>
+                <tr key={`${c.date}-${c.time}-${c.loc}-${c.mode}-${c.sev}-${i}`}>
                   <td className="num">{c.year}</td>
                   <td>{c.loc || <span className="cell-empty">Not recorded</span>}</td>
                   <td>{MODE_LABEL[c.mode]}</td>
                   <td>{SEVERITY_LABEL[c.sev]}</td>
+                  <td className="num">{c.time || <span className="cell-empty">Not recorded</span>}</td>
+                  <td>{c.light || <span className="cell-empty">Not recorded</span>}</td>
+                  <td>{c.trafficControl || <span className="cell-empty">Not recorded</span>}</td>
+                  <td>{c.schoolZone ? 'Yes' : 'No'}</td>
+                  <td>{c.hitRun ? 'Yes' : 'No'}</td>
                 </tr>
               ))}
             </tbody>

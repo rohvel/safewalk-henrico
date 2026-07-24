@@ -9,16 +9,23 @@
  *   district = csv of district slugs        (default: all)
  *   status   = csv of statuses              (default: all)
  *   mode     = csv of "ped","bike"          (default: both)
- *   years    = "2021-2024"                  (default: full range of the data)
+ *   years    = "2021-2024"                  (default: full COMPLETE-year range —
+ *              see isYearPossiblyPartial(); a possibly-partial max year is
+ *              excluded by default but can still be explicitly selected)
  *   sev      = csv of "fatal","injury","other" (default: all)
- *              Read by the crash table (#/crashes) only — the map has no
- *              severity control, so filtering the map by a param with no
- *              visible UI would leave dots missing with nothing to explain it.
+ *   school   = "only"                        (default: off) — school-zone crashes only
+ *   light    = csv of light-condition strings (default: all)  — table only
+ *   control  = a single traffic-control-type string (default: all/'')  — table only
+ *   hitrun   = "only"                        (default: off)  — table only
+ *   time     = csv of "overnight","morning","afternoon","evening" (default: all) — table only
+ *              sev/light/control/hitrun/time have no map UI, so filtering the
+ *              map by them would leave dots missing with nothing to explain it
+ *              (school zone is the one exception — Task 5 puts it on both).
  *   layers   = csv of "projects","crashes","schools" (default: all on)
  *   goal     = "off" hides the goal banner  (default: shown)
  *   list     = "open" opens the list drawer (default: closed on desktop)
  */
-import type { District, ProjectStatus } from '../types'
+import type { District, ProjectStatus, TimeBand } from '../types'
 import { DISTRICTS, STATUSES } from '../types'
 import crashYears from '../data/crashYears.json'
 
@@ -34,6 +41,31 @@ export const SEVERITY_LABEL: Record<CrashSeverity, string> = {
   other: 'No injuries recorded',
 }
 
+/**
+ * VDOT's light-condition categories, verified against all 976 Henrico
+ * ped/bike records 2017-2026 (fixed regulatory vocabulary — DMV crash-report
+ * categories don't change often, same reasoning as hardcoding the KABCO
+ * severity scale above). Numeric prefixes ("4. ") are stripped by
+ * scripts/fetch-crashes.mjs before the data ever reaches the site.
+ */
+export const LIGHT_CONDITIONS = [
+  'Daylight',
+  'Dawn',
+  'Dusk',
+  'Darkness - Road Lighted',
+  'Darkness - Road Not Lighted',
+  'Darkness - Unknown Road Lighting',
+] as const
+
+export const TIME_BANDS: TimeBand[] = ['overnight', 'morning', 'afternoon', 'evening']
+
+export const TIME_BAND_LABEL: Record<TimeBand, string> = {
+  overnight: 'Overnight (12am–6am)',
+  morning: 'Morning (6am–12pm)',
+  afternoon: 'Afternoon (12pm–6pm)',
+  evening: 'Evening (6pm–12am)',
+}
+
 export interface Filters {
   districts: District[]
   statuses: ProjectStatus[]
@@ -41,6 +73,16 @@ export interface Filters {
   yearMin: number
   yearMax: number
   severities: CrashSeverity[]
+  /** Map + table (Task 5: the only crash sub-filter that belongs on both). */
+  schoolZoneOnly: boolean
+  /** Table only. */
+  lights: string[]
+  /** Table only. '' = all traffic-control types. */
+  trafficControl: string
+  /** Table only. */
+  hitRunOnly: boolean
+  /** Table only. */
+  timeBands: TimeBand[]
   layers: { projects: boolean; crashes: boolean; schools: boolean }
   goalDismissed: boolean
   listOpen: boolean
@@ -53,13 +95,42 @@ export interface Filters {
  */
 export const YEAR_RANGE = { min: crashYears.min, max: crashYears.max }
 
+/** Latest individual crash date in the committed data (Eastern-correct ISO
+ *  date), for the "runs through {date}" caveat everywhere 2026 appears. */
+export const LATEST_CRASH_DATE: string = crashYears.latestDate
+
+/**
+ * Is `year` possibly still incomplete? True exactly when it equals the
+ * VIEWER's current calendar year — computed live, not baked into the fetched
+ * data, so the caveat correctly stops appearing on its own once real time
+ * moves past that year (no re-fetch required, no stale flag to forget about).
+ */
+export function isYearPossiblyPartial(year: number): boolean {
+  return year === new Date().getFullYear()
+}
+
+/**
+ * Default upper bound for filters: the newest COMPLETE year. If the data's
+ * max year is possibly still filling in, it's excluded from the default
+ * (Task 1) but stays selectable — the year dropdowns and #/crashes still
+ * offer it, just don't show it until asked for.
+ */
+const DEFAULT_YEAR_MAX = isYearPossiblyPartial(YEAR_RANGE.max)
+  ? Math.max(YEAR_RANGE.min, YEAR_RANGE.max - 1)
+  : YEAR_RANGE.max
+
 export const DEFAULT_FILTERS: Filters = {
   districts: [...DISTRICTS],
   statuses: [...STATUSES],
   modes: ['ped', 'bike'],
   yearMin: YEAR_RANGE.min,
-  yearMax: YEAR_RANGE.max,
+  yearMax: DEFAULT_YEAR_MAX,
   severities: [...SEVERITIES],
+  schoolZoneOnly: false,
+  lights: [...LIGHT_CONDITIONS],
+  trafficControl: '',
+  hitRunOnly: false,
+  timeBands: [...TIME_BANDS],
   layers: { projects: true, crashes: true, schools: true },
   goalDismissed: false,
   listOpen: false,
@@ -95,6 +166,24 @@ export function readFilters(params: URLSearchParams): Filters {
     const parsed = sev.split(',').filter((s): s is CrashSeverity => (SEVERITIES as string[]).includes(s))
     if (parsed.length > 0) f.severities = parsed
   }
+
+  const light = params.get('light')
+  if (light) {
+    const parsed = light.split(',').filter((l) => (LIGHT_CONDITIONS as readonly string[]).includes(l))
+    if (parsed.length > 0) f.lights = parsed
+  }
+
+  const control = params.get('control')
+  if (control) f.trafficControl = control
+
+  const time = params.get('time')
+  if (time) {
+    const parsed = time.split(',').filter((t): t is TimeBand => (TIME_BANDS as string[]).includes(t))
+    if (parsed.length > 0) f.timeBands = parsed
+  }
+
+  f.schoolZoneOnly = params.get('school') === 'only'
+  f.hitRunOnly = params.get('hitrun') === 'only'
 
   const years = params.get('years')
   if (years && /^\d{4}-\d{4}$/.test(years)) {
@@ -142,8 +231,19 @@ export function writeFilters(f: Filters, base?: URLSearchParams): URLSearchParam
     f.severities.length === SEVERITIES.length ? null : f.severities.join(','),
   )
   setOrDelete(
+    'light',
+    f.lights.length === LIGHT_CONDITIONS.length ? null : f.lights.join(','),
+  )
+  setOrDelete('control', f.trafficControl === '' ? null : f.trafficControl)
+  setOrDelete(
+    'time',
+    f.timeBands.length === TIME_BANDS.length ? null : f.timeBands.join(','),
+  )
+  setOrDelete('school', f.schoolZoneOnly ? 'only' : null)
+  setOrDelete('hitrun', f.hitRunOnly ? 'only' : null)
+  setOrDelete(
     'years',
-    f.yearMin === YEAR_RANGE.min && f.yearMax === YEAR_RANGE.max ? null : `${f.yearMin}-${f.yearMax}`,
+    f.yearMin === YEAR_RANGE.min && f.yearMax === DEFAULT_YEAR_MAX ? null : `${f.yearMin}-${f.yearMax}`,
   )
   const allOn = f.layers.projects && f.layers.crashes && f.layers.schools
   setOrDelete(

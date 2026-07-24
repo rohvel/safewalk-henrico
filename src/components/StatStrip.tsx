@@ -1,9 +1,9 @@
 /**
- * One-row stat strip: the county's own sidewalk-gap numbers, plus live
- * counts from the data. Numbers count up once on load (≤600ms) unless the
- * visitor prefers reduced motion.
+ * One-row stat strip: live counts from the data, plus a quiet supporting
+ * sentence putting the crash numbers in context. Numbers count up once on
+ * load (≤600ms) unless the visitor prefers reduced motion.
  */
-import { useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
 
 interface Stat {
   /** Stable identity for React's key — must NOT depend on the label text,
@@ -52,40 +52,60 @@ function StatItem({ stat, animate }: { stat: Stat; animate: boolean }) {
   )
 }
 
+/** The two Task-4 figures, already computed (see HomePage.tsx) — this
+ *  component only formats and renders them. */
+export interface CrashContextFigures {
+  pedBikeShare: { count: number; total: number; years: string; pct: number }
+  fatalShare: { count: number; total: number; years: string; pct: number }
+}
+
 interface Props {
   projectCount: number
   /** True while every tracked project is still a placeholder example. */
   projectsAllExample: boolean
   crashCount: number
   crashYears: string
+  context: CrashContextFigures | null
   className?: string
 }
 
-export default function StatStrip({
-  projectCount,
-  projectsAllExample,
-  crashCount,
-  crashYears,
-  className,
-}: Props) {
+const StatStrip = forwardRef<HTMLDivElement, Props>(function StatStrip(
+  { projectCount, projectsAllExample, crashCount, crashYears, context, className },
+  ref,
+) {
   const reducedMotion =
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  // The 288 / 1,415 figures are Henrico County's own gap statistic:
-  // ~288 miles of existing sidewalk against ~1,415 miles of county-maintained road.
+  // 1,415 is the county's own gap statistic: ~1,415 miles of county-maintained
+  // road (the figure the old sidewalk-coverage lead stat was paired against).
   const stats: Stat[] = [
-    { id: 'sidewalk', value: 288, label: 'miles of sidewalk' },
     { id: 'road', value: 1415, display: '1,400+', label: 'miles of county road' },
     { id: 'projects', value: projectCount, label: projectsAllExample ? 'example projects' : 'projects tracked' },
     { id: 'crashes', value: crashCount, label: `crashes shown (${crashYears})` },
   ]
 
   return (
-    <div className={`stat-strip ${className ?? ''}`} role="group" aria-label="Key numbers">
-      {stats.map((s) => (
-        <StatItem key={s.id} stat={s} animate={!reducedMotion} />
-      ))}
+    <div ref={ref} className={`stat-strip ${className ?? ''}`} role="group" aria-label="Key numbers">
+      <div className="stat-strip__tiles">
+        {stats.map((s) => (
+          <StatItem key={s.id} stat={s} animate={!reducedMotion} />
+        ))}
+      </div>
+      {context && (
+        <p className="stat-strip__context">
+          Across {context.pedBikeShare.years}, Henrico had{' '}
+          <strong>{context.pedBikeShare.total.toLocaleString('en-US')}</strong> reported crashes;{' '}
+          <strong>{context.pedBikeShare.count}</strong> of them — about{' '}
+          <strong>{context.pedBikeShare.pct}%</strong> — involved someone walking or biking. Across
+          the full {context.fatalShare.years} data,{' '}
+          <strong>{context.fatalShare.count}</strong> of{' '}
+          <strong>{context.fatalShare.total}</strong> pedestrian and cyclist crashes were fatal,
+          roughly one in ten.
+        </p>
+      )}
     </div>
   )
-}
+})
+
+export default StatStrip

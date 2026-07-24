@@ -3,9 +3,10 @@
  * the URL hash (via the parent), so any filtered view is shareable.
  */
 import type { Filters } from '../lib/urlState'
-import { YEAR_RANGE } from '../lib/urlState'
+import { YEAR_RANGE, LATEST_CRASH_DATE, isYearPossiblyPartial } from '../lib/urlState'
 import type { District, ProjectStatus } from '../types'
 import { DISTRICTS, STATUSES, STATUS_LABEL } from '../types'
+import { formatDate } from '../lib/format'
 import CrosswalkStepper from './CrosswalkStepper'
 
 interface Props {
@@ -110,6 +111,14 @@ export default function MapControls({ filters, onChange }: Props) {
           />
           People biking
         </label>
+        <label className="check-row">
+          <input
+            type="checkbox"
+            checked={filters.schoolZoneOnly}
+            onChange={() => onChange({ ...filters, schoolZoneOnly: !filters.schoolZoneOnly })}
+          />
+          School zone crashes only
+        </label>
         <div className="year-range">
           <label htmlFor="year-min">From</label>
           <select
@@ -126,7 +135,7 @@ export default function MapControls({ filters, onChange }: Props) {
           >
             {YEARS.map((y) => (
               <option key={y} value={y}>
-                {y}
+                {isYearPossiblyPartial(y) ? `${y} (year-to-date)` : y}
               </option>
             ))}
           </select>
@@ -145,11 +154,17 @@ export default function MapControls({ filters, onChange }: Props) {
           >
             {YEARS.map((y) => (
               <option key={y} value={y}>
-                {y}
+                {isYearPossiblyPartial(y) ? `${y} (year-to-date)` : y}
               </option>
             ))}
           </select>
         </div>
+        {isYearPossiblyPartial(filters.yearMax) && (
+          <p className="filter-note">
+            {filters.yearMax} is year-to-date, not a full year — data runs through{' '}
+            {formatDate(LATEST_CRASH_DATE)}.
+          </p>
+        )}
       </div>
 
       <div className="controls__section">
@@ -201,6 +216,12 @@ export default function MapControls({ filters, onChange }: Props) {
             <span className="glyph-school" />
           </span>
           <span>School</span>
+        </div>
+        <div className="legend__item">
+          <span className="legend__glyph">
+            <span className="dot-schoolzone" />
+          </span>
+          <span>School zone crash (38 of 976, 2017–2026)</span>
         </div>
         <p className="legend__report">
           <a href="#/crashes">Read the crash data as a table →</a>

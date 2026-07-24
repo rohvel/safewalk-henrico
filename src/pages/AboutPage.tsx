@@ -2,6 +2,10 @@
  * About / methodology: mission, sources, why this exists, update cadence,
  * the full disclaimer, and contact.
  */
+import crashContext from '../data/crashContext.json'
+import { formatDate } from '../lib/format'
+import { LATEST_CRASH_DATE, YEAR_RANGE, isYearPossiblyPartial } from '../lib/urlState'
+
 export default function AboutPage() {
   return (
     <main id="main" className="doc">
@@ -53,8 +57,22 @@ export default function AboutPage() {
               VDOT open data portal (Virginia Roads)
             </a>{' '}
             — crash records ("CrashData basic," originating from DMV's TREDS system). This site
-            shows crashes in Henrico involving a person walking or biking, for the five most
-            recent full calendar years. You can{' '}
+            shows every crash in Henrico involving a person walking or biking,{' '}
+            {YEAR_RANGE.min}–{YEAR_RANGE.max}
+            {isYearPossiblyPartial(YEAR_RANGE.max) && (
+              <>
+                {' '}
+                ({YEAR_RANGE.max} is year-to-date, not a complete year — the data runs through{' '}
+                {formatDate(LATEST_CRASH_DATE)})
+              </>
+            )}
+            . That's a narrow slice of VDOT's crash records, not a count of all crashes in the
+            county: Henrico logged{' '}
+            {crashContext.allCrashesTotal.toLocaleString('en-US')} reported crashes of every kind
+            in {crashContext.allCrashesYears[0]}–{crashContext.allCrashesYears.at(-1)} alone, and
+            only {crashContext.pedBikeInWindow} of those involved someone walking or biking. This
+            site tracks that smaller pedestrian/cyclist slice specifically — figures here should
+            never be read as "all crashes in Henrico." You can{' '}
             <a href="#/crashes">read every one of them as a sortable table</a> — the same data the
             map draws as dots, in a form that works without a mouse or a screen. Road names come
             from VDOT's own route records and are never looked up from coordinates, so no road
@@ -109,6 +127,12 @@ export default function AboutPage() {
           </li>
           <li>Basemap: OpenFreeMap (Positron style), data © OpenStreetMap contributors.</li>
         </ul>
+        <p>
+          A note on reading the map and table: crash counts show where crashes were reported, not
+          where walking or biking is most dangerous. A busier road sees more of everything, crashes
+          included, so it will usually show more dots than a quiet one — that's traffic volume, not
+          necessarily a riskier crossing.
+        </p>
       </section>
 
       <section>

@@ -76,8 +76,16 @@ export interface ChangelogEntry {
 }
 
 /** Properties of a crash point in public/data/crashes.geojson. */
+export type TimeBand = 'overnight' | 'morning' | 'afternoon' | 'evening';
+
 export interface CrashProperties {
   year: number;
+  /** ISO date (YYYY-MM-DD), Eastern-timezone-correct — see toEasternISODate() in fetch-crashes.mjs. */
+  date: string;
+  /** "HH:MM", 24-hour. Empty string if the source recorded no time. */
+  time: string;
+  /** Coarse 6-hour bucket of `time`, for filtering. Empty string alongside an empty `time`. */
+  timeBand: TimeBand | '';
   mode: 'ped' | 'bike' | 'both';
   sev: 'fatal' | 'injury' | 'other';
   /**
@@ -86,4 +94,15 @@ export interface CrashProperties {
    * (VDOT's "99999UK" unknown placeholder) — never geocoded or guessed.
    */
   loc: string;
+  /** Plain-language light condition (VDOT's numeric prefix stripped), e.g. "Daylight". */
+  light: string;
+  /** Plain-language traffic control at the crash location, e.g. "Traffic Signal". */
+  trafficControl: string;
+  hitRun: boolean;
+  /**
+   * True for VDOT's "Yes" and "Yes - With School Activity" school-zone
+   * codes. Small subset (38 of 976 records, 2017-2026) — filter and count
+   * only; not broken down further. See CrashesPage.tsx.
+   */
+  schoolZone: boolean;
 }
