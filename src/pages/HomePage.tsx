@@ -197,6 +197,20 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
           ? `${selected.name} — SafeWalk Henrico`
           : 'SafeWalk Henrico — map of promised pedestrian-safety projects and reported crashes in Henrico County'}
       </h1>
+      {/*
+        Screen-reader testing (Narrator, and true of NVDA/JAWS browse mode too)
+        found that arrow-key panning never reaches the map: the AT's own
+        virtual cursor captures arrow keys before the canvas sees them. That's
+        expected screen-reader behavior, not a bug in the map's handler, and
+        even with panning enabled, hunting 2.5px dots isn't a good non-visual
+        experience anyway. The map's crosshair+Enter model serves sighted
+        keyboard-only users; #/crashes is the real accessible path to the same
+        data. This link makes that handoff discoverable and immediate, first
+        in tab order before the map itself.
+      */}
+      <a className="skip-link" href="#/crashes">
+        Skip map — view crash data as a table
+      </a>
       {mapOK && !mapReady ? (
         <div className="map-canvas" aria-hidden="true" />
       ) : mapOK ? (

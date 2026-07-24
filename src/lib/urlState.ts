@@ -10,6 +10,10 @@
  *   status   = csv of statuses              (default: all)
  *   mode     = csv of "ped","bike"          (default: both)
  *   years    = "2021-2024"                  (default: full range of the data)
+ *   sev      = csv of "fatal","injury","other" (default: all)
+ *              Read by the crash table (#/crashes) only — the map has no
+ *              severity control, so filtering the map by a param with no
+ *              visible UI would leave dots missing with nothing to explain it.
  *   layers   = csv of "projects","crashes","schools" (default: all on)
  *   goal     = "off" hides the goal banner  (default: shown)
  *   list     = "open" opens the list drawer (default: closed on desktop)
@@ -18,12 +22,25 @@ import type { District, ProjectStatus } from '../types'
 import { DISTRICTS, STATUSES } from '../types'
 import crashYears from '../data/crashYears.json'
 
+export type CrashSeverity = 'fatal' | 'injury' | 'other'
+
+export const SEVERITIES: CrashSeverity[] = ['fatal', 'injury', 'other']
+
+/** Plain-language severity labels — severity must always be readable as text,
+ *  never conveyed by colour alone. */
+export const SEVERITY_LABEL: Record<CrashSeverity, string> = {
+  fatal: 'A person was killed',
+  injury: 'At least one person injured',
+  other: 'No injuries recorded',
+}
+
 export interface Filters {
   districts: District[]
   statuses: ProjectStatus[]
   modes: ('ped' | 'bike')[]
   yearMin: number
   yearMax: number
+  severities: CrashSeverity[]
   layers: { projects: boolean; crashes: boolean; schools: boolean }
   goalDismissed: boolean
   listOpen: boolean
@@ -42,6 +59,7 @@ export const DEFAULT_FILTERS: Filters = {
   modes: ['ped', 'bike'],
   yearMin: YEAR_RANGE.min,
   yearMax: YEAR_RANGE.max,
+  severities: [...SEVERITIES],
   layers: { projects: true, crashes: true, schools: true },
   goalDismissed: false,
   listOpen: false,
@@ -70,6 +88,12 @@ export function readFilters(params: URLSearchParams): Filters {
   if (mode) {
     const parsed = mode.split(',').filter((m): m is 'ped' | 'bike' => m === 'ped' || m === 'bike')
     if (parsed.length > 0) f.modes = parsed
+  }
+
+  const sev = params.get('sev')
+  if (sev) {
+    const parsed = sev.split(',').filter((s): s is CrashSeverity => (SEVERITIES as string[]).includes(s))
+    if (parsed.length > 0) f.severities = parsed
   }
 
   const years = params.get('years')
@@ -113,6 +137,10 @@ export function writeFilters(f: Filters, base?: URLSearchParams): URLSearchParam
   )
   setOrDelete('status', f.statuses.length === STATUSES.length ? null : f.statuses.join(','))
   setOrDelete('mode', f.modes.length === 2 ? null : f.modes.join(','))
+  setOrDelete(
+    'sev',
+    f.severities.length === SEVERITIES.length ? null : f.severities.join(','),
+  )
   setOrDelete(
     'years',
     f.yearMin === YEAR_RANGE.min && f.yearMax === YEAR_RANGE.max ? null : `${f.yearMin}-${f.yearMax}`,

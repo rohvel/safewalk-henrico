@@ -54,7 +54,11 @@ export default function AboutPage() {
             </a>{' '}
             — crash records ("CrashData basic," originating from DMV's TREDS system). This site
             shows crashes in Henrico involving a person walking or biking, for the five most
-            recent full calendar years.
+            recent full calendar years. You can{' '}
+            <a href="#/crashes">read every one of them as a sortable table</a> — the same data the
+            map draws as dots, in a form that works without a mouse or a screen. Road names come
+            from VDOT's own route records and are never looked up from coordinates, so no road
+            name is approximated; where VDOT recorded none, the table says "Not recorded".
           </li>
           <li>
             <a

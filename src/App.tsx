@@ -5,6 +5,7 @@
  *   #/                    map (home)
  *   #/project/:slug       map + project detail
  *   #/projects            standalone project list (no-map fallback)
+ *   #/crashes             crash data as an accessible table (non-canvas equivalent)
  *   #/about  #/tools  #/changelog
  *   anything else         404
  */
@@ -18,6 +19,7 @@ import GoalBanner from './components/GoalBanner'
 import Footer from './components/Footer'
 import HomePage from './pages/HomePage'
 import ProjectsPage from './pages/ProjectsPage'
+import CrashesPage from './pages/CrashesPage'
 import AboutPage from './pages/AboutPage'
 import ToolsPage from './pages/ToolsPage'
 import ChangelogPage from './pages/ChangelogPage'
@@ -26,6 +28,7 @@ import NotFoundPage from './pages/NotFoundPage'
 const TITLES: Record<string, string> = {
   '/': 'SafeWalk Henrico — Tracking promised pedestrian-safety projects',
   '/projects': 'All projects — SafeWalk Henrico',
+  '/crashes': 'Reported crashes — SafeWalk Henrico',
   '/about': 'About & methodology — SafeWalk Henrico',
   '/tools': 'Existing tools — SafeWalk Henrico',
   '/changelog': 'Changelog — SafeWalk Henrico',
@@ -71,6 +74,8 @@ export default function App() {
         <HomePage filters={filters} onFiltersChange={setFilters} selected={selected} />
       ) : path === '/projects' ? (
         <ProjectsPage filters={filters} onFiltersChange={setFilters} />
+      ) : path === '/crashes' ? (
+        <CrashesPage filters={filters} onFiltersChange={setFilters} />
       ) : path === '/about' ? (
         <AboutPage />
       ) : path === '/tools' ? (

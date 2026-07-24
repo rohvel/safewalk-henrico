@@ -252,6 +252,83 @@ function crashPopupHTML(props: Record<string, unknown>): string {
 }
 
 /**
+ * Radius (CSS px) of the box queried when a keyboard user presses Enter.
+ *
+ * This MUST be >= the crosshair graphic's visual half-extent (17px — see
+ * .map-crosshair, 34px square). The original 16px was smaller than the very
+ * reticle that advertises it, so a dot sitting visually under the crosshair's
+ * arm could fall outside the hit box; at county-wide zoom (2.5px dots) the box
+ * landed between dots entirely, which is why Enter appeared to do nothing at
+ * every position tried. Slightly larger than the graphic = forgiving, and
+ * never "looks targeted but isn't".
+ */
+const KEYBOARD_HIT_RADIUS = 22
+
+/** Max features listed in a single popup before we stop enumerating. */
+const MAX_LISTED_FEATURES = 6
+
+/**
+ * Stable identity for a rendered feature, used to dedupe. One real-world
+ * thing can come back several times from queryRenderedFeatures because we
+ * deliberately make casing layers clickable too (a project line matches
+ * `project-line-casing-paper` AND `project-lines`), and because tiles repeat
+ * features at their seams. Without this, "1 project" would report as "3
+ * features here".
+ */
+function featureKey(f: maplibregl.MapGeoJSONFeature): string {
+  if (f.layer.id.startsWith('project-')) return `project:${f.properties.id}`
+  const g = f.geometry
+  const coords = g.type === 'Point' ? (g.coordinates as number[]).join(',') : ''
+  if (f.layer.id === 'schools') return `school:${f.properties.name}:${coords}`
+  return `crash:${coords}:${f.properties.year}:${f.properties.mode}:${f.properties.sev}`
+}
+
+function dedupeFeatures(features: maplibregl.MapGeoJSONFeature[]): maplibregl.MapGeoJSONFeature[] {
+  const seen = new Set<string>()
+  const out: maplibregl.MapGeoJSONFeature[] = []
+  for (const f of features) {
+    const k = featureKey(f)
+    if (seen.has(k)) continue
+    seen.add(k)
+    out.push(f)
+  }
+  return out
+}
+
+/** One-line, neutral description of a feature for the multi-feature list. */
+function featureSummary(f: maplibregl.MapGeoJSONFeature): string {
+  if (f.layer.id.startsWith('project-')) {
+    return `<a href="#/project/${esc(f.properties.id)}">${esc(f.properties.name)}</a>`
+  }
+  if (f.layer.id === 'schools') return `${esc(f.properties.name)} (school)`
+  const p = f.properties
+  const mode =
+    p.mode === 'both'
+      ? 'people walking and biking'
+      : p.mode === 'bike'
+        ? 'a person biking'
+        : 'a person walking'
+  const sev = p.sev === 'fatal' ? 'a person was killed' : p.sev === 'injury' ? 'someone was injured' : 'no injuries recorded'
+  return `Reported crash, ${esc(Number(p.year))} — ${mode}, ${sev}`
+}
+
+/**
+ * Popup listing several overlapping features. Shown instead of silently
+ * picking one, so a keyboard user is never given an arbitrary subset of
+ * what is under their cursor.
+ */
+function multiFeaturePopupHTML(features: maplibregl.MapGeoJSONFeature[]): string {
+  const shown = features.slice(0, MAX_LISTED_FEATURES)
+  const items = shown.map((f) => `<li>${featureSummary(f)}</li>`).join('')
+  const extra = features.length - shown.length
+  const more = extra > 0 ? `<p class="sw-popup__more">and ${extra} more — zoom in to separate them</p>` : ''
+  return (
+    `<div class="sw-popup"><p class="sw-popup__kicker">${features.length} features here</p>` +
+    `<ul class="sw-popup__list">${items}</ul>${more}</div>`
+  )
+}
+
+/**
  * Which crash modes each layer shows, given the mode filter.
  * "both" crashes involve a walker AND a biker, so they appear as a filled
  * dot while walkers are shown, and as a ring when only bikers are shown.
@@ -324,6 +401,9 @@ export default function MapView({
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MLMap | null>(null)
   const loadedRef = useRef(false)
+  // Lets the data/filter effect re-check what's under the keyboard crosshair
+  // after layers change, without reaching into the map effect's closure.
+  const crosshairRefreshRef = useRef<(() => void) | null>(null)
 
   // Latest props, reachable from map event handlers without re-binding them.
   const stateRef = useRef({ projects, crashes, schools, boundary, filters, selected })
@@ -595,18 +675,35 @@ export default function MapView({
     }
 
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right')
-    // The canvas is keyboard-focusable and pannable. We describe it as a
-    // complementary view and tell keyboard users how to inspect a feature —
-    // projects are also fully reachable through the accessible project list.
-    map
-      .getCanvas()
-      .setAttribute(
-        'aria-label',
-        'Map of pedestrian-safety projects and crashes in Henrico County. ' +
-          'Pan with the arrow keys; press Enter to inspect the feature at the center crosshair. ' +
-          'All projects are also listed in the project list.',
-      )
-    map.getCanvas().setAttribute('role', 'application')
+
+    // The canvas is keyboard-focusable and pannable, but arrow-key panning is
+    // captured by screen-reader browse/scan modes (confirmed with Windows
+    // Narrator; true of NVDA and JAWS by default too) before the canvas ever
+    // sees the keypress — expected AT behavior, not a bug here. So the
+    // accessible NAME stays short, and the longer instructions + the pointer
+    // to the real text alternative live in a separate DESCRIPTION, wired via
+    // aria-describedby to actual DOM text rather than folded into one long
+    // aria-label string. This also keeps the skip-map link (rendered by
+    // HomePage, just before this component mounts) and this description
+    // saying the same thing through one shared source of truth would be
+    // nice, but they serve different moments (skip link: before you even
+    // reach the map; description: after you're on it and want to know why
+    // panning isn't working) so both are worth stating in full.
+    const canvas = map.getCanvas()
+    canvas.setAttribute(
+      'aria-label',
+      'Interactive map of pedestrian-safety projects and reported crashes in Henrico County',
+    )
+    const description = document.createElement('div')
+    description.id = 'sw-map-description'
+    description.className = 'visually-hidden'
+    description.textContent =
+      'Pan with the arrow keys; press Enter to inspect the feature at the center crosshair. ' +
+      'All projects are also listed in the project list. For a full text version of the crash ' +
+      'data, see the crash data table.'
+    map.getContainer().appendChild(description)
+    canvas.setAttribute('aria-describedby', description.id)
+    canvas.setAttribute('role', 'application')
 
     // Center crosshair: the keyboard "cursor". Shown ONLY when the canvas has
     // real keyboard focus (:focus-visible) — NOT on a mouse click, which
@@ -617,12 +714,44 @@ export default function MapView({
     const crosshair = document.createElement('div')
     crosshair.className = 'map-crosshair'
     crosshair.setAttribute('aria-hidden', 'true')
+    // centre dot: the second (non-colour) channel of the "armed" signal
+    const crosshairDot = document.createElement('span')
+    crosshairDot.className = 'map-crosshair__dot'
+    crosshair.appendChild(crosshairDot)
     map.getContainer().appendChild(crosshair)
-    const canvas = map.getCanvas()
+
+    // Politely announces what's under the crosshair, so a screen-reader user
+    // gets the same "Enter will do something" signal the sighted keyboard user
+    // gets from the crosshair turning yellow. Updated only when the map
+    // settles, never mid-pan, to avoid chatter.
+    const liveRegion = document.createElement('div')
+    liveRegion.className = 'visually-hidden'
+    liveRegion.setAttribute('aria-live', 'polite')
+    map.getContainer().appendChild(liveRegion)
+
+    // Debounce timer for the SR announcement only — see announceArmedState()
+    // below for why this is debounced while the visual armed-state is not.
+    let announceTimer: number | null = null
+    const cancelPendingAnnouncement = () => {
+      if (announceTimer !== null) {
+        window.clearTimeout(announceTimer)
+        announceTimer = null
+      }
+    }
+
     canvas.addEventListener('focus', () => {
-      if (canvas.matches(':focus-visible')) crosshair.classList.add('map-crosshair--on')
+      if (canvas.matches(':focus-visible')) {
+        crosshair.classList.add('map-crosshair--on')
+        refreshArmedVisual()
+        announceArmedState()
+      }
     })
-    canvas.addEventListener('blur', () => crosshair.classList.remove('map-crosshair--on'))
+    canvas.addEventListener('blur', () => {
+      crosshair.classList.remove('map-crosshair--on')
+      crosshair.classList.remove('map-crosshair--armed')
+      liveRegion.textContent = ''
+      cancelPendingAnnouncement()
+    })
 
     // ---- Layers: (re)installed for whichever basemap style is active.
     // setStyle() (the fallback path) wipes custom sources/layers, so this must
@@ -654,6 +783,40 @@ export default function MapView({
     }
 
     /**
+     * The popup currently on screen, if any. Tracked as an instance (not
+     * looked up in the DOM) because MapLibre closes popups on Escape itself:
+     * by the time a DOM-querying handler runs, the element is already gone and
+     * focus has fallen to <body>. Holding the instance lets us own the whole
+     * lifecycle and always hand focus back to the map.
+     */
+    let activePopup: maplibregl.Popup | null = null
+
+    /** Return focus to the map so closing a popup never strands the user on <body>. */
+    const refocusMap = () => map.getCanvas().focus()
+
+    /** Open a popup, replacing any current one. `fromKeyboard` makes it take
+     *  focus and hand focus back to the map when it closes. */
+    const openPopup = (
+      html: string,
+      lngLat: maplibregl.LngLatLike,
+      fromKeyboard: boolean,
+      offset = 8,
+    ) => {
+      activePopup?.remove()
+      const popup = new maplibregl.Popup({ offset, focusAfterOpen: fromKeyboard })
+        .setLngLat(lngLat)
+        .setHTML(html)
+      popup.on('close', () => {
+        if (activePopup === popup) activePopup = null
+        // Only reclaim focus for keyboard users — doing it after a mouse
+        // dismissal would yank focus around unexpectedly.
+        if (fromKeyboard) refocusMap()
+      })
+      popup.addTo(map)
+      activePopup = popup
+    }
+
+    /**
      * Act on a feature: navigate for a project, or open a popup for a
      * crash/school. `moveFocus` is set for keyboard activation so the popup
      * receives focus (screen-reader users hear it; Escape/Tab work).
@@ -667,17 +830,14 @@ export default function MapView({
         navigate(`/project/${f.properties.id}`)
         return
       }
-      const popup = new maplibregl.Popup({
-        offset: f.layer.id === 'schools' ? 10 : 8,
-        closeButton: f.layer.id !== 'schools',
-        focusAfterOpen: moveFocus,
-      }).setLngLat(lngLat)
-      popup.setHTML(
+      openPopup(
         f.layer.id === 'schools'
           ? `<div class="sw-popup"><p class="sw-popup__kicker">School</p><p>${esc(f.properties.name)}</p></div>`
           : crashPopupHTML(f.properties),
+        lngLat,
+        moveFocus,
+        f.layer.id === 'schools' ? 10 : 8,
       )
-      popup.addTo(map)
     }
 
     const present = () => interactive.filter((l) => map.getLayer(l))
@@ -687,24 +847,120 @@ export default function MapView({
       if (f) activateFeature(f, e.lngLat, false)
     })
 
-    // Keyboard activation: Enter/Space inspects the feature nearest the map
-    // center (marked by the crosshair that appears when the canvas is focused).
-    map.getCanvas().addEventListener('keydown', (ev: KeyboardEvent) => {
-      if (ev.key !== 'Enter' && ev.key !== ' ') return
+    /** Everything under the crosshair, deduped. Shared by the armed-state
+     *  indicator and the Enter handler so what you see is exactly what you get. */
+    const featuresAtCrosshair = (): maplibregl.MapGeoJSONFeature[] => {
+      const layers = present()
+      if (layers.length === 0) return []
       const rect = map.getContainer().getBoundingClientRect()
       const cx = rect.width / 2
       const cy = rect.height / 2
-      // search a small box so features don't need pixel-perfect aim
+      const r = KEYBOARD_HIT_RADIUS
       const box: [maplibregl.PointLike, maplibregl.PointLike] = [
-        [cx - 16, cy - 16],
-        [cx + 16, cy + 16],
+        [cx - r, cy - r],
+        [cx + r, cy + r],
       ]
-      const f = map.queryRenderedFeatures(box, { layers: present() })[0]
-      if (!f) return
-      ev.preventDefault()
-      // anchor the popup at the map center (where the crosshair sits)
-      activateFeature(f, map.getCenter(), true)
+      return dedupeFeatures(map.queryRenderedFeatures(box, { layers }))
+    }
+
+    const describeFeatureCount = (n: number): string =>
+      n === 0
+        ? 'Nothing at crosshair'
+        : n === 1
+          ? '1 feature at crosshair. Press Enter to inspect.'
+          : `${n} features at crosshair. Press Enter to list them.`
+
+    /**
+     * Reflect "Enter will do something here" in the crosshair itself, so a
+     * keyboard user never has to press it blindly to find out. Only runs while
+     * the crosshair is visible (keyboard focus), so mouse users pay nothing.
+     * Synchronous and unthrottled — this visual feedback has to be instant for
+     * sighted keyboard users, who this interaction is designed for.
+     */
+    function refreshArmedVisual() {
+      if (!crosshair.classList.contains('map-crosshair--on')) return
+      const found = featuresAtCrosshair()
+      crosshair.classList.toggle('map-crosshair--armed', found.length > 0)
+    }
+
+    /**
+     * Screen-reader announcement of what's under the crosshair — debounced,
+     * unlike the visual state above.
+     *
+     * Most screen-reader users never reach this at all: arrow-key panning is
+     * captured by the AT's own browse/scan mode before the map's handler sees
+     * it (confirmed with Narrator; true of NVDA/JAWS by default), so for that
+     * majority the live region would only ever fire once, on focus — their
+     * real path to this data is #/crashes, now signposted by the skip-map
+     * link and this canvas's aria-describedby. But a smaller group pairs a
+     * screen reader with sighted keyboard use, or has toggled a focus/forms
+     * mode that passes keys through, and DOES reach here — for them,
+     * announcing on every intermediate 'moveend' is actively harmful: holding
+     * an arrow key repeats it many times a second, each firing its own
+     * moveend, which queues overlapping "N features..." announcements that
+     * cut each other off mid-sentence. A settle debounce fires once, after
+     * motion genuinely stops, which is how a live region is meant to behave.
+     * We debounce the announcement only, never refreshArmedVisual() above —
+     * degrading the sighted keyboard user's instant visual feedback to fix
+     * a screen-reader edge case would be its own regression.
+     */
+    function announceArmedState() {
+      cancelPendingAnnouncement()
+      announceTimer = window.setTimeout(() => {
+        announceTimer = null
+        if (!crosshair.classList.contains('map-crosshair--on')) return
+        liveRegion.textContent = describeFeatureCount(featuresAtCrosshair().length)
+      }, 600)
+    }
+
+    // Keep the indicator honest as the user pans/zooms, and after any filter
+    // or data change (sync() can add/remove layers under the crosshair).
+    map.on('move', refreshArmedVisual)
+    map.on('moveend', () => {
+      refreshArmedVisual()
+      announceArmedState()
     })
+    map.on('idle', refreshArmedVisual)
+    crosshairRefreshRef.current = refreshArmedVisual
+
+    // Keyboard activation: Enter/Space inspects whatever is under the center
+    // crosshair. Multiple overlapping features are listed rather than silently
+    // resolved to an arbitrary one.
+    map.getCanvas().addEventListener('keydown', (ev: KeyboardEvent) => {
+      if (ev.key !== 'Enter' && ev.key !== ' ') return
+      const found = featuresAtCrosshair()
+      if (found.length === 0) {
+        // Say so immediately — this is a direct reply to a deliberate
+        // keypress, not ambient pan chatter, so it bypasses the debounce.
+        // Cancel any pending debounced update too, so it can't land a moment
+        // later and silently overwrite this answer with stale information.
+        cancelPendingAnnouncement()
+        liveRegion.textContent = describeFeatureCount(0)
+        return
+      }
+      ev.preventDefault()
+      if (found.length === 1) {
+        activateFeature(found[0], map.getCenter(), true)
+        return
+      }
+      openPopup(multiFeaturePopupHTML(found), map.getCenter(), true)
+    })
+
+    // Escape closes an open popup and puts focus back on the map. Capture
+    // phase + stopPropagation so this doesn't also trigger the project detail
+    // panel's own Escape-to-close handler. Acting on the tracked instance
+    // (rather than a DOM lookup) means the popup's own 'close' handler runs,
+    // which is what restores focus.
+    map.getContainer().addEventListener(
+      'keydown',
+      (ev: KeyboardEvent) => {
+        if (ev.key !== 'Escape' || !activePopup) return
+        ev.stopPropagation()
+        ev.preventDefault()
+        activePopup.remove()
+      },
+      true,
+    )
 
     // ---- Basemap resilience. The map must never sit as a silent blank: if the
     // primary style never loads, retry once with the free demotiles style; if
@@ -758,6 +1014,10 @@ export default function MapView({
       // <div> behind on every mount (harmless in production, where effects
       // run once, but real DOM debt in dev regardless).
       crosshair.remove()
+      liveRegion.remove()
+      description.remove()
+      if (announceTimer !== null) window.clearTimeout(announceTimer)
+      crosshairRefreshRef.current = null
       map.remove()
       mapRef.current = null
       loadedRef.current = false
@@ -769,7 +1029,11 @@ export default function MapView({
   // ----- react to data / filter changes -----
   useEffect(() => {
     const map = mapRef.current
-    if (map && loadedRef.current) sync(map)
+    if (map && loadedRef.current) {
+      sync(map)
+      // Toggling a layer off can remove whatever the crosshair was armed on.
+      crosshairRefreshRef.current?.()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projects, crashes, schools, boundary, filters, selected])
 

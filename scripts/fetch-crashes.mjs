@@ -22,6 +22,7 @@
  *   PED_NONPED      string  "Yes" when a pedestrian was involved, else "No"
  *   BIKE_NONBIKE    string  "Yes" when a bicyclist was involved, else "No"
  *   JURIS_CODE      string  "43" is Henrico County ("043. Henrico County" in PHYSICAL_JURIS)
+ *   RTE_NM          string  VDOT linear-referencing route name — see deriveLocation()
  * Geometry: points; we request outSR=4326 to get plain longitude/latitude.
  *
  * If VDOT renames fields, the script fails loudly (see verifySchema below)
@@ -38,7 +39,66 @@ const OUT_FILE = new URL('../public/data/crashes.geojson', import.meta.url);
 const LAST_FULL_YEAR = new Date().getFullYear() - 1;
 const YEARS = Array.from({ length: 5 }, (_, i) => String(LAST_FULL_YEAR - 4 + i));
 
-const FIELDS = ['CRASH_YEAR', 'CRASH_SEVERITY', 'PED_NONPED', 'BIKE_NONBIKE'];
+const FIELDS = ['CRASH_YEAR', 'CRASH_SEVERITY', 'PED_NONPED', 'BIKE_NONBIKE', 'RTE_NM'];
+
+/**
+ * Turn VDOT's RTE_NM into a human-readable road name.
+ *
+ * RTE_NM is a linear-referencing route identifier, not free text. Exactly two
+ * shapes appear across all 540 Henrico ped/bike records for 2021-2025
+ * (verified, zero nulls, zero unmatched):
+ *
+ *   "S-VA043PR THREE CHOPT RD"        county/secondary route — carries the
+ *   "U-VA043SC STAPLES MILL RD"       real street name verbatim after the prefix
+ *   "R-VA   US00250WB"                state-maintained route — fixed-width code:
+ *                                     system (US/SR/IS/FR) + 5-digit number + direction
+ *   "R-VA   IS00064WB      RMP178.00A" same, on a ramp (RMP = ramp milepost)
+ *
+ * We surface the street name exactly as the source gives it (only adjusting
+ * capitalisation for readability), and decode the fixed-width designator into
+ * its standard form (US 250 WB, I-64 WB ramp). We never reverse-geocode and
+ * never invent a name the source does not contain: "UK" (VDOT's unknown
+ * direction) is dropped, and route 99999 / unrecognised shapes yield '' so the
+ * table can honestly show "Not recorded" rather than a guess.
+ *
+ * Verified across all 540 Henrico ped/bike records 2021-2025: 539 decode,
+ * 1 is VDOT's explicit unknown placeholder ("U-VA043SC99999UK").
+ */
+function deriveLocation(rteNm) {
+  if (!rteNm) return '';
+  const raw = String(rteNm).trim();
+
+  // State-maintained route, optionally a ramp:
+  //   "R-VA   US00250WB", "R-VA   IS00064WB      RMP178.00A"
+  const state = raw.match(/^R-VA\s+(US|SR|IS|FR)(\d+)([NSEW]B|UK)?(?:\s+RMP\S*)?$/);
+  if (state) {
+    const [, system, digits, dir] = state;
+    const number = Number(digits);
+    if (!Number.isFinite(number) || number === 0 || number === 99999) return '';
+    const label = system === 'IS' ? `I-${number}` : `${system} ${number}`;
+    const withDir = dir && dir !== 'UK' ? `${label} ${dir}` : label;
+    return /\sRMP/.test(raw) ? `${withDir} ramp` : withDir;
+  }
+
+  // County/secondary/urban route carrying a literal street name.
+  const local = raw.match(/^[SU]-VA\d{3}[A-Z]{2}\s+(.+)$/);
+  if (local) return titleCaseStreet(local[1]);
+
+  return '';
+}
+
+/** "S LABURNUM AVE" -> "S Laburnum Ave". Directionals and short tokens stay
+ *  uppercase; this only changes letter case, never the words themselves. */
+function titleCaseStreet(name) {
+  return name
+    .toLowerCase()
+    .split(/\s+/)
+    .map((word) => {
+      if (/^[nsew]{1,2}$/.test(word)) return word.toUpperCase(); // N, S, E, W, NE...
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' ');
+}
 
 const WHERE = [
   `JURIS_CODE='43'`, // Henrico County only
@@ -124,6 +184,8 @@ async function main() {
           // "ped" | "bike" | "both" — a crash can involve both.
           mode: ped && bike ? 'both' : ped ? 'ped' : 'bike',
           sev: severityClass(a.CRASH_SEVERITY),
+          // Road name from VDOT's own RTE_NM; '' when the source has none.
+          loc: deriveLocation(a.RTE_NM),
         },
       };
     });

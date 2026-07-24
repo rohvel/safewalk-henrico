@@ -80,4 +80,10 @@ export interface CrashProperties {
   year: number;
   mode: 'ped' | 'bike' | 'both';
   sev: 'fatal' | 'injury' | 'other';
+  /**
+   * Road name derived from VDOT's own RTE_NM field by
+   * scripts/fetch-crashes.mjs. Empty string when the source records no road
+   * (VDOT's "99999UK" unknown placeholder) — never geocoded or guessed.
+   */
+  loc: string;
 }

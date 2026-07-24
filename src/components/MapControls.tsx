@@ -203,6 +203,9 @@ export default function MapControls({ filters, onChange }: Props) {
           <span>School</span>
         </div>
         <p className="legend__report">
+          <a href="#/crashes">Read the crash data as a table →</a>
+        </p>
+        <p className="legend__report">
           Almost got hit? <a href="#/tools">Report it →</a>
         </p>
       </div>

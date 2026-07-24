@@ -919,6 +919,146 @@
   margin-bottom: var(--s-2);
 }
 
+/* ---------- Data table (#/crashes) ---------- */
+
+/* The table needs more room than the prose measure allows. */
+.doc--wide {
+  max-width: 1000px;
+}
+
+.table-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+
+.table-filters fieldset {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--s-2) var(--s-3) var(--s-3);
+  margin: 0;
+  min-width: 190px;
+}
+
+.table-filters legend {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding: 0 var(--s-1);
+}
+
+.table-filters select {
+  font: inherit;
+  font-family: var(--font-mono);
+  padding: 4px 6px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.table-summary {
+  font-size: 15px;
+  padding: var(--s-2) 0 var(--s-3);
+  border-top: 1px solid var(--line);
+}
+
+/* Wide tables scroll inside their own container; the page never scrolls
+   sideways. */
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.data-table caption {
+  text-align: left;
+  padding: var(--s-3);
+  font-size: 13px;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--line);
+}
+
+.data-table th,
+.data-table td {
+  text-align: left;
+  padding: 9px var(--s-3);
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.data-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--concrete);
+  border-bottom: 1px solid var(--line);
+  padding: 0;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+/* The whole header cell is the sort control, so it's a real button for
+   keyboard and screen-reader users (aria-sort lives on the th). */
+.th-sort {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px var(--s-3);
+  border: 0;
+  background: none;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.th-sort:hover {
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+}
+
+.th-sort__icon {
+  color: var(--ink-soft);
+  font-size: 10px;
+}
+
+.data-table tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--concrete) 45%, transparent);
+}
+
+.data-table tbody tr:hover {
+  background: var(--concrete);
+}
+
+.cell-empty {
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.school-list {
+  columns: 2;
+  column-gap: var(--s-4);
+  font-size: 14px;
+}
+
+@media (max-width: 620px) {
+  .school-list {
+    columns: 1;
+  }
+}
+
 .changelog-entry {
   border-left: 3px solid var(--line);
   padding-left: var(--s-3);
@@ -971,6 +1111,44 @@
 }
 
 .map-crosshair--on {
+  opacity: 1;
+}
+
+/*
+ * "Armed": there is something under the crosshair and Enter will act on it.
+ * A state change on the existing element (not a new one), so a keyboard user
+ * never has to press Enter blindly to discover whether it does anything.
+ * Signalled by TWO channels, never colour alone: the arms thicken/lengthen
+ * and a centre dot appears.
+ */
+.map-crosshair--armed::before,
+.map-crosshair--armed::after {
+  background: var(--yellow);
+  box-shadow: 0 0 0 2px var(--ink);
+}
+
+.map-crosshair--armed::before {
+  height: 3px;
+}
+
+.map-crosshair--armed::after {
+  width: 3px;
+}
+
+.map-crosshair__dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 50%;
+  background: var(--yellow);
+  border: 2px solid var(--ink);
+  opacity: 0;
+}
+
+.map-crosshair--armed .map-crosshair__dot {
   opacity: 1;
 }
 
@@ -1036,6 +1214,27 @@
 
 .sw-popup p {
   margin: 0;
+}
+
+/* Multi-feature popup: several things overlap under the crosshair, so we
+   list them instead of silently picking one. */
+.sw-popup__list {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sw-popup__list li {
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.sw-popup__more {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--ink-soft);
 }
 
 /* ---------- No-map fallback ---------- */

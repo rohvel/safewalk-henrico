@@ -7,6 +7,7 @@ import { useHashLocation } from '../lib/router'
 const NAV = [
   { path: '/', label: 'Map' },
   { path: '/projects', label: 'Projects' },
+  { path: '/crashes', label: 'Crashes' },
   { path: '/tools', label: 'Tools' },
   { path: '/about', label: 'About' },
   { path: '/changelog', label: 'Changelog' },
