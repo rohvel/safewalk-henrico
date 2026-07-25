@@ -41,12 +41,20 @@
  *   LIGHT_CONDITION         string   "N. Label" — see stripNumberPrefix()
  *   TRAFFIC_CONTROL_TYPE    string   "N. Label" — see stripNumberPrefix()
  *   HITRUN_NOT_HITRUN       string   "Yes" / "No"
- *   PEDESTRIANS_KILLED      number   fetched for a sanity cross-check only (see main()) — NOT
- *                                   shipped in the GeoJSON. It undercounts fatal ped/bike
- *                                   crashes: it counts only pedestrian deaths, so a fatal
- *                                   BICYCLIST crash (K severity, ped=No/bike=Yes) reads 0 here.
- *                                   CRASH_SEVERITY='K' is the correct "fatal" signal for this
- *                                   site and is what severityClass() below uses.
+ *   PEDESTRIANS_KILLED      number   fetched for the fatality-breakdown figures only (see
+ *                                   main()) — NOT shipped in the GeoJSON. Counts pedestrian
+ *                                   deaths only, so a fatal BICYCLIST crash (K severity,
+ *                                   ped=No/bike=Yes) reads 0 here. CRASH_SEVERITY='K' is the
+ *                                   correct "fatal crash" signal for this site and is what
+ *                                   severityClass() below uses — PEDESTRIANS_KILLED is a
+ *                                   different, smaller number (see the block below that
+ *                                   computes pedestriansKilledTotal / peopleKilledTotal).
+ *   K_PEOPLE                number   fetched for the same fatality breakdown — total people
+ *                                   killed in a K-severity crash (pedestrians, cyclists,
+ *                                   anyone else). NOT shipped per-record. Verified 2026-07:
+ *                                   almost always 1, but one crash in the data killed 2
+ *                                   pedestrians, so summing this is not the same as counting
+ *                                   fatal crashes — never assume one death per fatal crash.
  * Geometry: points; we request outSR=4326 to get plain longitude/latitude.
  *
  * If VDOT renames fields, the script fails loudly (see verifySchema below)
@@ -83,7 +91,8 @@ const FIELDS = [
   'LIGHT_CONDITION',
   'TRAFFIC_CONTROL_TYPE',
   'HITRUN_NOT_HITRUN',
-  'PEDESTRIANS_KILLED', // sanity-check only, see file header — not shipped
+  'PEDESTRIANS_KILLED', // fatality breakdown only, see file header — not shipped
+  'K_PEOPLE', // fatality breakdown only, see file header — not shipped
 ];
 
 /**
@@ -331,14 +340,44 @@ async function main() {
   // Sanity cross-check (console only — see file header for why
   // PEDESTRIANS_KILLED isn't the field this site treats as "fatal").
   const fatalBySeverity = raw.filter((f) => f.attributes.CRASH_SEVERITY === 'K').length;
-  const pedestriansKilled = raw.filter((f) => f.attributes.PEDESTRIANS_KILLED > 0).length;
-  if (fatalBySeverity !== pedestriansKilled) {
+  const crashesWithPedKilled = raw.filter((f) => f.attributes.PEDESTRIANS_KILLED > 0).length;
+  if (fatalBySeverity !== crashesWithPedKilled) {
     console.log(
       `Note: ${fatalBySeverity} crashes are severity=K (fatal, this site's definition) vs ` +
-        `${pedestriansKilled} with PEDESTRIANS_KILLED>0 — the ${fatalBySeverity - pedestriansKilled} ` +
+        `${crashesWithPedKilled} with PEDESTRIANS_KILLED>0 — the ${fatalBySeverity - crashesWithPedKilled} ` +
         `difference is fatal bicyclist crashes, which PEDESTRIANS_KILLED doesn't count. Expected.`
     );
   }
+
+  // Fatality breakdown for the homepage stat / About-page methodology note
+  // (2026-07-24 audit). Three DIFFERENT numbers — deliberately kept apart,
+  // never collapsed into one "X died" figure:
+  //   fatalCount              crashes where CRASH_SEVERITY='K' (below) — this
+  //                           site's definition of "fatal", a CRASH count.
+  //   pedestriansKilledTotal  sum(PEDESTRIANS_KILLED) — pedestrian deaths
+  //                           only. Smaller than fatalCount: a fatal crash
+  //                           where only a cyclist died contributes 0 here,
+  //                           so "95 fatal crashes" compressed into "95
+  //                           pedestrians died" overstates pedestrian deaths
+  //                           by however many of those 95 killed no
+  //                           pedestrian (verified 2026-07: 12 crashes,
+  //                           partly offset by one crash that killed 2
+  //                           pedestrians — net gap of 11 in the summed
+  //                           figures below).
+  //   peopleKilledTotal       sum(K_PEOPLE) — every person killed in a fatal
+  //                           crash (pedestrians, cyclists, anyone else). Can
+  //                           be LARGER than fatalCount, not smaller: one
+  //                           crash in the verified data killed two
+  //                           pedestrians in a single crash, so never assume
+  //                           one death per fatal crash when using this
+  //                           number.
+  // If a future change ever needs a single "deaths" headline figure, use
+  // peopleKilledTotal and label it as people, not crashes — never fatalCount.
+  const pedestriansKilledTotal = raw.reduce(
+    (sum, f) => sum + (Number(f.attributes.PEDESTRIANS_KILLED) || 0),
+    0
+  );
+  const peopleKilledTotal = raw.reduce((sum, f) => sum + (Number(f.attributes.K_PEOPLE) || 0), 0);
 
   console.log('Fetching all-Henrico-crash total for the homepage context stat...');
   const context = await fetchAllCrashContext(features);
@@ -351,6 +390,11 @@ async function main() {
   console.log(
     `  ${fatalCount} of ${features.length} pedestrian/cyclist crashes (${dataMinYear}-${dataMaxYear}) were fatal ` +
       `(${((fatalCount / features.length) * 100).toFixed(1)}%)`
+  );
+  console.log(
+    `  Of those ${fatalCount} fatal crashes: ${pedestriansKilledTotal} pedestrians killed, ` +
+      `${peopleKilledTotal} people killed in total (pedestrians, cyclists, others) — ` +
+      `do not report these three numbers as interchangeable.`
   );
 
   const collection = {
@@ -396,8 +440,10 @@ async function main() {
       allCrashesTotal: context.allCrashes,
       pedBikeInWindow: context.pedBikeCrashes,
       fatalPedBikeYears: [dataMinYear, dataMaxYear],
-      fatalPedBikeCount: fatalCount,
+      fatalPedBikeCount: fatalCount, // CRASHES, not people — see fetch-crashes.mjs fatality-breakdown comment
       pedBikeTotal: features.length,
+      pedestriansKilled: pedestriansKilledTotal, // pedestrian deaths only
+      peopleKilled: peopleKilledTotal, // everyone killed: pedestrians + cyclists + others
     }) + '\n'
   );
 

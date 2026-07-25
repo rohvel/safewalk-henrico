@@ -77,9 +77,22 @@ const StatStrip = forwardRef<HTMLDivElement, Props>(function StatStrip(
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  // 1,415 is the county's own gap statistic: ~1,415 miles of county-maintained
-  // road (the figure the old sidewalk-coverage lead stat was paired against).
+  // The infrastructure-gap pair this whole site exists to close the
+  // distance on — restored 2026-07-25 after being dropped when the
+  // crash-context paragraph below was added; without it the homepage read as
+  // a crash map instead of a promise tracker. Sourced independently, not
+  // from memory:
+  //   sidewalk: Henrico's own "Walk" page (henrico.gov/works/transportation/
+  //   walk/, undated) states "over 260 miles of sidewalk" — rendered as
+  //   "260+" rather than a false-precision exact number, since the source
+  //   itself doesn't give one. (A May 2026 news quote from the Public Works
+  //   director cites 288 instead; flagged to the user rather than silently
+  //   picked — the more conservative, directly-sourced figure ships here.)
+  //   road: VDOT's own highways page (vdot.virginia.gov/about/our-system/
+  //   highways/) states plainly "Henrico County (1,415 miles) ... maintain
+  //   their own roads with VDOT funds."
   const stats: Stat[] = [
+    { id: 'sidewalk', value: 260, display: '260+', label: 'miles of sidewalk' },
     { id: 'road', value: 1415, display: '1,400+', label: 'miles of county road' },
     { id: 'projects', value: projectCount, label: projectsAllExample ? 'example projects' : 'projects tracked' },
     { id: 'crashes', value: crashCount, label: `crashes shown (${crashYears})` },
@@ -94,14 +107,12 @@ const StatStrip = forwardRef<HTMLDivElement, Props>(function StatStrip(
       </div>
       {context && (
         <p className="stat-strip__context">
-          Across {context.pedBikeShare.years}, Henrico had{' '}
-          <strong>{context.pedBikeShare.total.toLocaleString('en-US')}</strong> reported crashes;{' '}
-          <strong>{context.pedBikeShare.count}</strong> of them — about{' '}
-          <strong>{context.pedBikeShare.pct}%</strong> — involved someone walking or biking. Across
-          the full {context.fatalShare.years} data,{' '}
-          <strong>{context.fatalShare.count}</strong> of{' '}
-          <strong>{context.fatalShare.total}</strong> pedestrian and cyclist crashes were fatal,
-          roughly one in ten.
+          Henrico logged <strong>{context.pedBikeShare.total.toLocaleString('en-US')}</strong>{' '}
+          reported crashes in {context.pedBikeShare.years}; <strong>{context.pedBikeShare.count}</strong>{' '}
+          ({context.pedBikeShare.pct}%) involved someone walking or biking. Of the{' '}
+          <strong>{context.fatalShare.total}</strong> pedestrian/cyclist crashes recorded{' '}
+          {context.fatalShare.years}, <strong>{context.fatalShare.count}</strong> were fatal crashes
+          — about one in ten. <a href="#/about">How we count that →</a>
         </p>
       )}
     </div>

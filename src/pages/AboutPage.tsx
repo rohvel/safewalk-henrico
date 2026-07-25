@@ -133,6 +133,18 @@ export default function AboutPage() {
           included, so it will usually show more dots than a quiet one — that's traffic volume, not
           necessarily a riskier crossing.
         </p>
+        <p>
+          A note on "fatal": this site marks a crash fatal using VDOT's own severity scale (a
+          "K"-severity crash) — {crashContext.fatalPedBikeCount} of {crashContext.pedBikeTotal}{' '}
+          pedestrian/cyclist crashes, {crashContext.fatalPedBikeYears[0]}–
+          {crashContext.fatalPedBikeYears[1]}. That's a count of crashes, not of people: those
+          crashes killed {crashContext.pedestriansKilled} pedestrians and{' '}
+          {crashContext.peopleKilled} people in total (pedestrians, cyclists, and anyone else
+          involved). The two death counts differ from the crash count and from each other — a
+          fatal crash where only a cyclist died doesn't add to the pedestrian figure, and one
+          crash on record killed two people — so this site always states which of the three it
+          means and never compresses them into one number.
+        </p>
       </section>
 
       <section>
