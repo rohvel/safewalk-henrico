@@ -7,6 +7,7 @@ import { useState } from 'react'
 import type { Project } from '../types'
 import { STATUSES, TYPE_LABEL } from '../types'
 import { daysSince } from '../lib/format'
+import { hasLocation } from '../data/projects'
 import { buildHash, currentLocation } from '../lib/router'
 import CrosswalkStepper from './CrosswalkStepper'
 import ExampleBadge from './ExampleBadge'
@@ -80,6 +81,11 @@ export default function ProjectList({ projects, onNavigate, onClearFilters }: Pr
                     <span>
                       {p.district} · {TYPE_LABEL[p.type]}
                     </span>
+                    {!hasLocation(p) && (
+                      <span className="chip chip--quiet" title="No mapped location">
+                        Not on map
+                      </span>
+                    )}
                     {p.placeholder && <ExampleBadge />}
                   </span>
                 </a>

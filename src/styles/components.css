@@ -883,6 +883,15 @@
   padding: var(--s-2) var(--s-3);
 }
 
+/*
+ * A project the county named but that we could not place. Marked with the
+ * same leading rule as a caution, not an error — the entry is sound, only
+ * its location is unknown.
+ */
+.detail__note--unmapped {
+  border-left: 3px solid var(--ink-soft);
+}
+
 /* ---------- External links (Tools page and sources) ---------- */
 
 .ext::after {

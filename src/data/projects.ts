@@ -30,11 +30,20 @@ if (import.meta.env.DEV) {
 
 export default projects
 
-/** A project's geometry normalized to a list of points (length 1 = a point). */
+/**
+ * A project's geometry normalized to a list of points (length 1 = a point).
+ * Empty when the project has no mapped location — see Project.geometry.
+ */
 export function geometryPoints(p: Project): [number, number][] {
+  if (!p.geometry || p.geometry.length === 0) return []
   return Array.isArray(p.geometry[0])
     ? (p.geometry as [number, number][])
     : [p.geometry as [number, number]]
+}
+
+/** True when the project can be drawn on the map at all. */
+export function hasLocation(p: Project): boolean {
+  return geometryPoints(p).length > 0
 }
 
 export function findProject(id: string): Project | undefined {

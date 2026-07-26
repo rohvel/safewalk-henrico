@@ -15,6 +15,7 @@
     "fetch-crashes": "node scripts/fetch-crashes.mjs",
     "fetch-schools": "node scripts/fetch-schools.mjs",
     "fetch-boundary": "node scripts/fetch-boundary.mjs",
+    "geocode-projects": "node scripts/geocode-projects.mjs",
     "make-sample": "node scripts/make-sample-crashes.mjs",
     "verify:map": "node scripts/verify-map.mjs"
   },

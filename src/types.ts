@@ -59,8 +59,15 @@ export interface Project {
   /**
    * A [lng, lat] point, or an array of [lng, lat] points drawn as a line
    * (for sidewalk segments and paths).
+   *
+   * OPTIONAL, and deliberately so. Some projects are real and sourced but
+   * have no single place on a map — a countywide signal program — and some
+   * name an intersection that can't be resolved to a coordinate with
+   * confidence. Both ship with geometry omitted rather than approximated:
+   * a project missing from the map is recoverable, a project drawn on the
+   * wrong street is not. Anything consuming this must handle its absence.
    */
-  geometry: [number, number] | [number, number][];
+  geometry?: [number, number] | [number, number][];
   /**
    * true = seed/example entry. Placeholder projects are labeled
    * "EXAMPLE" everywhere they render. Set to false only when the entry

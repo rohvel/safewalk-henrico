@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-07-25",
+    "entries": [
+      "All six example projects replaced with 7 real Three Chopt District projects, extracted from the county's \"Word on the Street\" newsletters (March–September 2024).",
+      "Project locations resolved from OpenStreetMap intersection nodes and way geometry, each verified to fall inside the county boundary and to sit on the roads the county named.",
+      "Two projects are listed without a map location: a countywide signal program with no single site, and one intersection that could not be resolved confidently."
+    ]
+  },
+  {
     "date": "2026-07-23",
     "entries": [
       "Site launched. 6 example projects pending replacement with verified county data.",

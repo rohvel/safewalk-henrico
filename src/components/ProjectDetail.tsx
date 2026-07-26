@@ -7,6 +7,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Project } from '../types'
 import { STATUS_LABEL, TYPE_LABEL } from '../types'
+import { hasLocation } from '../data/projects'
 import { daysSince, formatDate } from '../lib/format'
 import CrosswalkStepper from './CrosswalkStepper'
 import StatusChip from './StatusChip'
@@ -95,6 +96,14 @@ export default function ProjectDetail({ project: p, onClose }: Props) {
             {STATUS_LABEL[p.status].toLowerCase()}, {formatDate(p.dateStatusUpdated)})
           </span>
         </div>
+
+        {!hasLocation(p) && (
+          <p className="detail__note detail__note--unmapped">
+            Not shown on the map. The county named this project but not a location this
+            site could pin down with confidence, so it is listed without a point rather
+            than drawn in the wrong place.
+          </p>
+        )}
 
         <h3>About this project</h3>
         <p>{p.description}</p>

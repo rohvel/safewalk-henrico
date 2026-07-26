@@ -1,132 +1,202 @@
 [
   {
-    "id": "example-sidewalk-three-chopt",
-    "name": "Example: Sidewalk segment, Street A to Street B",
-    "description": "EXAMPLE ENTRY — replace with a verified project from county documents. This placeholder shows how a sidewalk segment renders: a line on the map, a status stepper, a day counter, and sources.",
+    "id": "sadler-road-improvements",
+    "name": "Sadler Road Improvements",
+    "description": "A 1.9-mile section of Sadler Road between Dominion Boulevard and Cedar Forest Road is being widened and realigned. The county's project page states that a shared-use path for pedestrians and bicyclists will be built on the east side of the new roadway, and that roundabouts are proposed at Innslake Drive and at Sadler Grove Road. The March and April 2024 issues printed the project as \"Sadler Road Realignment and Improvements.\"",
     "district": "Three Chopt",
-    "status": "announced",
-    "statusNote": "Example status note: identified in the safety plan, not yet funded.",
-    "dateAnnounced": "2025-09-01",
-    "dateStatusUpdated": "2025-09-01",
-    "type": "sidewalk",
-    "sources": [
-      {
-        "label": "EXAMPLE — replace with a real citation (e.g. \"Henrico FY26 CIP, p. 12\")",
-        "url": "https://henrico.gov/budget/"
-      }
-    ],
-    "geometry": [
-      [-77.601, 37.6485],
-      [-77.5955, 37.6462],
-      [-77.5905, 37.6449]
-    ],
-    "placeholder": true
-  },
-  {
-    "id": "example-crosswalk-brookland",
-    "name": "Example: Crosswalk and refuge island, Road C at Road D",
-    "description": "EXAMPLE ENTRY — replace with a verified project from county documents. This placeholder shows how a single-point crossing project renders on the map.",
-    "district": "Brookland",
-    "status": "design",
-    "statusNote": "Example status note: design underway per a monthly district report.",
-    "dateAnnounced": "2025-10-15",
-    "dateStatusUpdated": "2026-03-10",
-    "estimatedCompletion": "2027",
-    "type": "crosswalk",
-    "sources": [
-      {
-        "label": "EXAMPLE — replace with a real citation (e.g. \"Word on the Street, March 2026 — Brookland\")",
-        "url": "https://henrico.gov/works/"
-      }
-    ],
-    "geometry": [-77.5065, 37.6312],
-    "placeholder": true
-  },
-  {
-    "id": "example-shared-use-path-varina",
-    "name": "Example: Shared-use path, Park E to School F",
-    "description": "EXAMPLE ENTRY — replace with a verified project from county documents. This placeholder shows a longer shared-use path under construction.",
-    "district": "Varina",
     "status": "construction",
-    "statusNote": "Example status note: construction started; completion estimated next year.",
-    "dateAnnounced": "2025-08-20",
-    "dateStatusUpdated": "2026-05-04",
-    "estimatedCompletion": "2027",
+    "statusNote": "Listed under \"Starting Soon\" from March 2024, moved to \"New Construction this Month\" in August 2024, and carried under \"Currently in Construction\" in September 2024.",
+    "dateAnnounced": "2024-03-01",
+    "dateStatusUpdated": "2024-09-01",
+    "estimatedCompletion": "2026",
     "type": "shared-use-path",
     "sources": [
       {
-        "label": "EXAMPLE — replace with a real citation (e.g. \"Henrico FY26 CIP, p. 34\")",
-        "url": "https://henrico.gov/budget/"
+        "label": "Word on the Street, March 2024 — Three Chopt District (Three-Chopt-District-March-2024.pdf)",
+        "url": "https://henrico.gov/assets/Three-Chopt-District-March-2024.pdf"
       },
       {
-        "label": "EXAMPLE — second source to show how multiple citations render",
-        "url": "https://henrico.gov/works/"
+        "label": "Word on the Street, September 2024 — Three Chopt District (Three-Chopt-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Three-Chopt-District-September-2024.pdf"
+      },
+      {
+        "label": "Henrico County project page: Sadler Road Improvements",
+        "url": "https://henrico.gov/projects/sadler-road-improvements/"
       }
     ],
     "geometry": [
-      [-77.328, 37.5095],
-      [-77.3205, 37.5122],
-      [-77.3138, 37.5171],
-      [-77.3092, 37.5236]
+      [-77.58574, 37.65011],
+      [-77.58714, 37.65027],
+      [-77.58917, 37.65006],
+      [-77.59004, 37.65019],
+      [-77.59073, 37.65064],
+      [-77.5914, 37.65169],
+      [-77.59147, 37.65233],
+      [-77.59069, 37.65383],
+      [-77.58834, 37.65464],
+      [-77.58779, 37.65539],
+      [-77.58739, 37.65661],
+      [-77.58688, 37.65742],
+      [-77.58691, 37.65791],
+      [-77.5883, 37.65966],
+      [-77.5885, 37.66042],
+      [-77.58647, 37.66137],
+      [-77.5856, 37.66325],
+      [-77.58582, 37.66481],
+      [-77.58371, 37.66645],
+      [-77.5828, 37.66679],
+      [-77.58198, 37.66683],
+      [-77.57894, 37.66618]
     ],
-    "placeholder": true
+    "placeholder": false
   },
   {
-    "id": "example-signal-fairfield",
-    "name": "Example: Pedestrian signal, Road G at Road H",
-    "description": "EXAMPLE ENTRY — replace with a verified project from county documents. This placeholder shows a completed point project, so every stepper state is visible somewhere in the app.",
-    "district": "Fairfield",
+    "id": "anoka-fordson-traffic-circle",
+    "name": "Anoka Road & Fordson Road Traffic Circle",
+    "description": "A traffic circle at Anoka Road and Fordson Road. The June 2024 issue adds that speed cushions will be placed on surrounding streets. The county's traffic-calming page for this project describes a roundabout at the intersection of Fordson Road and Anoka Road/Bronwood Road, with speed cushions on Anoka, Bronwood, Fordson and Alvarado roads.",
+    "district": "Three Chopt",
     "status": "complete",
-    "statusNote": "Example status note: signal activated.",
-    "dateAnnounced": "2025-08-05",
-    "dateStatusUpdated": "2026-06-15",
-    "type": "signal",
-    "sources": [
-      {
-        "label": "EXAMPLE — replace with a real citation (e.g. \"Word on the Street, June 2026 — Fairfield\")",
-        "url": "https://henrico.gov/works/"
-      }
-    ],
-    "geometry": [-77.4331, 37.6128],
-    "placeholder": true
-  },
-  {
-    "id": "example-sidewalk-tuckahoe",
-    "name": "Example: Sidewalk infill, Street J near School K",
-    "description": "EXAMPLE ENTRY — replace with a verified project from county documents. A second announced project so the default list sort (days since announced) has something to order.",
-    "district": "Tuckahoe",
-    "status": "announced",
-    "dateAnnounced": "2026-02-12",
-    "dateStatusUpdated": "2026-02-12",
-    "type": "sidewalk",
-    "sources": [
-      {
-        "label": "EXAMPLE — replace with a real citation",
-        "url": "https://henrico.gov/budget/"
-      }
-    ],
-    "geometry": [
-      [-77.5729, 37.5866],
-      [-77.5678, 37.5891]
-    ],
-    "placeholder": true
-  },
-  {
-    "id": "example-bus-shelter-varina",
-    "name": "Example: Bus shelter and crossing improvements, Route L",
-    "description": "EXAMPLE ENTRY — replace with a verified project from county documents. Uses the \"other\" project type to show how non-sidewalk work renders.",
-    "district": "Varina",
-    "status": "design",
-    "dateAnnounced": "2025-11-30",
-    "dateStatusUpdated": "2026-04-22",
+    "statusNote": "Listed under \"Starting Soon\" in March and April 2024, under \"New Construction This Month\" in June 2024, and reported \"Construction completed!\" in the July 2024 issue.",
+    "dateAnnounced": "2024-03-01",
+    "dateStatusUpdated": "2024-07-01",
     "type": "other",
     "sources": [
       {
-        "label": "EXAMPLE — replace with a real citation",
-        "url": "https://henrico.gov/works/"
+        "label": "Word on the Street, March 2024 — Three Chopt District (Three-Chopt-District-March-2024.pdf)",
+        "url": "https://henrico.gov/assets/Three-Chopt-District-March-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, July 2024 — Three Chopt District (Three-Chopt-District-July-2024.pdf)",
+        "url": "https://henrico.gov/assets/Three-Chopt-District-July-2024.pdf"
+      },
+      {
+        "label": "Henrico County project page: Anoka Road Traffic Calming",
+        "url": "https://henrico.gov/projects/anoka-road-traffic-calming/"
       }
     ],
-    "geometry": [-77.2745, 37.4779],
-    "placeholder": true
+    "geometry": [-77.55237, 37.61551],
+    "placeholder": false
+  },
+  {
+    "id": "twin-hickory-hickory-bend-intersection",
+    "name": "Twin Hickory Lake Drive at Hickory Bend Drive Intersection Improvements",
+    "description": "A temporary roundabout at the Twin Hickory Lake Drive and Hickory Bend Drive intersection. The June 2024 issue states it is intended to improve safety and mobility; the county's project page describes it as following community input.",
+    "district": "Three Chopt",
+    "status": "complete",
+    "statusNote": "First listed under \"New Construction This Month\" in June 2024; the July 2024 issue reported \"Construction completed!\"",
+    "dateAnnounced": "2024-06-01",
+    "dateStatusUpdated": "2024-07-01",
+    "type": "other",
+    "sources": [
+      {
+        "label": "Word on the Street, June 2024 — Three Chopt District (Three-Chopt-District-June-2024.pdf)",
+        "url": "https://henrico.gov/assets/Three-Chopt-District-June-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, July 2024 — Three Chopt District (Three-Chopt-District-July-2024.pdf)",
+        "url": "https://henrico.gov/assets/Three-Chopt-District-July-2024.pdf"
+      },
+      {
+        "label": "Henrico County project page: Twin Hickory Lake Drive Intersection Improvements",
+        "url": "https://henrico.gov/projects/twin-hickory-lake-drive-intersection-improvements/"
+      }
+    ],
+    "geometry": [-77.59766, 37.66924],
+    "placeholder": false
+  },
+  {
+    "id": "three-chopt-cedarfield-traffic-signal",
+    "name": "Three Chopt Road & Cedarfield Parkway Traffic Signal",
+    "description": "A traffic signal at Three Chopt Road and Cedarfield Parkway. The newsletters give no further detail, and no county project page is linked for it.",
+    "district": "Three Chopt",
+    "status": "construction",
+    "statusNote": "Listed under \"Starting Soon\" in March and April 2024, then under \"New Construction This Month\" (June) and \"Currently in Construction\" (July). The printed note stayed \"Construction starting in early summer\" throughout, and the project does not appear in the August or September 2024 issues, so no completion was ever stated. Location not mapped — see the note on this page.",
+    "dateAnnounced": "2024-03-01",
+    "dateStatusUpdated": "2024-07-01",
+    "type": "signal",
+    "sources": [
+      {
+        "label": "Word on the Street, March 2024 — Three Chopt District (Three-Chopt-District-March-2024.pdf)",
+        "url": "https://henrico.gov/assets/Three-Chopt-District-March-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, July 2024 — Three Chopt District (Three-Chopt-District-July-2024.pdf)",
+        "url": "https://henrico.gov/assets/Three-Chopt-District-July-2024.pdf"
+      }
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "traffic-signal-improvements-and-upgrades",
+    "name": "Traffic Signal Improvements and Upgrades",
+    "description": "Signal improvements, upgrades and rebuilds at numerous locations. The county's ATMS Phase II project page describes the work as upgrading signal equipment across the county and lists it in all five magisterial districts, so it is recorded here without a single mapped location.",
+    "district": "Three Chopt",
+    "status": "construction",
+    "statusNote": "Carried under \"Currently in Construction\" in every issue from March to September 2024. The printed completion estimate moved from June 2024 (March and April issues) to end of 2024 (June issue onward). Location not mapped — this is a countywide program, not a single site.",
+    "dateAnnounced": "2024-03-01",
+    "dateStatusUpdated": "2024-09-01",
+    "estimatedCompletion": "2024",
+    "type": "signal",
+    "sources": [
+      {
+        "label": "Word on the Street, March 2024 — Three Chopt District (Three-Chopt-District-March-2024.pdf)",
+        "url": "https://henrico.gov/assets/Three-Chopt-District-March-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, September 2024 — Three Chopt District (Three-Chopt-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Three-Chopt-District-September-2024.pdf"
+      },
+      {
+        "label": "Henrico County project page: Automated Traffic Management System (ATMS) Phase II",
+        "url": "https://henrico.gov/projects/automated-traffic-management-system-atms-phase-ii/"
+      }
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "forest-avenue-skipwith-road-intersection",
+    "name": "Forest Avenue and Skipwith Road Intersection Improvements",
+    "description": "Pedestrian improvements at the Forest Avenue and Skipwith Road intersection. The county's project page describes new ADA ramps and a signal for pedestrians to cross, with the existing span wire supporting the signal heads removed and a mast arm built in its place.",
+    "district": "Three Chopt",
+    "status": "design",
+    "statusNote": "Listed under \"Starting Soon\" in the September 2024 issue, with construction scheduled to begin by the end of the year.",
+    "dateAnnounced": "2024-09-01",
+    "dateStatusUpdated": "2024-09-01",
+    "type": "crosswalk",
+    "sources": [
+      {
+        "label": "Word on the Street, September 2024 — Three Chopt District (Three-Chopt-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Three-Chopt-District-September-2024.pdf"
+      },
+      {
+        "label": "Henrico County project page: Forest Avenue Pedestrian Improvements",
+        "url": "https://henrico.gov/projects/forest-avenue-pedestrian-improvements/"
+      }
+    ],
+    "geometry": [-77.53776, 37.60494],
+    "placeholder": false
+  },
+  {
+    "id": "parham-mayland-intersection",
+    "name": "Parham and Mayland Roads Intersection Improvements",
+    "description": "Intersection improvements at Parham and Mayland roads. The county's project page for this location, titled \"Span Wires and Pedestrian Accommodations,\" describes replacing the span wires at the Parham/Mayland intersection and upgrading the signal equipment.",
+    "district": "Three Chopt",
+    "status": "design",
+    "statusNote": "Listed under \"Starting Soon\" in the September 2024 issue, with construction scheduled to begin by the end of the year.",
+    "dateAnnounced": "2024-09-01",
+    "dateStatusUpdated": "2024-09-01",
+    "type": "signal",
+    "sources": [
+      {
+        "label": "Word on the Street, September 2024 — Three Chopt District (Three-Chopt-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Three-Chopt-District-September-2024.pdf"
+      },
+      {
+        "label": "Henrico County project page: ATMS Span Wires and Pedestrian Accommodations",
+        "url": "https://henrico.gov/projects/atms-span-wires-and-pedestrian-accomodations/"
+      }
+    ],
+    "geometry": [-77.55047, 37.62597],
+    "placeholder": false
   }
 ]

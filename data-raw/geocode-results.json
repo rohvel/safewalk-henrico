@@ -1,0 +1,188 @@
+[
+  {
+    "key": "anoka-fordson-traffic-circle",
+    "kind": "point",
+    "notes": [
+      "Nominatim returned nothing for any phrasing of this intersection — it has no intersection index, so this is expected, not a failure of the location."
+    ],
+    "overpassNodeCount": 1,
+    "nominatim": null,
+    "resolved": true,
+    "source": "overpass-shared-node",
+    "geometry": [
+      -77.55237,
+      37.61551
+    ]
+  },
+  {
+    "key": "three-chopt-cedarfield-signal",
+    "kind": "point",
+    "notes": [
+      "No shared node; closest terminal-node approach is 93 m, beyond the 30 m tolerance. Refusing to place it.",
+      "Nominatim returned nothing for any phrasing of this intersection — it has no intersection index, so this is expected, not a failure of the location."
+    ],
+    "overpassNodeCount": 0,
+    "nominatim": null,
+    "resolved": false
+  },
+  {
+    "key": "twin-hickory-hickory-bend-intersection",
+    "kind": "point",
+    "notes": [
+      "No shared node, but a terminal node of one road sits 10.8 m from the other's centreline — using that junction node.",
+      "Nominatim returned nothing for any phrasing of this intersection — it has no intersection index, so this is expected, not a failure of the location."
+    ],
+    "overpassNodeCount": 0,
+    "method": "endpoint-touch",
+    "touchMetres": 10.8,
+    "nominatim": null,
+    "resolved": true,
+    "source": "overpass-junction-node",
+    "geometry": [
+      -77.59766,
+      37.66924
+    ]
+  },
+  {
+    "key": "forest-skipwith-intersection",
+    "kind": "point",
+    "notes": [
+      "2 shared nodes within 12 m (divided road); using cluster centre.",
+      "Nominatim returned nothing for any phrasing of this intersection — it has no intersection index, so this is expected, not a failure of the location."
+    ],
+    "overpassNodeCount": 2,
+    "nominatim": null,
+    "resolved": true,
+    "source": "overpass-shared-node",
+    "geometry": [
+      -77.53776,
+      37.60494
+    ]
+  },
+  {
+    "key": "parham-mayland-intersection",
+    "kind": "point",
+    "notes": [
+      "2 shared nodes within 12 m (divided road); using cluster centre.",
+      "Nominatim returned nothing for any phrasing of this intersection — it has no intersection index, so this is expected, not a failure of the location."
+    ],
+    "overpassNodeCount": 2,
+    "nominatim": null,
+    "resolved": true,
+    "source": "overpass-shared-node",
+    "geometry": [
+      -77.55047,
+      37.62597
+    ]
+  },
+  {
+    "key": "sadler-road-improvements",
+    "kind": "segment",
+    "notes": [
+      "OSM splits this road into 3 disconnected pieces; rejoined 1 gap(s) of 39 m (tolerance 60 m).",
+      "Clipped Sadler Road between Dominion Boulevard and Cedar Forest Road: 1.92 mi, 137 vertices simplified to 22."
+    ],
+    "wayCount": 9,
+    "chainLengths": [
+      148,
+      24
+    ],
+    "bridgedGapsMetres": [
+      39
+    ],
+    "lengthMiles": 1.92,
+    "rawVertices": 137,
+    "resolved": true,
+    "source": "overpass-way-geometry",
+    "geometry": [
+      [
+        -77.58574,
+        37.65011
+      ],
+      [
+        -77.58714,
+        37.65027
+      ],
+      [
+        -77.58917,
+        37.65006
+      ],
+      [
+        -77.59004,
+        37.65019
+      ],
+      [
+        -77.59073,
+        37.65064
+      ],
+      [
+        -77.5914,
+        37.65169
+      ],
+      [
+        -77.59147,
+        37.65233
+      ],
+      [
+        -77.59069,
+        37.65383
+      ],
+      [
+        -77.58834,
+        37.65464
+      ],
+      [
+        -77.58779,
+        37.65539
+      ],
+      [
+        -77.58739,
+        37.65661
+      ],
+      [
+        -77.58688,
+        37.65742
+      ],
+      [
+        -77.58691,
+        37.65791
+      ],
+      [
+        -77.5883,
+        37.65966
+      ],
+      [
+        -77.5885,
+        37.66042
+      ],
+      [
+        -77.58647,
+        37.66137
+      ],
+      [
+        -77.5856,
+        37.66325
+      ],
+      [
+        -77.58582,
+        37.66481
+      ],
+      [
+        -77.58371,
+        37.66645
+      ],
+      [
+        -77.5828,
+        37.66679
+      ],
+      [
+        -77.58198,
+        37.66683
+      ],
+      [
+        -77.57894,
+        37.66618
+      ]
+    ]
+  }
+]

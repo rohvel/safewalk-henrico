@@ -148,12 +148,20 @@ export default function AboutPage() {
       </section>
 
       <section>
-        <h2>How projects are updated</h2>
+        <h2>Where projects come from</h2>
         <p>
-          Project statuses are reviewed monthly, when Public Works publishes its "Word on the
-          Street" district reports. Every project entry lists its sources; a claim without a
-          source doesn't ship. Entries marked <strong>Example</strong> are placeholders that have
-          not been verified against county documents and will be replaced.
+          Every project here is taken from Public Works' "Word on the Street" district
+          newsletter, and its status is the section the county filed it under that month —
+          "Starting Soon," "New Construction This Month," "Currently in Construction." Watching
+          a project move between those sections is the whole point. Every entry lists its
+          sources; a claim without a source doesn't ship.
+        </p>
+        <p>
+          The county published those newsletters as per-district PDFs from March through
+          September 2024 and has since moved to an email newsletter, so the tracked projects
+          currently end at September 2024. A project marked <strong>Not on map</strong> is real
+          and sourced, but the county named it without a location this site could pin down
+          confidently — it is listed without a point rather than drawn on the wrong street.
         </p>
       </section>
 

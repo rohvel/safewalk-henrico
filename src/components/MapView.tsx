@@ -141,12 +141,20 @@ function addLayerOrdered(map: MLMap, layer: LayerSpecification) {
   map.addLayer(layer, beforeId)
 }
 
-/** projects.json → GeoJSON (lines for segments, points for single spots). */
+/**
+ * projects.json → GeoJSON (lines for segments, points for single spots).
+ *
+ * Projects with no geometry are skipped rather than placed somewhere
+ * plausible. They still appear in the list and have their own page; they
+ * just aren't on the map, which is the honest rendering of "the county
+ * named this project but not a location we could pin down."
+ */
 function projectsToGeoJSON(projects: Project[]): GeoJSON.FeatureCollection {
   return {
     type: 'FeatureCollection',
-    features: projects.map((p) => {
+    features: projects.flatMap((p) => {
       const pts = geometryPoints(p)
+      if (pts.length === 0) return []
       return {
         type: 'Feature',
         geometry:
@@ -1079,6 +1087,8 @@ export default function MapView({
     const map = mapRef.current
     if (!map || !selected) return
     const pts = geometryPoints(selected)
+    // Nothing to fly to for an unmapped project — leave the camera alone.
+    if (pts.length === 0) return
     const desktop = window.matchMedia('(min-width: 760px)').matches
     const padding = desktop
       ? { top: 80, left: 80, bottom: 80, right: 460 } // clear the detail panel
