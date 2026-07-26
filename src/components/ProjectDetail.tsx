@@ -7,7 +7,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Project } from '../types'
 import { STATUS_LABEL, TYPE_LABEL } from '../types'
-import { hasLocation } from '../data/projects'
+import { geometryPoints, hasLocation } from '../data/projects'
 import { daysSince, formatDate } from '../lib/format'
 import CrosswalkStepper from './CrosswalkStepper'
 import StatusChip from './StatusChip'
@@ -43,6 +43,28 @@ export default function ProjectDetail({ project: p, onClose }: Props) {
 
   const days = daysSince(p.dateAnnounced)
   const daysStatus = daysSince(p.dateStatusUpdated)
+
+  /**
+   * Google Maps satellite view at this project's location, for confirming a
+   * project really is where its name says.
+   *
+   * Deliberately an outbound link, not a satellite basemap toggle: this
+   * site's data styling assumes a muted light basemap, and imagery would
+   * drown the crash and project layers it exists to show. A link buys the
+   * verification without the visual cost — and without taking on imagery
+   * licensing. Omitted entirely for projects with no mapped location rather
+   * than pointing somewhere generic and implying a precision we don't have.
+   *
+   * For a line, the midpoint vertex is used, since the ends of a two-mile
+   * corridor are a poor answer to "where is this?".
+   */
+  const satelliteUrl = (() => {
+    const pts = geometryPoints(p)
+    if (pts.length === 0) return null
+    const [lng, lat] = pts[Math.floor(pts.length / 2)]
+    // basemap=satellite is what Google's own UI sets for imagery view.
+    return `https://www.google.com/maps/@?api=1&map_action=map&center=${lat},${lng}&zoom=18&basemap=satellite`
+  })()
 
   async function copyLink() {
     try {
@@ -114,6 +136,14 @@ export default function ProjectDetail({ project: p, onClose }: Props) {
         {p.statusNote && <p className="detail__note">{p.statusNote}</p>}
         {p.estimatedCompletion && (
           <p className="detail__note">Estimated completion: {p.estimatedCompletion}</p>
+        )}
+
+        {satelliteUrl && (
+          <p className="detail__satellite">
+            <a href={satelliteUrl} target="_blank" rel="noopener noreferrer" className="ext">
+              View this location on satellite imagery
+            </a>
+          </p>
         )}
 
         <h3>Sources</h3>

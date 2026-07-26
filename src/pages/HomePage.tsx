@@ -7,7 +7,7 @@
  * map area explains itself and the list/detail UI keeps working.
  */
 import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
-import projects, { dataCutoffDate } from '../data/projects'
+import projects, { dataCutoffDate, projectMatchesQuery } from '../data/projects'
 import crashContext from '../data/crashContext.json'
 import type { Project } from '../types'
 import type { Filters } from '../lib/urlState'
@@ -18,8 +18,11 @@ import { formatMonthYear } from '../lib/format'
 import StatStrip from '../components/StatStrip'
 import type { CrashContextFigures } from '../components/StatStrip'
 import MapControls from '../components/MapControls'
+import MapSearch from '../components/MapSearch'
+import type { SearchPlace } from '../components/MapSearch'
 import ProjectList from '../components/ProjectList'
 import ProjectDetail from '../components/ProjectDetail'
+import { countNearby } from '../lib/nearby'
 import { navigate } from '../lib/router'
 
 const MapView = lazy(() => import('../components/MapView'))
@@ -91,7 +94,7 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
   // publishing it as a CSS variable keeps the two panels correctly stacked
   // regardless of what either one's content does in the future.
   const statStripRef = useRef<HTMLDivElement>(null)
-  const mapStageRef = useRef<HTMLElement>(null)
+  const mapStageRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     const panel = statStripRef.current
     const stage = mapStageRef.current
@@ -166,29 +169,46 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
   const schools = useSchoolData()
   const boundary = useBoundaryData()
 
+  // The text filter narrows the map as well as the list, exactly like the
+  // district and status filters do. A filter that emptied the drawer while
+  // leaving every marker on the map would just look broken.
   const filteredProjects = useMemo(
     () =>
       projects.filter(
-        (p) => filters.districts.includes(p.district) && filters.statuses.includes(p.status),
+        (p) =>
+          filters.districts.includes(p.district) &&
+          filters.statuses.includes(p.status) &&
+          projectMatchesQuery(p, filters.projectQuery),
       ),
     [filters],
   )
 
-  const visibleCrashCount = useMemo(() => {
-    // Count reflects what's actually on the map — zero when the layer is off,
-    // so the "crashes shown" caption never contradicts an empty crash layer.
-    if (!crash.collection || !filters.layers.crashes) return 0
-    return crash.collection.features.filter((f) => {
-      const p = f.properties as unknown as CrashProperties
+  /**
+   * Is this crash one the map is currently drawing? Extracted so the stat
+   * strip's "crashes shown" figure and the address search's "within a mile"
+   * figure are answered by the same predicate — two counts on screen that
+   * disagreed about what counts would be worse than either alone. False for
+   * every crash when the layer is off, so neither caption can contradict an
+   * empty crash layer.
+   */
+  const crashIsVisible = useMemo(() => {
+    const wantPed = filters.modes.includes('ped')
+    const wantBike = filters.modes.includes('bike')
+    return (props: Record<string, unknown>): boolean => {
+      if (!filters.layers.crashes) return false
+      const p = props as unknown as CrashProperties
       if (p.year < filters.yearMin || p.year > filters.yearMax) return false
       if (filters.schoolZoneOnly && !p.schoolZone) return false
-      const wantPed = filters.modes.includes('ped')
-      const wantBike = filters.modes.includes('bike')
       if (p.mode === 'ped') return wantPed
       if (p.mode === 'bike') return wantBike
       return wantPed || wantBike // 'both'
-    }).length
-  }, [crash.collection, filters])
+    }
+  }, [filters])
+
+  const visibleCrashCount = useMemo(() => {
+    if (!crash.collection) return 0
+    return crash.collection.features.filter((f) => crashIsVisible(f.properties ?? {})).length
+  }, [crash.collection, crashIsVisible])
 
   // Include a deep-linked project on the map even if the active district/status
   // filters would exclude it — otherwise the detail panel describes a project
@@ -197,6 +217,22 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
     if (selected && !filteredProjects.includes(selected)) return [...filteredProjects, selected]
     return filteredProjects
   }, [filteredProjects, selected])
+
+  /**
+   * The searched address. Held in component state and NOWHERE else — not in
+   * the URL hash like every other filter, not in storage. Every other piece
+   * of view state here is shareable on purpose; this one must not be, because
+   * a shared link would carry where someone lives. See MapSearch.
+   */
+  const [searchPlace, setSearchPlace] = useState<SearchPlace | null>(null)
+
+  const nearby = useMemo(
+    () =>
+      searchPlace
+        ? countNearby(searchPlace.coords, filteredProjects, crash.collection, crashIsVisible)
+        : null,
+    [searchPlace, filteredProjects, crash.collection, crashIsVisible],
+  )
 
   const clearFilters = () =>
     onFiltersChange({
@@ -243,7 +279,15 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
   const mapOK = webgl && !mapFailed
 
   return (
-    <main id="main" className="map-stage" ref={mapStageRef}>
+    /*
+     * Two-row flex column: the address search, then the map stage. The search
+     * sits ABOVE the map rather than floating over it on purpose — an overlay
+     * would either cover data or have to dodge the stat strip, controls and
+     * drawer at every breakpoint, and on a phone (where those panels give way
+     * to the bottom sheet) it would eat the little map there is. Stacking
+     * costs one compact row and behaves identically on every screen.
+     */
+    <main id="main" className="map-shell">
       <h1 className="visually-hidden">
         {selected
           ? `${selected.name} — SafeWalk Henrico`
@@ -263,6 +307,15 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
       <a className="skip-link" href="#/crashes">
         Skip map — view crash data as a table
       </a>
+
+      <MapSearch
+        boundary={boundary}
+        result={searchPlace}
+        onResult={setSearchPlace}
+        nearby={nearby}
+      />
+
+      <div className="map-stage" ref={mapStageRef}>
       {mapOK && !mapReady ? (
         <div className="map-canvas" aria-hidden="true" />
       ) : mapOK ? (
@@ -274,6 +327,7 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
             boundary={boundary}
             filters={filters}
             selected={selected}
+            searchLocation={searchPlace?.coords ?? null}
             onMapFailed={() => setMapFailed(true)}
           />
         </Suspense>
@@ -347,7 +401,12 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
                 Close
               </button>
             </div>
-            <ProjectList projects={filteredProjects} onClearFilters={clearFilters} />
+            <ProjectList
+              projects={filteredProjects}
+              query={filters.projectQuery}
+              onQueryChange={(q) => onFiltersChange({ ...filters, projectQuery: q })}
+              onClearFilters={clearFilters}
+            />
           </section>
         ) : (
           <button
@@ -421,6 +480,8 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
                 {mobilePane === 'list' ? (
                   <ProjectList
                     projects={filteredProjects}
+                    query={filters.projectQuery}
+                    onQueryChange={(q) => onFiltersChange({ ...filters, projectQuery: q })}
                     onClearFilters={clearFilters}
                     onNavigate={() => setSheet('half')}
                   />
@@ -445,6 +506,7 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
         publications through {formatMonthYear(dataCutoffDate())}.{' '}
         <a href="#/about">About &amp; sources</a>
       </p>
+      </div>
     </main>
   )
 }

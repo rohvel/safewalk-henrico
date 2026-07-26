@@ -506,6 +506,24 @@ function crashRGBA(alpha: number): string {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
 
+/**
+ * The searched-address pin.
+ *
+ * Built as a DOM marker, not another map layer, on purpose: it is a location
+ * the visitor typed, not a record this site holds, and it must never be
+ * mistakable for a project or a crash. So it deliberately shares nothing with
+ * the data styling — teardrop instead of circle/line, ink and paper instead of
+ * any status colour or the crash red, and it sits above every data layer
+ * rather than inside LAYER_ORDER. It is also inert: not in `interactive`, so
+ * it is never a click target and never appears in the crosshair's results.
+ */
+function locationPinElement(): HTMLElement {
+  const el = document.createElement('div')
+  el.className = 'map-pin'
+  el.setAttribute('aria-hidden', 'true')
+  return el
+}
+
 interface Props {
   projects: Project[] // already filtered by district/status
   crashes: CrashCollection | null
@@ -513,6 +531,11 @@ interface Props {
   boundary: GeoJSON.FeatureCollection | null
   filters: Filters
   selected: Project | null
+  /**
+   * A geocoded address to pin and fly to, or null for none. Never read from
+   * or written to the URL — see MapSearch for why.
+   */
+  searchLocation: [number, number] | null
   onMapFailed: () => void
 }
 
@@ -523,11 +546,13 @@ export default function MapView({
   boundary,
   filters,
   selected,
+  searchLocation,
   onMapFailed,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MLMap | null>(null)
   const loadedRef = useRef(false)
+  const searchMarkerRef = useRef<maplibregl.Marker | null>(null)
   // Lets the data/filter effect re-check what's under the keyboard crosshair
   // after layers change, without reaching into the map effect's closure.
   const crosshairRefreshRef = useRef<(() => void) | null>(null)
@@ -1277,6 +1302,60 @@ export default function MapView({
       map.fitBounds(bounds, { padding, maxZoom: 15, duration: 500 })
     }
   }, [selected])
+
+  // ----- searched address: pin it and fly there -----
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+
+    // Honour prefers-reduced-motion: a long fly-over is exactly the kind of
+    // large, unrequested camera motion that setting exists to suppress. The
+    // visitor still lands in the same place, just without the flight.
+    const reducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (!searchLocation) {
+      // Only act if a pin was actually up. This effect also runs on mount and
+      // on every unrelated re-render with no search active; returning to the
+      // county view then would stomp the initial camera and, on a deep link to
+      // #/project/:slug, fight that project's own auto-zoom.
+      if (!searchMarkerRef.current) return
+      searchMarkerRef.current.remove()
+      searchMarkerRef.current = null
+      // Clearing returns to the county view, so the map is never left parked
+      // on an address after the visitor has asked to forget it.
+      map.fitBounds(COUNTY_BOUNDS, { padding: 24, duration: reducedMotion ? 0 : 700 })
+      return
+    }
+
+    if (searchMarkerRef.current) {
+      searchMarkerRef.current.setLngLat(searchLocation)
+    } else {
+      searchMarkerRef.current = new maplibregl.Marker({
+        element: locationPinElement(),
+        // The pin's point sits at the bottom of the teardrop.
+        anchor: 'bottom',
+      })
+        .setLngLat(searchLocation)
+        .addTo(map)
+    }
+
+    // Zoom close enough that the one-mile summary the panel quotes is roughly
+    // what the visitor is looking at.
+    const target = { center: searchLocation, zoom: Math.max(map.getZoom(), 13.5) }
+    if (reducedMotion) map.jumpTo(target)
+    else map.flyTo({ ...target, duration: 1200 })
+  }, [searchLocation])
+
+  // Remove the pin if this component unmounts mid-search.
+  useEffect(
+    () => () => {
+      searchMarkerRef.current?.remove()
+      searchMarkerRef.current = null
+    },
+    [],
+  )
 
   return <div ref={containerRef} className="map-canvas" data-testid="map" />
 }

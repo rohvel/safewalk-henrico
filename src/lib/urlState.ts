@@ -21,7 +21,12 @@
  *              sev/light/control/hitrun/time have no map UI, so filtering the
  *              map by them would leave dots missing with nothing to explain it
  *              (school zone is the one exception — Task 5 puts it on both).
- *   layers   = csv of "projects","crashes","schools" (default: all on)
+ *   layers   = csv of "projects","crashes","schools" (default: all on, except
+ *              schools which starts off on phone-sized screens)
+ *   q        = free text filtering the project list (default: '')
+ *              NOTE: the MAP's address search is deliberately NOT here — see
+ *              src/components/MapSearch.tsx. This one is safe to share; a
+ *              home address is not.
  *   goal     = "off" hides the goal banner  (default: shown)
  *   list     = "open" opens the list drawer (default: closed on desktop)
  */
@@ -84,6 +89,12 @@ export interface Filters {
   /** Table only. */
   timeBands: TimeBand[]
   layers: { projects: boolean; crashes: boolean; schools: boolean }
+  /**
+   * Free-text filter over the project list (name, description, sources).
+   * Unlike the map's address search this DOES belong in the URL: it holds
+   * only words the visitor chose to describe a project, never where they are.
+   */
+  projectQuery: string
   goalDismissed: boolean
   listOpen: boolean
 }
@@ -166,6 +177,7 @@ export const DEFAULT_FILTERS: Filters = {
   hitRunOnly: false,
   timeBands: [...TIME_BANDS],
   layers: defaultLayers(),
+  projectQuery: '',
   goalDismissed: false,
   listOpen: false,
 }
@@ -242,6 +254,9 @@ export function readFilters(params: URLSearchParams): Filters {
     f.layers = { projects: on.has('projects'), crashes: on.has('crashes'), schools: on.has('schools') }
   }
 
+  const q = params.get('q')
+  if (q) f.projectQuery = q
+
   f.goalDismissed = params.get('goal') === 'off'
   f.listOpen = params.get('list') === 'open'
   return f
@@ -294,6 +309,7 @@ export function writeFilters(f: Filters, base?: URLSearchParams): URLSearchParam
       ? null
       : (['projects', 'crashes', 'schools'] as const).filter((k) => f.layers[k]).join(','),
   )
+  setOrDelete('q', f.projectQuery.trim() === '' ? null : f.projectQuery.trim())
   setOrDelete('goal', f.goalDismissed ? 'off' : null)
   setOrDelete('list', f.listOpen ? 'open' : null)
   return params

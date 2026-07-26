@@ -3,7 +3,7 @@
  * the mobile bottom sheet, and the standalone #/projects page (which is the
  * no-map fallback, so this component never assumes a map exists).
  */
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import type { Project } from '../types'
 import { STATUSES, TYPE_LABEL } from '../types'
 import { daysSince, formatMonthYear } from '../lib/format'
@@ -19,10 +19,20 @@ interface Props {
   /** Called with no arguments when a project is chosen (e.g. to close a sheet). */
   onNavigate?: () => void
   onClearFilters?: () => void
+  /** Free-text filter value and setter, when the host wires one up. */
+  query?: string
+  onQueryChange?: (q: string) => void
 }
 
-export default function ProjectList({ projects, onNavigate, onClearFilters }: Props) {
+export default function ProjectList({
+  projects,
+  onNavigate,
+  onClearFilters,
+  query,
+  onQueryChange,
+}: Props) {
   const [sort, setSort] = useState<SortKey>('days')
+  const filterId = useId()
 
   const sorted = [...projects].sort((a, b) => {
     if (sort === 'days') return daysSince(b.dateAnnounced) - daysSince(a.dateAnnounced)
@@ -34,6 +44,29 @@ export default function ProjectList({ projects, onNavigate, onClearFilters }: Pr
 
   return (
     <>
+      {onQueryChange && (
+        <div className="list-filter">
+          <label className="list-filter__label" htmlFor={filterId}>
+            Filter by name or street
+          </label>
+          <div className="list-filter__row">
+            <input
+              id={filterId}
+              type="text"
+              className="list-filter__input"
+              value={query ?? ''}
+              onChange={(e) => onQueryChange(e.target.value)}
+              placeholder="e.g. sidewalk, Staples Mill"
+              autoComplete="off"
+            />
+            {(query ?? '') !== '' && (
+              <button type="button" className="btn btn--small" onClick={() => onQueryChange('')}>
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
+      )}
       <div className="sort-bar">
         <label htmlFor="project-sort">Sort by</label>
         <select
@@ -51,7 +84,11 @@ export default function ProjectList({ projects, onNavigate, onClearFilters }: Pr
       </div>
       {sorted.length === 0 ? (
         <div className="list-empty">
-          <p>No projects match these filters.</p>
+          <p>
+            {(query ?? '') !== ''
+              ? `No projects match “${query}” with these filters.`
+              : 'No projects match these filters.'}
+          </p>
           {onClearFilters && (
             <button type="button" className="btn btn--small" onClick={onClearFilters}>
               Clear filters

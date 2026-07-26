@@ -4,7 +4,7 @@
  * to the tile server.
  */
 import { useMemo } from 'react'
-import projects from '../data/projects'
+import projects, { projectMatchesQuery } from '../data/projects'
 import ProjectList from '../components/ProjectList'
 import type { Filters } from '../lib/urlState'
 import { DEFAULT_FILTERS } from '../lib/urlState'
@@ -18,7 +18,10 @@ export default function ProjectsPage({ filters, onFiltersChange }: Props) {
   const filtered = useMemo(
     () =>
       projects.filter(
-        (p) => filters.districts.includes(p.district) && filters.statuses.includes(p.status),
+        (p) =>
+          filters.districts.includes(p.district) &&
+          filters.statuses.includes(p.status) &&
+          projectMatchesQuery(p, filters.projectQuery),
       ),
     [filters],
   )
@@ -33,6 +36,8 @@ export default function ProjectsPage({ filters, onFiltersChange }: Props) {
       <div className="panel" style={{ display: 'flex', flexDirection: 'column' }}>
         <ProjectList
           projects={filtered}
+          query={filters.projectQuery}
+          onQueryChange={(q) => onFiltersChange({ ...filters, projectQuery: q })}
           onClearFilters={() =>
             onFiltersChange({
               ...DEFAULT_FILTERS,

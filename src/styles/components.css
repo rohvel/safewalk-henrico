@@ -147,11 +147,181 @@
 
 /* ---------- Map stage & floating panels ---------- */
 
+/*
+ * The map route stacks the address search above the map stage. The shell is
+ * the flex item that used to be .map-stage itself, so the stage keeps the
+ * exact `position: relative` + `flex: 1` contract every floating panel and
+ * the ResizeObserver's offsetTop measurement depend on.
+ */
+.map-shell {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
 .map-stage {
   position: relative;
   flex: 1;
   min-height: 0;
   background: var(--concrete);
+}
+
+/* ---------- Address search ---------- */
+
+/*
+ * Kept deliberately compact: this row costs the map vertical space on a
+ * phone, so the label is small, the note is one line where it fits, and the
+ * result block adds only three short lines.
+ */
+.map-search {
+  flex-shrink: 0;
+  padding: 6px var(--s-3) 8px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+.map-search__label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 3px;
+}
+
+.map-search__row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+
+.map-search__input {
+  flex: 1 1 220px;
+  min-width: 0;
+  min-height: 40px;
+  padding: 6px 10px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.map-search__note {
+  margin: 4px 0 0;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--ink-soft);
+}
+
+/* Failures are stated in the flow, not just announced, and marked with the
+   same ink rule the site uses for a caution rather than colour alone. */
+.map-search__error {
+  margin: var(--s-2) 0 0;
+  padding: 6px 10px;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--concrete);
+  border-left: 3px solid var(--crash);
+  border-radius: var(--radius);
+}
+
+/* Focused programmatically after a successful search; the site-wide
+   :focus-visible ink+yellow ring in base.css supplies the indicator. */
+.map-search__result {
+  margin-top: 6px;
+  padding: 6px 9px;
+  background: var(--concrete);
+  border-radius: var(--radius);
+}
+
+.map-search__place {
+  margin: 0;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.map-search__counts {
+  margin: 3px 0 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.map-search__caveat {
+  margin: 2px 0 0;
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 760px) {
+  .map-search {
+    padding: var(--s-2) var(--s-3);
+  }
+
+  .map-search__form {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-3);
+    flex-wrap: wrap;
+  }
+
+  .map-search__label {
+    margin-bottom: 0;
+  }
+
+  .map-search__row {
+    flex: 1 1 320px;
+    max-width: 560px;
+  }
+
+  .map-search__note {
+    margin-top: 0;
+    flex: 1 1 100%;
+  }
+}
+
+/*
+ * The searched-address pin.
+ *
+ * Deliberately shares nothing with the data styling: a teardrop in ink and
+ * paper, not a circle or a line, and not any status colour or the crash red.
+ * A visitor must never wonder whether this mark is a project or a crash — it
+ * is the place they typed.
+ */
+.map-pin {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  background: var(--ink);
+  border: 2px solid var(--paper);
+  /* Three round corners and one square one, rotated 45° anticlockwise, puts
+     the sharp corner at the bottom — a teardrop whose point is the location.
+     MapLibre anchors it with `anchor: 'bottom'` so that point sits on the
+     coordinate. */
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: var(--shadow-2);
+  /* Passive marker: never swallow a click meant for a project underneath. */
+  pointer-events: none;
+}
+
+.map-pin::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 7px;
+  height: 7px;
+  background: var(--paper);
+  border-radius: 50%;
 }
 
 /*
@@ -912,6 +1082,47 @@
  */
 .detail__note--unmapped {
   border-left: 3px solid var(--ink-soft);
+}
+
+.detail__satellite {
+  margin-top: var(--s-3);
+  font-size: 13.5px;
+}
+
+/* ---------- Project list text filter ---------- */
+
+.list-filter {
+  padding: var(--s-2) var(--s-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.list-filter__label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+
+.list-filter__row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.list-filter__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 36px;
+  padding: 5px 9px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
 }
 
 /* ---------- External links (Tools page and sources) ---------- */

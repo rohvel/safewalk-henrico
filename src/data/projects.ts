@@ -62,6 +62,30 @@ export function findProject(id: string): Project | undefined {
  * adds a project sourced from a newer publication, every "data reflects
  * publications through..." note on the site corrects itself automatically.
  */
+/**
+ * Does this project match a free-text query?
+ *
+ * Searches the fields a resident would actually type into: the project name,
+ * the description (which carries the road and the cross streets — "between
+ * Dominion Boulevard and Cedar Forest Road"), the status note, and the source
+ * labels. Every term must appear somewhere, so adding words narrows rather
+ * than widens, which is what people expect from a filter box.
+ */
+export function projectMatchesQuery(p: Project, query: string): boolean {
+  const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
+  if (terms.length === 0) return true
+  const haystack = [
+    p.name,
+    p.description,
+    p.statusNote ?? '',
+    p.district,
+    ...p.sources.map((s) => s.label),
+  ]
+    .join(' ')
+    .toLowerCase()
+  return terms.every((t) => haystack.includes(t))
+}
+
 export function dataCutoffDate(): string {
   return projects.reduce((max, p) => (p.dateAnnounced > max ? p.dateAnnounced : max), '0000-00-00')
 }
