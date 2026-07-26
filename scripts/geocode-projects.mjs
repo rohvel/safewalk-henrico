@@ -43,7 +43,10 @@
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 
-const UA = 'SafeWalkHenrico/1.0 (civic transparency project; rohanvelpula9@gmail.com)';
+// Nominatim and Overpass both ask that automated clients identify themselves
+// with a contact address. This is the PROJECT's address, deliberately — a
+// maintainer's personal address does not belong in a public repo.
+const UA = 'SafeWalkHenrico/1.0 (civic transparency project; safewalkhenrico@gmail.com)';
 
 const NOMINATIM = 'https://nominatim.openstreetmap.org/search';
 const OVERPASS = 'https://overpass-api.de/api/interpreter';

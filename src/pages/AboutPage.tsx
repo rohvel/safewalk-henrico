@@ -7,6 +7,26 @@ import { dataCutoffDate } from '../data/projects'
 import { formatDate, formatMonthYear } from '../lib/format'
 import { LATEST_CRASH_DATE, YEAR_RANGE, isYearPossiblyPartial } from '../lib/urlState'
 
+/**
+ * Contact address, assembled at runtime rather than written as one literal.
+ *
+ * This is mild scraper resistance, nothing more. A harvester that fetches the
+ * page HTML finds nothing (this is a client-rendered SPA), and one that
+ * regexes the JS bundle finds no contiguous match either — `.join()` is a
+ * method call, so the bundler cannot constant-fold it away the way it would
+ * fold `'a' + '@' + 'b'`. A scraper that actually executes the page and reads
+ * the DOM still gets it, and that is fine: the address is meant to be
+ * reachable.
+ *
+ * Crucially this costs nothing in accessibility. The rendered text node is
+ * the complete, correct address, so a screen reader announces it normally,
+ * it selects and copies normally, and the mailto: href is built from the
+ * same value so the link works normally. Approaches that break any of
+ * those — CSS direction tricks, decoy spans, entity soup — were rejected;
+ * being readable matters more than being unharvestable.
+ */
+const CONTACT_EMAIL = ['safewalkhenrico', 'gmail.com'].join('@')
+
 export default function AboutPage() {
   return (
     <main id="main" className="doc">
@@ -199,10 +219,8 @@ export default function AboutPage() {
       <section>
         <h2>Contact</h2>
         <p>
-          Corrections and updates are welcome:{' '}
-          {/* TODO: replace with a real contact address before launch */}
-          <a href="mailto:hello@example.com">hello@example.com</a> (placeholder address — to be
-          replaced).
+          Corrections and updates are welcome: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+          . If something here is wrong, say so and it gets fixed or removed.
         </p>
       </section>
     </main>
