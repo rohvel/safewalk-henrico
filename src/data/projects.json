@@ -110,7 +110,7 @@
     "description": "A traffic signal at Three Chopt Road and Cedarfield Parkway. The newsletters give no further detail, and no county project page is linked for it.",
     "district": "Three Chopt",
     "status": "construction",
-    "statusNote": "Listed under \"Starting Soon\" in March and April 2024, then under \"New Construction This Month\" (June) and \"Currently in Construction\" (July). The printed note stayed \"Construction starting in early summer\" throughout, and the project does not appear in the August or September 2024 issues, so no completion was ever stated. Location not mapped — see the note on this page.",
+    "statusNote": "Listed under \"Starting Soon\" in March and April 2024, then under \"New Construction This Month\" (June) and \"Currently in Construction\" (July). The printed note stayed \"Construction starting in early summer\" throughout, and the project does not appear in the August or September 2024 issues, so no completion was ever stated. This intersection shares no node with Cedarfield Parkway in OpenStreetMap — OSM's road network is simply incomplete there — so its coordinate was not geocoded. It was instead manually verified against satellite imagery and confirmed by Google Maps' own labeling of the intersection as \"Three Chopt Rd & Cedarfield Pkwy,\" then checked against public/data/henrico-boundary.geojson (inside) before being added.",
     "dateAnnounced": "2024-03-01",
     "dateStatusUpdated": "2024-07-01",
     "type": "signal",
@@ -122,8 +122,13 @@
       {
         "label": "Word on the Street, July 2024 — Three Chopt District (Three-Chopt-District-July-2024.pdf)",
         "url": "https://henrico.gov/assets/Three-Chopt-District-July-2024.pdf"
+      },
+      {
+        "label": "Manually verified against satellite imagery and Google Maps labeling (2026-07-26) — not geocoded, since OSM has no shared node here",
+        "url": "https://www.google.com/maps/search/?api=1&query=37.63502,-77.58187"
       }
     ],
+    "geometry": [-77.58187, 37.63502],
     "placeholder": false
   },
   {
@@ -458,7 +463,7 @@
     "description": "Re-paving and re-striping Dumbarton Road from Staples Mill Road to Brook Road as a \"road diet\": buffered bicycle lanes, one travel lane each direction, and a center turn lane, plus new traffic signals at Byrdhill Road, Impala Road, and Hermitage Road/Westlake Avenue with pedestrian push-buttons and bicycle accommodations.",
     "district": "Fairfield",
     "status": "complete",
-    "statusNote": "Listed under \"Starting Soon\" from March 2024, still without an explicit completion in the newsletter series' last issue (September 2024). The county's own archived project page states \"Project Status: Completed,\" with signal installation at all three intersections completed in March 2026.",
+    "statusNote": "Listed under \"Starting Soon\" from March 2024, still without an explicit completion in the newsletter series' last issue (September 2024). The county's own archived project page states \"Project Status: Completed,\" with signal installation at all three intersections completed in March 2026. Geocoded line manually reviewed and accepted 2026-07-26: its eastern endpoint (near Brook Road) falls about 40m outside public/data/henrico-boundary.geojson's generalized polygon, which the boundary file's own fetch script documents as generalized to roughly 90m — well inside that margin. The project's own county page independently lists Magisterial District: Fairfield, a classification that cannot exist for a Richmond City address, confirming the road is in Henrico despite the polygon's imprecision at this point.",
     "dateAnnounced": "2024-03-01",
     "dateStatusUpdated": "2026-03-01",
     "type": "signal",
@@ -471,6 +476,16 @@
         "label": "Henrico County Archives: Dumbarton Road Safety & Mobility Improvements",
         "url": "https://henrico.gov/projects/dumbarton-study/"
       }
+    ],
+    "geometry": [
+      [-77.4919, 37.60329],
+      [-77.4903, 37.60366],
+      [-77.4765, 37.60373],
+      [-77.47162, 37.60356],
+      [-77.46183, 37.60441],
+      [-77.45984, 37.60393],
+      [-77.45519, 37.60147],
+      [-77.45434, 37.60128]
     ],
     "placeholder": false
   },
