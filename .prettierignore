@@ -1,0 +1,22 @@
+# Build output
+dist/
+node_modules/
+
+# Archived county source documents and geocoder cache — these are records of
+# what the county published, not our source code. Reformatting them would
+# rewrite evidence.
+data-raw/
+
+# Generated data. Written by scripts/fetch-*.mjs and geocode-projects.mjs in a
+# deliberately compact form (single-line GeoJSON, ~1 MB); prettier would
+# explode them to hundreds of thousands of lines and bloat every diff.
+public/data/
+src/data/crashYears.json
+src/data/crashContext.json
+src/data/henricoBounds.json
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# Ad-hoc local verification scripts (see .gitignore)
+tmp-*

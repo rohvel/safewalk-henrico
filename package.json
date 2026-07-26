@@ -16,6 +16,7 @@
     "fetch-schools": "node scripts/fetch-schools.mjs",
     "fetch-boundary": "node scripts/fetch-boundary.mjs",
     "geocode-projects": "node scripts/geocode-projects.mjs",
+    "format:check": "prettier --check .",
     "make-sample": "node scripts/make-sample-crashes.mjs",
     "verify:map": "node scripts/verify-map.mjs"
   },
@@ -29,6 +30,7 @@
     "@types/react-dom": "^19.1.0",
     "@vitejs/plugin-react": "^4.5.0",
     "playwright": "^1.61.1",
+    "prettier": "^3.9.6",
     "typescript": "~5.8.0",
     "vite": "^6.3.0"
   }
