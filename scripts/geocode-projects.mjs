@@ -114,6 +114,69 @@ const POINTS = [
       ['Mayland Drive'],
     ],
   },
+  // --- Brookland ---
+  {
+    key: 'parham-landmark-intersection',
+    nominatim: 'Parham Road & Landmark Road, Henrico County, Virginia',
+    ways: [
+      ['North Parham Road', 'East Parham Road', 'Parham Road'],
+      ['Landmark Road'],
+    ],
+  },
+  {
+    key: 'glen-allen-hs-crossing',
+    nominatim: 'Staples Mill Road & Meadow Pond Lane, Henrico County, Virginia',
+    ways: [['Staples Mill Road'], ['Meadow Pond Lane']],
+  },
+  // --- Fairfield ---
+  {
+    key: 'chamberlayne-diane-lane-intersection',
+    nominatim: 'Chamberlayne Road & Diane Lane, Henrico County, Virginia',
+    ways: [['Chamberlayne Road'], ['Diane Lane']],
+  },
+  // Both Fall Line Trail entries below are real segments (Bryan Park Ave to
+  // Spring Park; Spring Park to Dumbarton Road per the county's own project
+  // page), but "Spring Park" is a landmark, not a through street, so it
+  // can't be resolved as a shared node the way a normal cross-street can.
+  // Rather than guess a line to an unresolvable boundary, each is geocoded
+  // as the one point it does share with a named road — honestly scoped as
+  // a point on a longer segment, not the segment's full extent.
+  {
+    key: 'fall-line-trail-park-street',
+    nominatim: 'Fall Line Trail & Bryan Park Avenue, Henrico County, Virginia',
+    ways: [['Fall Line Trail'], ['Bryan Park Avenue']],
+  },
+  {
+    key: 'fall-line-trail-lakeside',
+    nominatim: 'Fall Line Trail & Dumbarton Road, Henrico County, Virginia',
+    ways: [['Fall Line Trail'], ['Dumbarton Road']],
+  },
+  // --- Tuckahoe ---
+  {
+    key: 'horsepen-patterson-intersection',
+    nominatim: 'Horsepen Road & Patterson Avenue, Henrico County, Virginia',
+    ways: [['Horsepen Road'], ['Patterson Avenue']],
+  },
+  {
+    key: 'derbyshire-roundabout',
+    nominatim: 'Derbyshire Road & Heathfield Road, Henrico County, Virginia',
+    ways: [
+      ['Derbyshire Road'],
+      ['Heathfield Road', 'Lakewater Drive'],
+    ],
+  },
+  // --- Varina ---
+  // The project's own description ("from the Richmond City limits south for
+  // ~1,100 ft to Old Delaware Street") has only one end anchored to a named
+  // cross street. Rather than extrapolate 1,100 ft along the trail from a
+  // guessed direction, this is geocoded as that one verified point — the
+  // Old Delaware Street end of the lit segment — not the segment's full
+  // extent.
+  {
+    key: 'rocketts-landing-trail-lighting',
+    nominatim: 'Virginia Capital Trail & Old Delaware Street, Henrico County, Virginia',
+    ways: [['Virginia Capital Trail'], ['Old Delaware Street']],
+  },
 ];
 
 /**
@@ -136,6 +199,74 @@ const SEGMENTS = [
     road: 'Sadler Road',
     from: 'Dominion Boulevard',
     to: 'Cedar Forest Road',
+  },
+  // --- Brookland ---
+  {
+    key: 'bethlehem-road-improvements',
+    road: 'Bethlehem Road',
+    from: 'Libbie Avenue',
+    to: 'Staples Mill Road',
+  },
+  {
+    key: 'parham-ped-transit-improvements',
+    road: ['North Parham Road', 'Parham Road', 'East Parham Road'],
+    from: 'Shrader Road',
+    to: 'Hungary Spring Road',
+  },
+  {
+    key: 'monument-ave-sidewalk',
+    road: 'Monument Avenue',
+    from: 'Bremo Road',
+    to: 'Treboy Avenue',
+  },
+  {
+    key: 'libbie-avenue-road-diet',
+    road: 'Libbie Avenue',
+    from: 'West Broad Street',
+    to: 'Bethlehem Road',
+  },
+  // --- Fairfield ---
+  {
+    key: 'dumbarton-road-improvements',
+    road: 'Dumbarton Road',
+    from: 'Staples Mill Road',
+    to: 'Brook Road',
+  },
+  {
+    key: 'hilliard-road-improvements',
+    road: 'Hilliard Road',
+    from: 'Lakeside Avenue',
+    to: 'Brook Road',
+  },
+  {
+    key: 'creighton-road-improvements',
+    road: 'Creighton Road',
+    from: 'Sandy Lane',
+    // The project's own page says "E. Laburnum Avenue," but the road OSM
+    // shows Creighton Road actually terminating at is tagged "North
+    // Laburnum Avenue" at this point (confirmed by querying what actually
+    // touches Creighton Road's mapped endpoint) — Henrico's Laburnum Avenue
+    // changes its OSM directional prefix along its length.
+    to: 'North Laburnum Avenue',
+  },
+  // --- Tuckahoe ---
+  {
+    key: 'ridge-road-safety-mobility',
+    road: 'Ridge Road',
+    from: 'Greene Ridge Road',
+    to: 'North Ridge Road',
+  },
+  {
+    key: 'raintree-drive-sidewalk',
+    road: 'Raintree Drive',
+    from: 'Falconbridge Drive',
+    to: 'Raintree Commons Drive',
+  },
+  {
+    key: 'ridge-road-sidewalk-phase1',
+    road: 'Ridge Road',
+    from: 'Old Providence Circle', // not found under this name in OSM as of 2026-07 — expected to fail; see report
+    to: 'North Ridge Road',
   },
 ];
 
@@ -554,11 +685,16 @@ async function resolvePoint(spec, inHenrico) {
 
 async function resolveSegment(spec, inHenrico) {
   const out = { key: spec.key, kind: 'segment', notes: [] };
+  // The county and OSM don't always agree on a road's name (a primary road
+  // is often split into "North X"/"East X" tags at the point OSM records a
+  // classification change, even though it's one continuous county road) —
+  // same reason POINTS.ways takes a list of alternates. Accept either form.
+  const roadNames = Array.isArray(spec.road) ? spec.road : [spec.road];
 
-  const ways = await roadWays([spec.road], spec.key);
+  const ways = await roadWays(roadNames, spec.key);
   out.wayCount = ways.length;
   if (!ways.length) {
-    out.notes.push(`No ways named "${spec.road}" found.`);
+    out.notes.push(`No ways named "${roadNames.join('" / "')}" found.`);
     out.resolved = false;
     return out;
   }
@@ -573,8 +709,8 @@ async function resolveSegment(spec, inHenrico) {
     );
   }
 
-  const fromNodes = await intersectionNodes([spec.road], [spec.from], `${spec.key}:from`);
-  const toNodes = await intersectionNodes([spec.road], [spec.to], `${spec.key}:to`);
+  const fromNodes = await intersectionNodes(roadNames, [spec.from], `${spec.key}:from`);
+  const toNodes = await intersectionNodes(roadNames, [spec.to], `${spec.key}:to`);
   if (!fromNodes.length || !toNodes.length) {
     out.notes.push(
       `Cross-street node missing (${spec.from}: ${fromNodes.length}, ${spec.to}: ${toNodes.length}).`,

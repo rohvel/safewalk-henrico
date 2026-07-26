@@ -3,7 +3,8 @@
  * the full disclaimer, and contact.
  */
 import crashContext from '../data/crashContext.json'
-import { formatDate } from '../lib/format'
+import { dataCutoffDate } from '../data/projects'
+import { formatDate, formatMonthYear } from '../lib/format'
 import { LATEST_CRASH_DATE, YEAR_RANGE, isYearPossiblyPartial } from '../lib/urlState'
 
 export default function AboutPage() {
@@ -154,14 +155,34 @@ export default function AboutPage() {
           newsletter, and its status is the section the county filed it under that month —
           "Starting Soon," "New Construction This Month," "Currently in Construction." Watching
           a project move between those sections is the whole point. Every entry lists its
-          sources; a claim without a source doesn't ship.
+          sources; a claim without a source doesn't ship. A project marked{' '}
+          <strong>Not on map</strong> is real and sourced, but the county named it without a
+          location this site could pin down confidently — it is listed without a point rather
+          than drawn on the wrong street.
+        </p>
+      </section>
+
+      <section>
+        <h2>Data currency</h2>
+        <p>
+          <strong>
+            Project data on this site reflects county publications through{' '}
+            {formatMonthYear(dataCutoffDate())}.
+          </strong>{' '}
+          The county published per-district "Word on the Street" newsletters as PDFs from March
+          through September 2024, then discontinued that PDF series in favor of an email
+          newsletter. This site has not yet found an equivalent public, per-project status feed
+          to replace it, so most project statuses here date to that last PDF issue — some are
+          nearly two years old. Current status for these projects has been requested from
+          Henrico Public Works; this page will note it if and when that changes.
         </p>
         <p>
-          The county published those newsletters as per-district PDFs from March through
-          September 2024 and has since moved to an email newsletter, so the tracked projects
-          currently end at September 2024. A project marked <strong>Not on map</strong> is real
-          and sourced, but the county named it without a location this site could pin down
-          confidently — it is listed without a point rather than drawn on the wrong street.
+          A handful of entries are more current than that: where a county project page
+          independently confirmed a newer status (a signal installation completed, a project
+          marked "Completed" in the county's own system), this site cites that page directly and
+          uses its date instead. Every project detail page shows exactly when its status was
+          last confirmed, next to the status itself, precisely so a 2024 snapshot is never read
+          as 2026 fact.
         </p>
       </section>
 

@@ -129,10 +129,10 @@
   {
     "id": "traffic-signal-improvements-and-upgrades",
     "name": "Traffic Signal Improvements and Upgrades",
-    "description": "Signal improvements, upgrades and rebuilds at numerous locations. The county's ATMS Phase II project page describes the work as upgrading signal equipment across the county and lists it in all five magisterial districts, so it is recorded here without a single mapped location.",
+    "description": "Signal improvements, upgrades and rebuilds at numerous locations. The county's ATMS Phase II project page describes the work as upgrading signal equipment across the county and lists it in all five magisterial districts — Brookland, Fairfield, Three Chopt, Tuckahoe and Varina all carried this same item in their own \"Word on the Street\" newsletters, so it is recorded here once, without a single mapped location.",
     "district": "Three Chopt",
     "status": "construction",
-    "statusNote": "Carried under \"Currently in Construction\" in every issue from March to September 2024. The printed completion estimate moved from June 2024 (March and April issues) to end of 2024 (June issue onward). Location not mapped — this is a countywide program, not a single site.",
+    "statusNote": "Carried under \"Currently in Construction\" in every district's newsletter from March to September 2024. The printed completion estimate moved from June 2024 (March and April issues) to end of 2024 (June issue onward). Location not mapped — this is a countywide program, not a single site.",
     "dateAnnounced": "2024-03-01",
     "dateStatusUpdated": "2024-09-01",
     "estimatedCompletion": "2024",
@@ -147,6 +147,22 @@
         "url": "https://henrico.gov/assets/Three-Chopt-District-September-2024.pdf"
       },
       {
+        "label": "Word on the Street, September 2024 — Brookland District (Brookland-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Brookland-District-September-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, September 2024 — Fairfield District (Fairfield-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Fairfield-District-September-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, September 2024 — Tuckahoe District (Tuckahoe-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Tuckahoe-District-September-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, September 2024 — Varina District (Varina-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Varina-District-September-2024.pdf"
+      },
+      {
         "label": "Henrico County project page: Automated Traffic Management System (ATMS) Phase II",
         "url": "https://henrico.gov/projects/automated-traffic-management-system-atms-phase-ii/"
       }
@@ -156,7 +172,7 @@
   {
     "id": "forest-avenue-skipwith-road-intersection",
     "name": "Forest Avenue and Skipwith Road Intersection Improvements",
-    "description": "Pedestrian improvements at the Forest Avenue and Skipwith Road intersection. The county's project page describes new ADA ramps and a signal for pedestrians to cross, with the existing span wire supporting the signal heads removed and a mast arm built in its place.",
+    "description": "Pedestrian improvements at the Forest Avenue and Skipwith Road intersection. The county's project page describes new ADA ramps and a signal for pedestrians to cross, with the existing span wire supporting the signal heads removed and a mast arm built in its place. The project page lists both Three Chopt and Tuckahoe as its magisterial districts, and it appeared in both districts' September 2024 newsletters.",
     "district": "Three Chopt",
     "status": "design",
     "statusNote": "Listed under \"Starting Soon\" in the September 2024 issue, with construction scheduled to begin by the end of the year.",
@@ -167,6 +183,10 @@
       {
         "label": "Word on the Street, September 2024 — Three Chopt District (Three-Chopt-District-September-2024.pdf)",
         "url": "https://henrico.gov/assets/Three-Chopt-District-September-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, September 2024 — Tuckahoe District (Tuckahoe-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Tuckahoe-District-September-2024.pdf"
       },
       {
         "label": "Henrico County project page: Forest Avenue Pedestrian Improvements",
@@ -197,6 +217,579 @@
       }
     ],
     "geometry": [-77.55047, 37.62597],
+    "placeholder": false
+  },
+  {
+    "id": "bethlehem-road-improvements",
+    "name": "Bethlehem Road Pedestrian and Traffic Improvements",
+    "description": "Road improvements on Bethlehem Road between Libbie Avenue and Staples Mill Road, per the county's project page: a 3-lane road section, a shared-use path, sidewalk, crosswalks and ADA ramps, and a roundabout at the Libbie Avenue/Bethlehem Road intersection.",
+    "district": "Brookland",
+    "status": "construction",
+    "statusNote": "Listed under \"Starting Soon\" from March through July 2024, then \"New Construction this Month\" in September 2024 (it also reappeared under \"Starting Soon\" in the August issue, which the newsletter series never explained). The county's own project page, checked 2026-07-25, says construction is currently paused: a utility line was placed in the wrong location during utility relocation, and crews are working to reschedule the relocation.",
+    "dateAnnounced": "2024-03-01",
+    "dateStatusUpdated": "2024-09-01",
+    "estimatedCompletion": "2027",
+    "type": "shared-use-path",
+    "sources": [
+      {
+        "label": "Word on the Street, March 2024 — Brookland District (Brookland-District-March-2024.pdf)",
+        "url": "https://henrico.gov/assets/Brookland-District-March-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, September 2024 — Brookland District (Brookland-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Brookland-District-September-2024.pdf"
+      },
+      {
+        "label": "Henrico County project page: Bethlehem Road Improvements",
+        "url": "https://henrico.gov/projects/bethlehem-improvements/"
+      }
+    ],
+    "geometry": [
+      [-77.49875, 37.59558],
+      [-77.49689, 37.59374],
+      [-77.49319, 37.59259]
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "parham-road-pedestrian-transit-improvements",
+    "name": "Parham Road Pedestrian and Transit Improvements",
+    "description": "Approximately 620 linear feet of 5-foot-wide sidewalk, plus curb and gutter, storm sewer, curb cuts, drainage improvements, new ADA ramps and two GRTC bus pads, along Parham Road between Shrader Road and Hungary Spring Road.",
+    "district": "Brookland",
+    "status": "complete",
+    "statusNote": "The newsletter series never used completion language for this project — it was still listed under \"Currently in Construction\" (sidewalk under construction near the Hungary Spring Road intersection) in its last appearance, September 2024. The county's own archived project page states \"Project Status: Completed,\" construction started 2nd Quarter 2024 with completion anticipated 3rd Quarter 2024; that quarter (Jul–Sep 2024) is used here as the completion date.",
+    "dateAnnounced": "2024-03-01",
+    "dateStatusUpdated": "2024-09-01",
+    "type": "sidewalk",
+    "sources": [
+      {
+        "label": "Word on the Street, March 2024 — Brookland District (Brookland-District-March-2024.pdf)",
+        "url": "https://henrico.gov/assets/Brookland-District-March-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, September 2024 — Brookland District (Brookland-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Brookland-District-September-2024.pdf"
+      },
+      {
+        "label": "Henrico County Archives: Parham Road Pedestrian and Transit Improvements",
+        "url": "https://henrico.gov/projects/parham-ped-transit/"
+      }
+    ],
+    "geometry": [
+      [-77.52953, 37.6307],
+      [-77.52289, 37.62958],
+      [-77.5192, 37.62959]
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "parham-landmark-intersection-improvements",
+    "name": "Parham Road & Landmark Road Intersection Improvements",
+    "description": "Intersection improvements at Parham Road and Landmark Road. By June 2024 the newsletter was describing the same work as \"Parham Road Median Improvements\": the median at Parham and Landmark roads being improved for safety, with lane closures during daytime working hours.",
+    "district": "Brookland",
+    "status": "construction",
+    "statusNote": "Listed under \"Starting Soon\" in March 2024 (construction starting in April). By June–August 2024 it was under \"New Construction\"/\"Currently in Construction\" as \"Parham Road Median Improvements,\" with August reporting it \"almost complete\" but delayed by Tropical Storm Debby. It does not appear in the September 2024 issue at all — the newsletter never stated a completion, so this is not marked complete despite the drop-off.",
+    "dateAnnounced": "2024-03-01",
+    "dateStatusUpdated": "2024-08-01",
+    "type": "other",
+    "sources": [
+      {
+        "label": "Word on the Street, March 2024 — Brookland District (Brookland-District-March-2024.pdf)",
+        "url": "https://henrico.gov/assets/Brookland-District-March-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, August 2024 — Brookland District (Brookland-District-August-2024.pdf)",
+        "url": "https://henrico.gov/assets/Brookland-District-August-2024.pdf"
+      }
+    ],
+    "geometry": [-77.50672, 37.63319],
+    "placeholder": false
+  },
+  {
+    "id": "francistown-road-roundabout",
+    "name": "Francistown Road Permanent Roundabout",
+    "description": "A permanent roundabout on Francistown Road. The March 2024 issue printed this as \"Francistown Road Traffic Improvements\" and noted a public hearing on March 25, 2024; by June it was named \"Francistown Road Permanent Roundabout.\" No cross street or exact location is given in any issue, and no county project page is linked.",
+    "district": "Brookland",
+    "status": "complete",
+    "statusNote": "Listed under \"Starting Soon\" in March 2024, \"New Construction This Month\" in June 2024 (\"completed this summer\"), \"Currently in Construction\" in July 2024 (\"completed this month\"), and reported \"Completed!\" in the August 2024 issue. Location not mapped — no cross street is named in any issue.",
+    "dateAnnounced": "2024-03-01",
+    "dateStatusUpdated": "2024-08-01",
+    "type": "other",
+    "sources": [
+      {
+        "label": "Word on the Street, March 2024 — Brookland District (Brookland-District-March-2024.pdf)",
+        "url": "https://henrico.gov/assets/Brookland-District-March-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, August 2024 — Brookland District (Brookland-District-August-2024.pdf)",
+        "url": "https://henrico.gov/assets/Brookland-District-August-2024.pdf"
+      }
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "glen-allen-hs-intersection-improvements",
+    "name": "Glen Allen High School Intersection Improvements",
+    "description": "Pedestrian accommodations across Staples Mill Road to Meadow Pond Lane, per the newsletter and the county's project page: a crossing over Staples Mill Road with ADA ramps, plus pedestrian signals and push-buttons.",
+    "district": "Brookland",
+    "status": "complete",
+    "statusNote": "First listed under \"Starting Soon\" in August 2024 (completion expected that fall), then \"Currently in Construction\" in September 2024, still with a fall completion estimate. The county's own archived project page states \"Project Status: Completed,\" with an estimated end date of 4th Quarter 2024; that quarter is used here.",
+    "dateAnnounced": "2024-08-01",
+    "dateStatusUpdated": "2024-10-01",
+    "type": "crosswalk",
+    "sources": [
+      {
+        "label": "Word on the Street, August 2024 — Brookland District (Brookland-District-August-2024.pdf)",
+        "url": "https://henrico.gov/assets/Brookland-District-August-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, September 2024 — Brookland District (Brookland-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Brookland-District-September-2024.pdf"
+      },
+      {
+        "label": "Henrico County Archives: Glen Allen High School Intersection Improvements",
+        "url": "https://henrico.gov/projects/glen-allen-hs-intersection-improvements/"
+      }
+    ],
+    "geometry": [-77.53061, 37.66566],
+    "placeholder": false
+  },
+  {
+    "id": "hungary-road-sidewalk-phase-2",
+    "name": "Hungary Road Sidewalk, Phase II",
+    "description": "The second phase of sidewalk construction on Hungary Road. The newsletter gives no route detail beyond the project name, and no exact cross streets, so this could not be mapped.",
+    "district": "Brookland",
+    "status": "design",
+    "statusNote": "Listed under \"Starting Soon\" in the September 2024 issue, with construction scheduled to begin by the end of the year. Location not mapped — the newsletter names no cross streets for this phase, and no linked project page exists yet to supply them.",
+    "dateAnnounced": "2024-09-01",
+    "dateStatusUpdated": "2024-09-01",
+    "type": "sidewalk",
+    "sources": [
+      {
+        "label": "Word on the Street, September 2024 — Brookland District (Brookland-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Brookland-District-September-2024.pdf"
+      }
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "lambert-way-glover-park",
+    "name": "Lambert Way (Glover Park)",
+    "description": "A new road connecting Glover Park to Woodman Road that will include a shared-use path. The county's Glover Park project page confirms the shared-use path along Lambert Way is planned to connect to the Fall Line Trail north of the park.",
+    "district": "Brookland",
+    "status": "design",
+    "statusNote": "Listed under \"Starting Soon\" in the September 2024 issue. Location not mapped — as a not-yet-built road, it doesn't appear in OpenStreetMap yet.",
+    "dateAnnounced": "2024-09-01",
+    "dateStatusUpdated": "2024-09-01",
+    "type": "shared-use-path",
+    "sources": [
+      {
+        "label": "Word on the Street, September 2024 — Brookland District (Brookland-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Brookland-District-September-2024.pdf"
+      },
+      {
+        "label": "Henrico County project page: Glover Park",
+        "url": "https://henrico.gov/projects/glover-park/"
+      }
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "monument-avenue-sidewalk",
+    "name": "Monument Avenue Sidewalk",
+    "description": "Approximately 2,200 linear feet of new sidewalk along the southern side of Monument Avenue from Bremo Road to Treboy Avenue, with associated ADA ramps, transit stop upgrades, and pedestrian signals and crossings.",
+    "district": "Brookland",
+    "status": "design",
+    "statusNote": "Surfaced via a public-meeting calendar item (\"Oct. 9: Monument Avenue Sidewalk\") that appeared identically in all five districts' September 2024 newsletters, not under any district's own project list — so it is sourced here directly from the county's live project page rather than the newsletter series. That page confirms the meeting (October 9, 2024) and gives Magisterial District: Brookland, confirming this segment is in Henrico, not the better-known Monument Avenue in Richmond City. Checked 2026-07-25: \"Project Status: Underway - Design,\" construction anticipated 2027.",
+    "dateAnnounced": "2024-09-01",
+    "dateStatusUpdated": "2026-07-25",
+    "estimatedCompletion": "2028",
+    "type": "sidewalk",
+    "sources": [
+      {
+        "label": "Henrico County project page: Monument Ave Sidewalk",
+        "url": "https://henrico.gov/projects/monument-ave-sidewalk/"
+      },
+      {
+        "label": "Word on the Street, September 2024 — Three Chopt District (public-meeting calendar item, identical across all five districts)",
+        "url": "https://henrico.gov/assets/Three-Chopt-District-September-2024.pdf"
+      }
+    ],
+    "geometry": [
+      [-77.51257, 37.58507],
+      [-77.5308, 37.59596],
+      [-77.53072, 37.59607],
+      [-77.50623, 37.58148]
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "libbie-avenue-road-diet",
+    "name": "Libbie Avenue Road Diet",
+    "description": "A combination shared-use path and two-way bike lanes along the east side of Libbie Avenue between West Broad Street and Bethlehem Road, with lane reconfiguration at several intersections along the corridor.",
+    "district": "Brookland",
+    "status": "design",
+    "statusNote": "Surfaced via a public-meeting calendar item (\"Oct. 7: Libbie Avenue Improvements\") that appeared identically in all five districts' September 2024 newsletters, not under any district's own project list — so it is sourced here directly from the county's live project page rather than the newsletter series. That page gives Magisterial District: Brookland, confirming this segment is in Henrico, not the Richmond City portion of Libbie Avenue further south. Checked 2026-07-25: \"Project Status: Advertised for Construction,\" construction anticipated 4th Quarter 2026.",
+    "dateAnnounced": "2024-09-01",
+    "dateStatusUpdated": "2026-07-25",
+    "estimatedCompletion": "2028",
+    "type": "shared-use-path",
+    "sources": [
+      {
+        "label": "Henrico County project page: Libbie Avenue Road Diet",
+        "url": "https://henrico.gov/projects/libbie-avenue-road-improvements/"
+      },
+      {
+        "label": "Word on the Street, September 2024 — Three Chopt District (public-meeting calendar item, identical across all five districts)",
+        "url": "https://henrico.gov/assets/Three-Chopt-District-September-2024.pdf"
+      }
+    ],
+    "geometry": [
+      [-77.50389, 37.59002],
+      [-77.50074, 37.59254],
+      [-77.49961, 37.5947],
+      [-77.49867, 37.59548]
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "dumbarton-road-safety-mobility",
+    "name": "Dumbarton Road Safety & Mobility Improvements",
+    "description": "Re-paving and re-striping Dumbarton Road from Staples Mill Road to Brook Road as a \"road diet\": buffered bicycle lanes, one travel lane each direction, and a center turn lane, plus new traffic signals at Byrdhill Road, Impala Road, and Hermitage Road/Westlake Avenue with pedestrian push-buttons and bicycle accommodations.",
+    "district": "Fairfield",
+    "status": "complete",
+    "statusNote": "Listed under \"Starting Soon\" from March 2024, still without an explicit completion in the newsletter series' last issue (September 2024). The county's own archived project page states \"Project Status: Completed,\" with signal installation at all three intersections completed in March 2026.",
+    "dateAnnounced": "2024-03-01",
+    "dateStatusUpdated": "2026-03-01",
+    "type": "signal",
+    "sources": [
+      {
+        "label": "Word on the Street, March 2024 — Fairfield District (Fairfield-District-March-2024.pdf)",
+        "url": "https://henrico.gov/assets/Fairfield-District-March-2024.pdf"
+      },
+      {
+        "label": "Henrico County Archives: Dumbarton Road Safety & Mobility Improvements",
+        "url": "https://henrico.gov/projects/dumbarton-study/"
+      }
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "hilliard-road-safety-mobility",
+    "name": "Hilliard Road Safety & Mobility Improvements",
+    "description": "Restriping of Hilliard Road from Lakeside Avenue to Brook Road to add protected bicycle lanes in both directions, plus pedestrian safety enhancements at the crossing of the proposed Fall Line Trail.",
+    "district": "Fairfield",
+    "status": "design",
+    "statusNote": "Listed under \"Starting Soon\" from March 2024 (construction starting in June), still \"Starting Soon\" as of the newsletter series' last issue (September 2024). The county's own project page, checked 2026-07-25, shows \"Project Status: Advertised for Construction\" — still pre-construction, with construction anticipated 4th Quarter 2026.",
+    "dateAnnounced": "2024-03-01",
+    "dateStatusUpdated": "2026-07-25",
+    "estimatedCompletion": "2027",
+    "type": "other",
+    "sources": [
+      {
+        "label": "Word on the Street, March 2024 — Fairfield District (Fairfield-District-March-2024.pdf)",
+        "url": "https://henrico.gov/assets/Fairfield-District-March-2024.pdf"
+      },
+      {
+        "label": "Henrico County project page: Hilliard Road Safety and Mobility Improvements",
+        "url": "https://henrico.gov/projects/hilliard-road-safety-and-mobility-improvements/"
+      }
+    ],
+    "geometry": [
+      [-77.47083, 37.61686],
+      [-77.45703, 37.6176]
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "fall-line-trail-park-street",
+    "name": "Fall Line Trail — Park Street",
+    "description": "A section of the Fall Line Trail, a planned 43-mile multi-use trail between Ashland and Petersburg, in Henrico between Bryan Park Avenue and Spring Park.",
+    "district": "Fairfield",
+    "status": "complete",
+    "statusNote": "First (and only) appearance in the newsletter series was July 2024, already reported \"Completed! Check out the story.\" The county's Fall Line Trail master page corroborates this: Section 1 (Park Street, Bryan Park Ave to Spring Park) shows \"Construction is complete.\" Geocoded only at the Bryan Park Avenue end — \"Spring Park\" is a landmark, not a through street, so the segment's other boundary can't be resolved as a shared road node.",
+    "dateAnnounced": "2024-07-01",
+    "dateStatusUpdated": "2024-07-01",
+    "type": "shared-use-path",
+    "sources": [
+      {
+        "label": "Word on the Street, July 2024 — Fairfield District (Fairfield-District-July-2024.pdf)",
+        "url": "https://henrico.gov/assets/Fairfield-District-July-2024.pdf"
+      },
+      {
+        "label": "Henrico County project page: Fall Line Trail",
+        "url": "https://henrico.gov/projects/fall-line-trail/"
+      }
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "fall-line-trail-lakeside-community-trail",
+    "name": "Fall Line Trail — Lakeside Community Trail",
+    "description": "A section of the Fall Line Trail in Henrico between Spring Park and Dumbarton Road, referred to in the April 2024 newsletter as \"Fall Line Trail - Lakeside Community Trail.\"",
+    "district": "Fairfield",
+    "status": "design",
+    "statusNote": "Listed under \"Starting Soon\" in April 2024 with construction expected to start in July 2024; it does not reappear in any later issue. The county's Fall Line Trail master page, checked 2026-07-25, shows this section (\"Lakeside Community Trail Phase I, Spring Park to Dumbarton Rd\") still in \"Design underway\" — construction has not started, well past the newsletter's July 2024 target. Geocoded only at the Dumbarton Road end — \"Spring Park\" is a landmark, not a through street, so the segment's other boundary can't be resolved as a shared road node.",
+    "dateAnnounced": "2024-04-01",
+    "dateStatusUpdated": "2026-07-25",
+    "type": "shared-use-path",
+    "sources": [
+      {
+        "label": "Word on the Street, April 2024 — Fairfield District (Fairfield-District-April-2024.pdf)",
+        "url": "https://henrico.gov/assets/Fairfield-District-April-2024.pdf"
+      },
+      {
+        "label": "Henrico County project page: Fall Line Trail",
+        "url": "https://henrico.gov/projects/fall-line-trail/"
+      }
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "creighton-road-realignment",
+    "name": "Creighton Road Realignment and Improvements",
+    "description": "Realignment of Creighton Road from Sandy Lane to E. Laburnum Avenue to a 4-lane divided roadway with sidewalks on both sides, curb and gutter, and storm sewer improvements. The Dabbs House Road intersection was relocated approximately 500 feet west as part of the realignment. The county's project page lists this as spanning both the Fairfield and Varina magisterial districts.",
+    "district": "Fairfield",
+    "status": "complete",
+    "statusNote": "First listed under \"Currently in Construction\" in June 2024, still under construction as of the newsletter series' last issue (September 2024, completion then estimated for 2025). The county's own archived project page states the project was completed 12/19/2024.",
+    "dateAnnounced": "2024-06-01",
+    "dateStatusUpdated": "2024-12-19",
+    "type": "sidewalk",
+    "sources": [
+      {
+        "label": "Word on the Street, June 2024 — Fairfield District (Fairfield-District-June-2024.pdf)",
+        "url": "https://henrico.gov/assets/Fairfield-District-June-2024.pdf"
+      },
+      {
+        "label": "Henrico County Archives: Creighton Road Realignment and Improvements",
+        "url": "https://henrico.gov/projects/creighton-road-improvement/"
+      }
+    ],
+    "geometry": [
+      [-77.38124, 37.5591],
+      [-77.37888, 37.56084],
+      [-77.37794, 37.56115],
+      [-77.37557, 37.56149]
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "chamberlayne-diane-lane-pedestrian-improvements",
+    "name": "Chamberlayne Road and Diane Lane Pedestrian Improvements",
+    "description": "A VDOT pedestrian-signal project at the intersection of Chamberlayne Road (Route 301) and Diane Lane. The county's newsletter names this as part of a wider VDOT program that also includes Horsepen Road and Patterson Avenue in the Tuckahoe district; no project page for the combined program could be found (the linked URL returns 404).",
+    "district": "Fairfield",
+    "status": "design",
+    "statusNote": "Listed under \"Starting Soon\" in the September 2024 issue, with construction scheduled to begin by the end of the year.",
+    "dateAnnounced": "2024-09-01",
+    "dateStatusUpdated": "2024-09-01",
+    "type": "crosswalk",
+    "sources": [
+      {
+        "label": "Word on the Street, September 2024 — Fairfield District (Fairfield-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Fairfield-District-September-2024.pdf"
+      }
+    ],
+    "geometry": [-77.42977, 37.6347],
+    "placeholder": false
+  },
+  {
+    "id": "ridge-road-safety-mobility-improvements",
+    "name": "Ridge Road Safety & Mobility Improvements",
+    "description": "Reviewing traffic and crash data to identify safety improvements along Ridge Road from Greene Ridge Road to North Ridge Road/Forest Avenue, including possible roadway reconfiguration and bicycle/pedestrian accommodations. Printed as \"Ridge Road Safety Improvements\" in the March and April 2024 issues.",
+    "district": "Tuckahoe",
+    "status": "design",
+    "statusNote": "Listed under \"Starting Soon\" continuously from March through September 2024. The county's project page is marked \"Henrico County Archives\" with \"Project Status: Completed,\" but its own schedule text still reads entirely in future tense (\"design is underway,\" \"advertisement anticipated,\" \"construction anticipated to begin\") with no completed-construction language anywhere — the opposite of every other archived page checked for this site. That contradiction reads as a stale or auto-archived record, not a confirmed completion, so this entry keeps the newsletter-sourced \"design\" status rather than trusting the page's status flag.",
+    "dateAnnounced": "2024-03-01",
+    "dateStatusUpdated": "2024-09-01",
+    "type": "other",
+    "sources": [
+      {
+        "label": "Word on the Street, March 2024 — Tuckahoe District (Tuckahoe-District-March-2024.pdf)",
+        "url": "https://henrico.gov/assets/Tuckahoe-District-March-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, September 2024 — Tuckahoe District (Tuckahoe-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Tuckahoe-District-September-2024.pdf"
+      }
+    ],
+    "geometry": [
+      [-77.56142, 37.58746],
+      [-77.5568, 37.58411],
+      [-77.55491, 37.58239]
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "raintree-drive-sidewalk",
+    "name": "Raintree Drive Sidewalk",
+    "description": "Approximately 1,400 linear feet of 4-foot-wide sidewalk with ADA-compliant ramps along the east side of Raintree Drive, from Falconbridge Drive to Raintree Commons Drive.",
+    "district": "Tuckahoe",
+    "status": "complete",
+    "statusNote": "Listed under \"New Construction This Month\" in March 2024; the April 2024 issue reported \"Finished ahead of schedule!\"",
+    "dateAnnounced": "2024-03-01",
+    "dateStatusUpdated": "2024-04-01",
+    "type": "sidewalk",
+    "sources": [
+      {
+        "label": "Word on the Street, March 2024 — Tuckahoe District (Tuckahoe-District-March-2024.pdf)",
+        "url": "https://henrico.gov/assets/Tuckahoe-District-March-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, April 2024 — Tuckahoe District (Tuckahoe-District-April-2024.pdf)",
+        "url": "https://henrico.gov/assets/Tuckahoe-District-April-2024.pdf"
+      },
+      {
+        "label": "Henrico County Archives: Raintree Drive Sidewalk",
+        "url": "https://henrico.gov/projects/raintree-drive-sidewalk/"
+      }
+    ],
+    "geometry": [
+      [-77.59749, 37.61532],
+      [-77.59613, 37.6119]
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "ridge-road-sidewalk-phase-1",
+    "name": "Ridge Road Sidewalk Improvements (Phase I)",
+    "description": "Approximately 1,920 feet of 5-foot-wide sidewalk with a grass strip along the southwest side of Ridge Road, between Old Providence Circle and North Ridge Road, plus new curb and gutter near Ziontown Road.",
+    "district": "Tuckahoe",
+    "status": "complete",
+    "statusNote": "Carried under \"Currently in Construction\" from March through June 2024 (June estimated completion \"late summer\"); the July 2024 issue reported \"Construction completed!\" The county's own archived project page gives a more precise date: construction was completed June 2024.",
+    "dateAnnounced": "2024-03-01",
+    "dateStatusUpdated": "2024-06-01",
+    "type": "sidewalk",
+    "sources": [
+      {
+        "label": "Word on the Street, March 2024 — Tuckahoe District (Tuckahoe-District-March-2024.pdf)",
+        "url": "https://henrico.gov/assets/Tuckahoe-District-March-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, July 2024 — Tuckahoe District (Tuckahoe-District-July-2024.pdf)",
+        "url": "https://henrico.gov/assets/Tuckahoe-District-July-2024.pdf"
+      },
+      {
+        "label": "Henrico County Archives: Ridge Road Sidewalk Improvements (Phase I)",
+        "url": "https://henrico.gov/projects/ridge-road-sw/"
+      }
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "derbyshire-road-roundabout",
+    "name": "Derbyshire Road Roundabout",
+    "description": "A roundabout with pedestrian crossings and pedestrian lights on Derbyshire Road at its intersection with Heathfield Road and Lakewater Drive, built in the existing right-of-way in response to resident concerns about speeding and cut-through traffic.",
+    "district": "Tuckahoe",
+    "status": "complete",
+    "statusNote": "Listed under \"Currently in Construction\" in August 2024 (completion then estimated by end of August) and September 2024 (revised to mid-September). The county's project page, checked 2026-07-25, confirms \"Construction for the Derbyshire Roundabout is complete.\" That same page describes a separate, larger multi-phase corridor project (an added shared-use path, more crossings, a turn lane) still in design as of a September 2025 community meeting — outside this newsletter series' window, so not recorded as a separate entry here.",
+    "dateAnnounced": "2024-08-01",
+    "dateStatusUpdated": "2024-09-01",
+    "type": "other",
+    "sources": [
+      {
+        "label": "Word on the Street, August 2024 — Tuckahoe District (Tuckahoe-District-August-2024.pdf)",
+        "url": "https://henrico.gov/assets/Tuckahoe-District-August-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, September 2024 — Tuckahoe District (Tuckahoe-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Tuckahoe-District-September-2024.pdf"
+      },
+      {
+        "label": "Henrico County project page: Derbyshire Rd Pedestrian and Roadway Improvements",
+        "url": "https://henrico.gov/projects/derbyshire-rd-pedestrian-and-roadway-improvements/"
+      }
+    ],
+    "geometry": [-77.5925, 37.58935],
+    "placeholder": false
+  },
+  {
+    "id": "horsepen-patterson-pedestrian-improvements",
+    "name": "Horsepen Road and Patterson Avenue Pedestrian Improvements",
+    "description": "A VDOT pedestrian-improvements project at the intersection of Horsepen Road and Patterson Avenue. The county's newsletter names this as part of a wider VDOT program that also includes Chamberlayne Road (Route 301) and Diane Lane in the Fairfield district; no project page for the combined program could be found (the linked URL returns 404).",
+    "district": "Tuckahoe",
+    "status": "design",
+    "statusNote": "Listed under \"Starting Soon\" in the September 2024 issue, with construction scheduled to begin by the end of the year.",
+    "dateAnnounced": "2024-09-01",
+    "dateStatusUpdated": "2024-09-01",
+    "type": "crosswalk",
+    "sources": [
+      {
+        "label": "Word on the Street, September 2024 — Tuckahoe District (Tuckahoe-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Tuckahoe-District-September-2024.pdf"
+      }
+    ],
+    "geometry": [-77.53464, 37.59272],
+    "placeholder": false
+  },
+  {
+    "id": "four-mile-creek-capital-trail-improvements",
+    "name": "Four Mile Creek Virginia Capital Trail Improvements",
+    "description": "Improvements to the Virginia Capital Trail at Four Mile Creek. The newsletter gives no further route detail, and no project page could be found to supply it, so this could not be mapped.",
+    "district": "Varina",
+    "status": "complete",
+    "statusNote": "Listed under \"Currently in Construction\" from March 2024 (estimated completion April); the June 2024 issue reported \"Construction Completed! View the ribbon-cutting ceremony below.\" Location not mapped — a \"Four Mile Creek Trailhead\" exists in the county's calendar system, but its listing carries no address or coordinates.",
+    "dateAnnounced": "2024-03-01",
+    "dateStatusUpdated": "2024-06-01",
+    "type": "shared-use-path",
+    "sources": [
+      {
+        "label": "Word on the Street, March 2024 — Varina District (Varina-District-March-2024.pdf)",
+        "url": "https://henrico.gov/assets/Varina-District-March-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, June 2024 — Varina District (Varina-District-June-2024.pdf)",
+        "url": "https://henrico.gov/assets/Varina-District-June-2024.pdf"
+      }
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "whiteside-road-taylor-park-improvements",
+    "name": "Whiteside Road & Taylor Park Road Improvements",
+    "description": "Road work on Whiteside Road between the two entrances of Taylor Farm Park (200 Whiteside Road, Sandston). Printed as \"Whiteside Road & Taylor Park Intersection Improvements\" in the March and April 2024 issues.",
+    "district": "Varina",
+    "status": "construction",
+    "statusNote": "Carried under \"Currently in Construction\" from March through September 2024, with the completion estimate moving from June, to \"this summer,\" and finally to no estimate at all by September. The August and September issues note that Taylor Farm Park itself (the adjacent park, a separate $26M project) opened in July 2024, while work on Whiteside Road \"between the park's two entrances\" continues. Location not mapped — Taylor Farm Park's own two entrance driveways aren't individually identifiable as named cross streets.",
+    "dateAnnounced": "2024-03-01",
+    "dateStatusUpdated": "2024-09-01",
+    "type": "other",
+    "sources": [
+      {
+        "label": "Word on the Street, March 2024 — Varina District (Varina-District-March-2024.pdf)",
+        "url": "https://henrico.gov/assets/Varina-District-March-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, September 2024 — Varina District (Varina-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Varina-District-September-2024.pdf"
+      }
+    ],
+    "placeholder": false
+  },
+  {
+    "id": "rocketts-landing-capital-trail-lighting",
+    "name": "Capital Trail Lighting at Rocketts Landing",
+    "description": "Self-sustaining light fixtures along the Virginia Capital Trail from the Richmond City limits south for approximately 1,100 feet to Old Delaware Street, to increase pedestrian safety on the trail.",
+    "district": "Varina",
+    "status": "complete",
+    "statusNote": "First listed (as \"Rocketts Landing Capital Trail Lighting\") under \"New Construction This Month\" in March 2024 with no timeline given; it then dropped out of the newsletter entirely until September 2024, when it reappeared under \"Starting Soon\" as \"Capital Trail Lighting at Rocketts Landing,\" with construction scheduled to begin by the end of 2024 — the newsletter never explained the gap or the restart. The county's own project page shows the project actually began 1st Quarter 2026 and was completed 2nd Quarter 2026, roughly 1.5 years after the newsletter's revised target. Geocoded only at its Old Delaware Street end, which is the one point the project's own description ties to a named cross street; the other end is defined only as \"the Richmond City limits.\"",
+    "dateAnnounced": "2024-03-01",
+    "dateStatusUpdated": "2026-04-01",
+    "type": "other",
+    "sources": [
+      {
+        "label": "Word on the Street, March 2024 — Varina District (Varina-District-March-2024.pdf)",
+        "url": "https://henrico.gov/assets/Varina-District-March-2024.pdf"
+      },
+      {
+        "label": "Word on the Street, September 2024 — Varina District (Varina-District-September-2024.pdf)",
+        "url": "https://henrico.gov/assets/Varina-District-September-2024.pdf"
+      },
+      {
+        "label": "Henrico County project page: Capital Trail Lighting at Rocketts Landing",
+        "url": "https://henrico.gov/projects/capital-trail-lighting-at-rocketts-landing/"
+      }
+    ],
+    "geometry": [-77.41591, 37.51417],
     "placeholder": false
   }
 ]

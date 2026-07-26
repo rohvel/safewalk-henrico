@@ -6,7 +6,7 @@
 import { useState } from 'react'
 import type { Project } from '../types'
 import { STATUSES, TYPE_LABEL } from '../types'
-import { daysSince } from '../lib/format'
+import { daysSince, formatMonthYear } from '../lib/format'
 import { hasLocation } from '../data/projects'
 import { buildHash, currentLocation } from '../lib/router'
 import CrosswalkStepper from './CrosswalkStepper'
@@ -80,6 +80,12 @@ export default function ProjectList({ projects, onNavigate, onClearFilters }: Pr
                     <CrosswalkStepper status={p.status} mini />
                     <span>
                       {p.district} · {TYPE_LABEL[p.type]}
+                    </span>
+                    <span
+                      className="list-row__asof"
+                      title="This status was last confirmed as of this date — the county may have updated it since"
+                    >
+                      as of {formatMonthYear(p.dateStatusUpdated)}
                     </span>
                     {!hasLocation(p) && (
                       <span className="chip chip--quiet" title="No mapped location">

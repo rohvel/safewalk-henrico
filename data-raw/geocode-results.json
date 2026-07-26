@@ -76,6 +76,125 @@
     ]
   },
   {
+    "key": "parham-landmark-intersection",
+    "kind": "point",
+    "notes": [
+      "3 shared nodes within 21 m (divided road); using cluster centre.",
+      "Nominatim returned nothing for any phrasing of this intersection — it has no intersection index, so this is expected, not a failure of the location."
+    ],
+    "overpassNodeCount": 3,
+    "nominatim": null,
+    "resolved": true,
+    "source": "overpass-shared-node",
+    "geometry": [
+      -77.50672,
+      37.63319
+    ]
+  },
+  {
+    "key": "glen-allen-hs-crossing",
+    "kind": "point",
+    "notes": [
+      "2 shared nodes within 26 m (divided road); using cluster centre.",
+      "Nominatim returned nothing for any phrasing of this intersection — it has no intersection index, so this is expected, not a failure of the location."
+    ],
+    "overpassNodeCount": 2,
+    "nominatim": null,
+    "resolved": true,
+    "source": "overpass-shared-node",
+    "geometry": [
+      -77.53061,
+      37.66566
+    ]
+  },
+  {
+    "key": "chamberlayne-diane-lane-intersection",
+    "kind": "point",
+    "notes": [
+      "2 shared nodes within 19 m (divided road); using cluster centre.",
+      "Nominatim returned nothing for any phrasing of this intersection — it has no intersection index, so this is expected, not a failure of the location."
+    ],
+    "overpassNodeCount": 2,
+    "nominatim": null,
+    "resolved": true,
+    "source": "overpass-shared-node",
+    "geometry": [
+      -77.42977,
+      37.6347
+    ]
+  },
+  {
+    "key": "fall-line-trail-park-street",
+    "kind": "point",
+    "notes": [
+      "No shared node; closest terminal-node approach is 8745 m, beyond the 30 m tolerance. Refusing to place it.",
+      "Nominatim returned nothing for any phrasing of this intersection — it has no intersection index, so this is expected, not a failure of the location."
+    ],
+    "overpassNodeCount": 0,
+    "nominatim": null,
+    "resolved": false
+  },
+  {
+    "key": "fall-line-trail-lakeside",
+    "kind": "point",
+    "notes": [
+      "No shared node; closest terminal-node approach is 8207 m, beyond the 30 m tolerance. Refusing to place it.",
+      "Nominatim returned nothing for any phrasing of this intersection — it has no intersection index, so this is expected, not a failure of the location."
+    ],
+    "overpassNodeCount": 0,
+    "nominatim": null,
+    "resolved": false
+  },
+  {
+    "key": "horsepen-patterson-intersection",
+    "kind": "point",
+    "notes": [
+      "2 shared nodes within 11 m (divided road); using cluster centre.",
+      "Nominatim returned nothing for any phrasing of this intersection — it has no intersection index, so this is expected, not a failure of the location."
+    ],
+    "overpassNodeCount": 2,
+    "nominatim": null,
+    "resolved": true,
+    "source": "overpass-shared-node",
+    "geometry": [
+      -77.53464,
+      37.59272
+    ]
+  },
+  {
+    "key": "derbyshire-roundabout",
+    "kind": "point",
+    "notes": [
+      "Nominatim returned nothing for any phrasing of this intersection — it has no intersection index, so this is expected, not a failure of the location."
+    ],
+    "overpassNodeCount": 1,
+    "nominatim": null,
+    "resolved": true,
+    "source": "overpass-shared-node",
+    "geometry": [
+      -77.5925,
+      37.58935
+    ]
+  },
+  {
+    "key": "rocketts-landing-trail-lighting",
+    "kind": "point",
+    "notes": [
+      "No shared node, but a terminal node of one road sits 11.9 m from the other's centreline — using that junction node.",
+      "Nominatim returned nothing for any phrasing of this intersection — it has no intersection index, so this is expected, not a failure of the location."
+    ],
+    "overpassNodeCount": 0,
+    "method": "endpoint-touch",
+    "touchMetres": 11.9,
+    "nominatim": null,
+    "resolved": true,
+    "source": "overpass-junction-node",
+    "geometry": [
+      -77.41591,
+      37.51417
+    ]
+  },
+  {
     "key": "sadler-road-improvements",
     "kind": "segment",
     "notes": [
@@ -184,5 +303,315 @@
         37.66618
       ]
     ]
+  },
+  {
+    "key": "bethlehem-road-improvements",
+    "kind": "segment",
+    "notes": [
+      "Clipped Bethlehem Road between Libbie Avenue and Staples Mill Road: 0.38 mi, 21 vertices simplified to 3."
+    ],
+    "wayCount": 27,
+    "chainLengths": [
+      155,
+      10
+    ],
+    "bridgedGapsMetres": [],
+    "lengthMiles": 0.38,
+    "rawVertices": 21,
+    "resolved": true,
+    "source": "overpass-way-geometry",
+    "geometry": [
+      [
+        -77.49875,
+        37.59558
+      ],
+      [
+        -77.49689,
+        37.59374
+      ],
+      [
+        -77.49319,
+        37.59259
+      ]
+    ]
+  },
+  {
+    "key": "parham-ped-transit-improvements",
+    "kind": "segment",
+    "notes": [
+      "Clipped North Parham Road,Parham Road,East Parham Road between Shrader Road and Hungary Spring Road: 0.57 mi, 25 vertices simplified to 3."
+    ],
+    "wayCount": 234,
+    "chainLengths": [
+      1482,
+      16
+    ],
+    "bridgedGapsMetres": [],
+    "lengthMiles": 0.57,
+    "rawVertices": 25,
+    "resolved": true,
+    "source": "overpass-way-geometry",
+    "geometry": [
+      [
+        -77.52953,
+        37.6307
+      ],
+      [
+        -77.52289,
+        37.62958
+      ],
+      [
+        -77.5192,
+        37.62959
+      ]
+    ]
+  },
+  {
+    "key": "monument-ave-sidewalk",
+    "kind": "segment",
+    "notes": [
+      "OSM splits this road into 4 disconnected pieces; rejoined 3 gap(s) of 15, 59, 24 m (tolerance 60 m).",
+      "Clipped Monument Avenue between Bremo Road and Treboy Avenue: 2.94 mi, 75 vertices simplified to 5."
+    ],
+    "wayCount": 58,
+    "chainLengths": [
+      298
+    ],
+    "bridgedGapsMetres": [
+      15,
+      59,
+      24
+    ],
+    "lengthMiles": 2.94,
+    "rawVertices": 75,
+    "resolved": true,
+    "source": "overpass-way-geometry",
+    "geometry": [
+      [
+        -77.51257,
+        37.58507
+      ],
+      [
+        -77.5308,
+        37.59596
+      ],
+      [
+        -77.53072,
+        37.59607
+      ],
+      [
+        -77.52983,
+        37.59556
+      ],
+      [
+        -77.50623,
+        37.58148
+      ]
+    ]
+  },
+  {
+    "key": "libbie-avenue-road-diet",
+    "kind": "segment",
+    "notes": [
+      "Clipped Libbie Avenue between West Broad Street and Bethlehem Road: 0.48 mi, 26 vertices simplified to 4."
+    ],
+    "wayCount": 39,
+    "chainLengths": [
+      102,
+      81
+    ],
+    "bridgedGapsMetres": [],
+    "lengthMiles": 0.48,
+    "rawVertices": 26,
+    "resolved": true,
+    "source": "overpass-way-geometry",
+    "geometry": [
+      [
+        -77.50389,
+        37.59002
+      ],
+      [
+        -77.50074,
+        37.59254
+      ],
+      [
+        -77.49961,
+        37.5947
+      ],
+      [
+        -77.49867,
+        37.59548
+      ]
+    ]
+  },
+  {
+    "key": "dumbarton-road-improvements",
+    "kind": "segment",
+    "notes": [
+      "OSM splits this road into 3 disconnected pieces; rejoined 2 gap(s) of 13, 17 m (tolerance 60 m).",
+      "12 of 103 vertices fall outside Henrico — dropped."
+    ],
+    "wayCount": 24,
+    "chainLengths": [
+      156
+    ],
+    "bridgedGapsMetres": [
+      13,
+      17
+    ],
+    "resolved": false
+  },
+  {
+    "key": "hilliard-road-improvements",
+    "kind": "segment",
+    "notes": [
+      "Clipped Hilliard Road between Lakeside Avenue and Brook Road: 0.76 mi, 34 vertices simplified to 2."
+    ],
+    "wayCount": 29,
+    "chainLengths": [
+      89,
+      33
+    ],
+    "bridgedGapsMetres": [],
+    "lengthMiles": 0.76,
+    "rawVertices": 34,
+    "resolved": true,
+    "source": "overpass-way-geometry",
+    "geometry": [
+      [
+        -77.47083,
+        37.61686
+      ],
+      [
+        -77.45703,
+        37.6176
+      ]
+    ]
+  },
+  {
+    "key": "creighton-road-improvements",
+    "kind": "segment",
+    "notes": [
+      "OSM splits this road into 10 disconnected pieces; rejoined 3 gap(s) of 37, 21, 37 m (tolerance 60 m).",
+      "Clipped Creighton Road between Sandy Lane and North Laburnum Avenue: 0.37 mi, 22 vertices simplified to 4."
+    ],
+    "wayCount": 50,
+    "chainLengths": [
+      118,
+      107,
+      106,
+      36,
+      32,
+      26,
+      19
+    ],
+    "bridgedGapsMetres": [
+      37,
+      21,
+      37
+    ],
+    "lengthMiles": 0.37,
+    "rawVertices": 22,
+    "resolved": true,
+    "source": "overpass-way-geometry",
+    "geometry": [
+      [
+        -77.38124,
+        37.5591
+      ],
+      [
+        -77.37888,
+        37.56084
+      ],
+      [
+        -77.37794,
+        37.56115
+      ],
+      [
+        -77.37557,
+        37.56149
+      ]
+    ]
+  },
+  {
+    "key": "ridge-road-safety-mobility",
+    "kind": "segment",
+    "notes": [
+      "OSM splits this road into 5 disconnected pieces; rejoined 1 gap(s) of 8 m (tolerance 60 m).",
+      "Clipped Ridge Road between Greene Ridge Road and North Ridge Road: 0.5 mi, 32 vertices simplified to 3."
+    ],
+    "wayCount": 11,
+    "chainLengths": [
+      86,
+      54,
+      18,
+      15
+    ],
+    "bridgedGapsMetres": [
+      8
+    ],
+    "lengthMiles": 0.5,
+    "rawVertices": 32,
+    "resolved": true,
+    "source": "overpass-way-geometry",
+    "geometry": [
+      [
+        -77.56142,
+        37.58746
+      ],
+      [
+        -77.5568,
+        37.58411
+      ],
+      [
+        -77.55491,
+        37.58239
+      ]
+    ]
+  },
+  {
+    "key": "raintree-drive-sidewalk",
+    "kind": "segment",
+    "notes": [
+      "Clipped Raintree Drive between Falconbridge Drive and Raintree Commons Drive: 0.25 mi, 4 vertices simplified to 2."
+    ],
+    "wayCount": 4,
+    "chainLengths": [
+      56
+    ],
+    "bridgedGapsMetres": [],
+    "lengthMiles": 0.25,
+    "rawVertices": 4,
+    "resolved": true,
+    "source": "overpass-way-geometry",
+    "geometry": [
+      [
+        -77.59749,
+        37.61532
+      ],
+      [
+        -77.59613,
+        37.6119
+      ]
+    ]
+  },
+  {
+    "key": "ridge-road-sidewalk-phase1",
+    "kind": "segment",
+    "notes": [
+      "OSM splits this road into 5 disconnected pieces; rejoined 1 gap(s) of 8 m (tolerance 60 m).",
+      "Cross-street node missing (Old Providence Circle: 0, North Ridge Road: 1)."
+    ],
+    "wayCount": 11,
+    "chainLengths": [
+      86,
+      54,
+      18,
+      15
+    ],
+    "bridgedGapsMetres": [
+      8
+    ],
+    "resolved": false
   }
 ]

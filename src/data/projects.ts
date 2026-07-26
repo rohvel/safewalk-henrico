@@ -49,3 +49,19 @@ export function hasLocation(p: Project): boolean {
 export function findProject(id: string): Project | undefined {
   return projects.find((p) => p.id === id)
 }
+
+/**
+ * The latest month any project entry was first publicly announced.
+ *
+ * Every dateAnnounced traces back to a specific county publication — almost
+ * always a "Word on the Street" newsletter issue — so the newest one of
+ * these IS, mechanically, the newest county publication this dataset has
+ * ingested. That newsletter series ran March–September 2024 and was then
+ * discontinued, so today this resolves to "2024-09-01" — but it is computed
+ * from the data, not written down as a literal, so the day a future update
+ * adds a project sourced from a newer publication, every "data reflects
+ * publications through..." note on the site corrects itself automatically.
+ */
+export function dataCutoffDate(): string {
+  return projects.reduce((max, p) => (p.dateAnnounced > max ? p.dateAnnounced : max), '0000-00-00')
+}

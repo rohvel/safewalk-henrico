@@ -186,7 +186,7 @@
   bottom: calc(96px + var(--s-2)); /* clear the peek-height bottom sheet */
   z-index: 8;
   margin: 0;
-  max-width: min(92%, 340px);
+  max-width: min(92%, 380px);
   padding: 5px 10px;
   background: color-mix(in srgb, var(--paper) 92%, transparent);
   border: 1px solid var(--line);
@@ -205,7 +205,7 @@
 @media (min-width: 760px) {
   .map-disclaimer {
     bottom: var(--s-2);
-    max-width: 320px;
+    max-width: 360px;
   }
 }
 
@@ -788,6 +788,14 @@
   margin-top: 6px;
   font-size: 12.5px;
   color: var(--ink-soft);
+}
+
+/* "as of <month year>" — when this row's status was last confirmed, not
+   necessarily its current truth. Quieter than the surrounding meta text so
+   it reads as a footnote, not a headline claim. */
+.list-row__asof {
+  font-size: 11px;
+  opacity: 0.8;
 }
 
 .list-empty {

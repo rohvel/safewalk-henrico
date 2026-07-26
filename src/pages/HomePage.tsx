@@ -7,13 +7,14 @@
  * map area explains itself and the list/detail UI keeps working.
  */
 import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
-import projects from '../data/projects'
+import projects, { dataCutoffDate } from '../data/projects'
 import crashContext from '../data/crashContext.json'
 import type { Project } from '../types'
 import type { Filters } from '../lib/urlState'
 import { DEFAULT_FILTERS, isYearPossiblyPartial } from '../lib/urlState'
 import { useCrashData, useSchoolData, useBoundaryData } from '../lib/useGeoData'
 import type { CrashProperties } from '../types'
+import { formatMonthYear } from '../lib/format'
 import StatStrip from '../components/StatStrip'
 import type { CrashContextFigures } from '../components/StatStrip'
 import MapControls from '../components/MapControls'
@@ -435,9 +436,13 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
       </div>
 
       {/* Always-visible disclaimer on the map itself, so a visitor who never
-          leaves the map still sees this isn't official county data. */}
+          leaves the map still sees this isn't official county data — and how
+          current the project statuses actually are. The cutoff month is
+          derived from the data (dataCutoffDate), not hardcoded, so it can
+          never silently drift out of sync with what's actually loaded. */}
       <p className="map-disclaimer">
-        Independent student project — not official county data.{' '}
+        Independent student project — not official county data. Project statuses reflect county
+        publications through {formatMonthYear(dataCutoffDate())}.{' '}
         <a href="#/about">About &amp; sources</a>
       </p>
     </main>

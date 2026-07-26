@@ -92,8 +92,12 @@ export default function ProjectDetail({ project: p, onClose }: Props) {
         <div className="day-counter day-counter--secondary">
           <span className="num">{daysStatus.toLocaleString('en-US')}</span>
           <span className="day-counter__label">
-            {daysStatus === 1 ? 'day' : 'days'} since last status change (
-            {STATUS_LABEL[p.status].toLowerCase()}, {formatDate(p.dateStatusUpdated)})
+            {daysStatus === 1 ? 'day' : 'days'} since this status was last confirmed
+            <br />
+            <span style={{ opacity: 0.8 }}>
+              {STATUS_LABEL[p.status]} as of {formatDate(p.dateStatusUpdated)} — the county may
+              have updated it since
+            </span>
           </span>
         </div>
 

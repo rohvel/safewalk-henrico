@@ -25,6 +25,12 @@ export function formatDate(isoDate: string): string {
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
+/** "2024-09-01" → "September 2024" */
+export function formatMonthYear(isoDate: string): string {
+  const d = new Date(`${isoDate}T00:00:00`)
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
+}
+
 /** "1 day" / "412 days" */
 export function pluralDays(n: number): string {
   return `${n.toLocaleString('en-US')} ${n === 1 ? 'day' : 'days'}`
