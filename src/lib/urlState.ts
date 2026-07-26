@@ -119,6 +119,40 @@ const DEFAULT_YEAR_MAX = isYearPossiblyPartial(YEAR_RANGE.max)
   ? Math.max(YEAR_RANGE.min, YEAR_RANGE.max - 1)
   : YEAR_RANGE.max
 
+/**
+ * Viewport width below which this counts as a phone-sized screen. Matches
+ * the 760px breakpoint the stylesheet already uses to switch the map UI
+ * from floating desktop panels to the mobile bottom sheet.
+ */
+const NARROW_VIEWPORT_PX = 760
+
+/**
+ * Captured once, at module load, rather than read per call.
+ *
+ * A "default" is a decision made when the page opens; re-deriving it on
+ * every read would mean rotating a phone silently changed what the
+ * defaults *are* mid-session, which could flip a layer the visitor never
+ * touched. Sampling once keeps defaults stable for the life of the tab —
+ * an explicit `layers` param, and any toggle the visitor flips, still
+ * always wins over it.
+ */
+const OPENED_ON_NARROW_VIEWPORT =
+  typeof window !== 'undefined' && window.innerWidth < NARROW_VIEWPORT_PX
+
+/**
+ * Default layer visibility.
+ *
+ * Schools default OFF on phone-sized screens: 68 extra marks are useful
+ * when you are examining one neighbourhood, but at the county-wide view a
+ * phone opens on they are context for context, crowding out the projects
+ * this site is actually about. The toggle stays in the same place in the
+ * Layers section for everyone — this changes the starting state, not what
+ * is available.
+ */
+export function defaultLayers(): Filters['layers'] {
+  return { projects: true, crashes: true, schools: !OPENED_ON_NARROW_VIEWPORT }
+}
+
 export const DEFAULT_FILTERS: Filters = {
   districts: [...DISTRICTS],
   statuses: [...STATUSES],
@@ -131,7 +165,7 @@ export const DEFAULT_FILTERS: Filters = {
   trafficControl: '',
   hitRunOnly: false,
   timeBands: [...TIME_BANDS],
-  layers: { projects: true, crashes: true, schools: true },
+  layers: defaultLayers(),
   goalDismissed: false,
   listOpen: false,
 }
@@ -245,10 +279,18 @@ export function writeFilters(f: Filters, base?: URLSearchParams): URLSearchParam
     'years',
     f.yearMin === YEAR_RANGE.min && f.yearMax === DEFAULT_YEAR_MAX ? null : `${f.yearMin}-${f.yearMax}`,
   )
-  const allOn = f.layers.projects && f.layers.crashes && f.layers.schools
+  // Compared against defaultLayers(), not against "all three on", so the
+  // param stays absent whenever the visitor is simply sitting on the
+  // defaults for their screen — otherwise every phone visit would
+  // immediately rewrite its own URL to ?layers=projects,crashes purely
+  // because Schools starts off there.
+  const layerDefaults = defaultLayers()
+  const layersAreDefault = (['projects', 'crashes', 'schools'] as const).every(
+    (k) => f.layers[k] === layerDefaults[k],
+  )
   setOrDelete(
     'layers',
-    allOn
+    layersAreDefault
       ? null
       : (['projects', 'crashes', 'schools'] as const).filter((k) => f.layers[k]).join(','),
   )

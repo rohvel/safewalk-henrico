@@ -676,6 +676,20 @@
   box-shadow: 0 0 0 1px var(--line);
 }
 
+/* Crash-density heatmap: a soft radial stain in the same signal red the
+   map's heatmap ramp uses, so the legend swatch and the map agree. */
+.legend-heat {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--crash) 52%, transparent) 0%,
+    color-mix(in srgb, var(--crash) 30%, transparent) 45%,
+    transparent 75%
+  );
+}
+
 /* Legend swatches for the "example" map styles (dashed line + hollow point). */
 .legend-line--example {
   display: inline-block;

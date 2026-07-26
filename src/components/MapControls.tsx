@@ -209,7 +209,16 @@ export default function MapControls({ filters, onChange }: Props) {
           <span className="legend__glyph">
             <span className="dot-fatal" />
           </span>
-          <span>Fatal crash</span>
+          <span>Fatal crash — always shown individually, at every zoom</span>
+        </div>
+        <div className="legend__item">
+          <span className="legend__glyph">
+            <span className="legend-heat" />
+          </span>
+          <span>
+            Crash density — zoomed out, crashes other than fatal ones draw as this shading
+            instead of separate dots. Zoom in and the individual dots return.
+          </span>
         </div>
         <div className="legend__item">
           <span className="legend__glyph">

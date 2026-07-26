@@ -24,6 +24,19 @@
  *      Positron basemap, and (c) pixels matching this app's actual data
  *      colors (crash red, the four status colors) — i.e. the basemap AND
  *      the data layers both actually painted, not just one or neither.
+ *   5. Drives the map across the crash heatmap⇄points handoff and asserts
+ *      both halves of it: the heatmap paints at the default county-wide
+ *      zoom, and individual crash circles paint above the threshold with
+ *      the heatmap gone. Pixel colour alone can't tell those two states
+ *      apart — a red wash and a red dot are both "crash red" — so this
+ *      step asks the map which features each layer actually rendered.
+ *
+ *      Layers that are merely faded to transparent still report rendered
+ *      features (queryRenderedFeatures ignores paint opacity), which is
+ *      exactly why the keyboard crosshair keeps working under the
+ *      heatmap — so "is it painted" is asserted from pixels and "is it
+ *      the right layer" from feature counts, never one standing in for
+ *      the other.
  *
  * Run it with:   npm run verify:map
  *                npm run verify:map -- --skip-build   (reuse an existing dist/)
@@ -261,8 +274,80 @@ async function main() {
     if (failed.length > 0) {
       failed.forEach(([, msg]) => fail(msg))
     } else {
-      log('✓ PASS — the map renders: basemap and data layers both produced real pixels.')
+      log('✓ pixels — basemap and data layers both produced real pixels.')
     }
+
+    // ---- The heatmap ⇄ points handoff -------------------------------
+    log('')
+    log('Checking the crash heatmap handoff...')
+    const handoff = await page.evaluate(async (zoomAbove) => {
+      const map = window.__swMap
+      if (!map) {
+        return { error: 'window.__swMap is not exposed — the ?verifyMap=1 hook did not take effect' }
+      }
+      const count = (id) => {
+        if (!map.getLayer(id)) return -1
+        try {
+          return map.queryRenderedFeatures({ layers: [id] }).length
+        } catch {
+          return -1
+        }
+      }
+      const settle = () =>
+        new Promise((res) => {
+          if (map.loaded() && !map.isMoving()) return setTimeout(res, 400)
+          map.once('idle', () => setTimeout(res, 400))
+        })
+
+      await settle()
+      const atDefault = { zoom: map.getZoom(), heat: count('crash-heat'), ped: count('crash-ped') }
+
+      // Zoom in on somewhere that actually has crashes, so "no circles" can
+      // never be a false alarm caused by landing on an empty patch of county.
+      const anyCrash = map.queryRenderedFeatures({ layers: ['crash-ped'] })[0]
+      const target = anyCrash ? anyCrash.geometry.coordinates : map.getCenter().toArray()
+      map.jumpTo({ center: target, zoom: zoomAbove })
+      await settle()
+      const above = { zoom: map.getZoom(), heat: count('crash-heat'), ped: count('crash-ped') }
+
+      return { atDefault, above }
+    }, 14)
+
+    if (handoff.error) {
+      fail(handoff.error)
+    } else {
+      log(`  At default zoom ${handoff.atDefault.zoom.toFixed(2)}:  heatmap features ${handoff.atDefault.heat}, crash circles ${handoff.atDefault.ped}`)
+      log(`  At zoom ${handoff.above.zoom.toFixed(2)}:            heatmap features ${handoff.above.heat}, crash circles ${handoff.above.ped}`)
+      log('')
+
+      const handoffChecks = [
+        [
+          handoff.atDefault.heat > 0,
+          `the crash heatmap paints at the default county-wide zoom (got ${handoff.atDefault.heat} rendered heatmap features)`,
+        ],
+        [
+          handoff.atDefault.ped > 0,
+          'individual crashes stay queryable under the heatmap, so the keyboard crosshair can still ' +
+            `reach them below the threshold (got ${handoff.atDefault.ped})`,
+        ],
+        [
+          handoff.above.heat === 0,
+          `the heatmap is fully gone above the threshold (got ${handoff.above.heat} rendered heatmap features at zoom 14)`,
+        ],
+        [
+          handoff.above.ped > 0,
+          `individual crash circles render above the threshold (got ${handoff.above.ped})`,
+        ],
+      ]
+      const handoffFailed = handoffChecks.filter(([ok]) => !ok)
+      if (handoffFailed.length > 0) {
+        handoffFailed.forEach(([, msg]) => fail(msg))
+      } else {
+        log('✓ handoff — heatmap below the threshold, individual circles above it.')
+      }
+    }
+
+    if (!process.exitCode) log('\n✓ PASS')
   } finally {
     await browser?.close()
     preview.kill()

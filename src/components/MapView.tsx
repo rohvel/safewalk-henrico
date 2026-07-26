@@ -107,6 +107,7 @@ const STATUS_COLOR: ExpressionSpecification = [
 const LAYER_ORDER = [
   'henrico-mask-fill',
   'henrico-boundary-line',
+  'crash-heat',
   'crash-schoolzone-halo',
   'crash-fatal-halo',
   'crash-ped',
@@ -383,15 +384,127 @@ function crashRadius(fatalBoost: number, base: [number, number]): ExpressionSpec
   ]
 }
 
-const CRASH_OPACITY: ExpressionSpecification = [
-  'interpolate',
-  ['linear'],
-  ['zoom'],
-  9,
-  0.4,
-  15,
-  0.75,
-]
+/**
+ * ---- Heatmap ⇄ points handoff ----------------------------------------
+ *
+ * At county-wide zoom, 976 crash dots stop being 976 readable marks and
+ * become one undifferentiated stain — and, worse, they bury the projects
+ * that are actually this site's subject. Below HEAT_FADE_START the crash
+ * layer therefore renders as a density heatmap; above HEAT_FADE_END it is
+ * exactly the individual-point encoding it has always been. In between the
+ * two cross-fade.
+ *
+ * Why 12 → 13 specifically. At Henrico's latitude a pixel covers ~124,000 /
+ * 2^zoom metres, so a ~7px gap (the point at which two 2.5–4.5px dots stop
+ * touching) corresponds to ~212 m at z12 but only ~106 m at z13. Crashes
+ * cluster along corridors at roughly 100 m spacing, so z13 is about where
+ * neighbouring dots genuinely separate — and z12 is about where they are
+ * hopelessly merged. Confirmed by eye against the densest corridor in the
+ * data at 390px wide, which is the worst case: at z13 its ~62 dots are
+ * individually resolvable, at z12 they are not.
+ *
+ * The initial fitBounds camera lands at ~z9.96 on a 1280px desktop and
+ * ~z9.14 on a 390px phone (measured, not derived — the county's aspect
+ * ratio means height is the binding constraint), so every default view is
+ * comfortably in heatmap territory, which is the reported problem, and the
+ * handoff arrives once a visitor zooms to roughly a one-mile view.
+ *
+ * The band is a cross-fade rather than a hard switch so the transition
+ * reads as a dissolve instead of a pop.
+ */
+const HEAT_FADE_START = 12
+const HEAT_FADE_END = 13
+
+/**
+ * Fatal crashes are exempt from the fade and draw as individual points at
+ * every zoom, over the heatmap.
+ *
+ * Two reasons. Practically, they are 95 of 976 records — sparse enough that
+ * showing them county-wide costs almost none of the legibility this change
+ * is buying. Ethically, a death is a discrete event, not a contribution to
+ * a density gradient: dissolving fatalities into a colour ramp is exactly
+ * the flattening this site's crash-rendering conventions exist to avoid.
+ * Keeping them as marks also means the most consequential records stay
+ * individually inspectable — visually and via the keyboard crosshair —
+ * without a visitor having to discover that zooming in reveals more.
+ *
+ * They still contribute their (unweighted) share to the heatmap: the
+ * heatmap is a map of reported crash density, and silently dropping 95 of
+ * them from it would misstate that density.
+ */
+const IS_FATAL: ExpressionSpecification = ['==', ['get', 'sev'], 'fatal']
+
+/**
+ * Zoom range the original crash-recession curves are defined across. Every
+ * crash opacity has always run linearly from its z9 value to its z15 value;
+ * fadedByHandoff() below rebuilds exactly that line with extra stops, so
+ * these two numbers stay the single source of truth for the shape.
+ */
+const RECESSION_MIN_ZOOM = 9
+const RECESSION_MAX_ZOOM = 15
+
+/**
+ * A crash opacity curve that additionally fades non-fatal marks out below
+ * the heatmap handoff, while fatal marks keep the original curve at every
+ * zoom.
+ *
+ * Why it's written this way rather than as `['*', originalCurve, fade]`:
+ * MapLibre requires a `['zoom']` expression to be the OUTERMOST step or
+ * interpolate — nesting one inside `case` or `*` is rejected outright
+ * ("zoom expression may only be used as input to a top-level step or
+ * interpolate expression"), and because that rejection happens at
+ * addLayer() time it takes the whole layer down with it. So the zoom
+ * interpolation stays on the outside and the value at each stop is what
+ * varies by severity.
+ *
+ * The stops at RECESSION_MIN_ZOOM and RECESSION_MAX_ZOOM keep the original
+ * endpoints; the two extra stops at the handoff boundaries are computed on
+ * the same line, so at and above HEAT_FADE_END this evaluates to precisely
+ * the pre-heatmap curve for every crash, fatal or not.
+ */
+function fadedByHandoff(lo: number, hi: number): ExpressionSpecification {
+  const at = (z: number) =>
+    lo + ((hi - lo) * (z - RECESSION_MIN_ZOOM)) / (RECESSION_MAX_ZOOM - RECESSION_MIN_ZOOM)
+  return [
+    'interpolate',
+    ['linear'],
+    ['zoom'],
+    RECESSION_MIN_ZOOM,
+    ['case', IS_FATAL, at(RECESSION_MIN_ZOOM), 0],
+    HEAT_FADE_START,
+    ['case', IS_FATAL, at(HEAT_FADE_START), 0],
+    HEAT_FADE_END,
+    at(HEAT_FADE_END),
+    RECESSION_MAX_ZOOM,
+    at(RECESSION_MAX_ZOOM),
+  ]
+}
+
+/**
+ * The crash dot/ring opacity: the original 0.4→0.75 recession, gated by the
+ * handoff.
+ *
+ * Note this fades points to *transparent*, never to `visibility: none`.
+ * queryRenderedFeatures hit-tests rendered geometry and does not consult
+ * paint opacity, so the keyboard crosshair still finds — and Enter still
+ * opens — every individual crash underneath the heatmap. Hiding the layers
+ * outright would have made that data unreachable without a mouse below the
+ * threshold, which would be a real accessibility regression.
+ */
+const CRASH_POINT_OPACITY: ExpressionSpecification = fadedByHandoff(0.4, 0.75)
+
+/**
+ * '#b3261e' → 'rgba(179, 38, 30, a)', so the heatmap ramp is built from the
+ * same signal-red token as every other crash mark rather than a second
+ * hardcoded red that could drift away from it.
+ */
+function crashRGBA(alpha: number): string {
+  const h = COLORS.crash.replace('#', '')
+  const r = parseInt(h.slice(0, 2), 16)
+  const g = parseInt(h.slice(2, 4), 16)
+  const b = parseInt(h.slice(4, 6), 16)
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
 
 interface Props {
   projects: Project[] // already filtered by district/status
@@ -459,16 +572,20 @@ export default function MapView({
     ]
     for (const id of projectLayers)
       if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', vis(filters.layers.projects))
-    for (const id of ['crash-schoolzone-halo', 'crash-fatal-halo', 'crash-ped', 'crash-bike'])
+    for (const id of ['crash-heat', 'crash-schoolzone-halo', 'crash-fatal-halo', 'crash-ped', 'crash-bike'])
       if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', vis(filters.layers.crashes))
     if (map.getLayer('schools'))
       map.setLayoutProperty('schools', 'visibility', vis(filters.layers.schools))
 
     const sets = modeSets(filters)
+    const anyShown = [...new Set([...sets.ped, ...sets.bike])]
     if (map.getLayer('crash-ped')) map.setFilter('crash-ped', yearAndMode(filters, sets.ped))
     if (map.getLayer('crash-bike')) map.setFilter('crash-bike', yearAndMode(filters, sets.bike))
+    // The heatmap has to answer to exactly the same year/mode/school-zone
+    // filters as the dots it stands in for, or the density backdrop would
+    // quietly include crashes the visitor has filtered out.
+    if (map.getLayer('crash-heat')) map.setFilter('crash-heat', yearAndMode(filters, anyShown))
     if (map.getLayer('crash-fatal-halo')) {
-      const anyShown = [...new Set([...sets.ped, ...sets.bike])]
       map.setFilter('crash-fatal-halo', [
         'all',
         ['==', ['get', 'sev'], 'fatal'],
@@ -476,7 +593,6 @@ export default function MapView({
       ])
     }
     if (map.getLayer('crash-schoolzone-halo')) {
-      const anyShown = [...new Set([...sets.ped, ...sets.bike])]
       // Not gated on filters.schoolZoneOnly — this halo IS the "which of the
       // visible crashes are school-zone" signal, so it needs to render
       // whether or not the isolate-only checkbox is on (when it is, every
@@ -613,6 +729,59 @@ export default function MapView({
   }
 
   function addCrashLayers(map: MLMap) {
+    // Density backdrop for county-wide zoom — see the HEAT_FADE_START notes
+    // above for why this exists and where the handoff sits. Deliberately NOT
+    // in `interactive`: this is a rendering of the same crash source, not a
+    // new aggregate feature, so it never becomes its own click target and
+    // never swallows a click meant for a project or an individual crash.
+    addLayerOrdered(map, {
+      id: 'crash-heat',
+      type: 'heatmap',
+      source: 'crashes',
+      // Belt and braces with heatmap-opacity below: above the handoff the
+      // layer is both fully transparent and not drawn at all.
+      maxzoom: HEAT_FADE_END,
+      paint: {
+        // Every reported crash counts once. Weighting fatal crashes heavier
+        // would double-count them (they also draw as points at these zooms)
+        // and turn a density map into an alarm map.
+        'heatmap-weight': 1,
+        'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 8, 0.6, HEAT_FADE_END, 1.1],
+        // Single-hue ramp: only alpha really moves, so this reads as a quiet
+        // stain rather than the usual blue→red "hot spot" rainbow, and it
+        // can't be mistaken for a different semantic colour. Peak alpha is
+        // held low enough that project lines — which draw above it, over
+        // their own paper casing — stay clearly legible on top.
+        'heatmap-color': [
+          'interpolate',
+          ['linear'],
+          ['heatmap-density'],
+          0,
+          crashRGBA(0),
+          0.2,
+          crashRGBA(0.1),
+          0.4,
+          crashRGBA(0.22),
+          0.6,
+          crashRGBA(0.34),
+          0.8,
+          crashRGBA(0.44),
+          1,
+          crashRGBA(0.52),
+        ],
+        'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 8, 9, 11, 15, HEAT_FADE_END, 22],
+        'heatmap-opacity': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          HEAT_FADE_START,
+          1,
+          HEAT_FADE_END,
+          0,
+        ],
+      },
+    })
+
     // Sign-yellow outer ring marking school-zone crashes (Task 5: the
     // site's exact subject, 38 of 976 records 2017-2026 — surfaced with a
     // filter AND this permanent visual marker, since a legend entry with no
@@ -629,7 +798,11 @@ export default function MapView({
         'circle-color': 'rgba(0,0,0,0)',
         'circle-stroke-color': COLORS.yellow,
         'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 9, 1.6, 15, 2.4],
-        'circle-stroke-opacity': ['interpolate', ['linear'], ['zoom'], 9, 0.55, 15, 0.95],
+        // Faded with its dot: a school-zone ring left hanging over the
+        // heatmap with no dot inside it would read as a mark in its own
+        // right. Fatal crashes are exempt from the fade, so a crash that is
+        // both fatal and in a school zone still nests correctly at any zoom.
+        'circle-stroke-opacity': fadedByHandoff(0.55, 0.95),
       },
     })
     // dark outline that marks fatal crashes, drawn under the dot itself.
@@ -656,10 +829,10 @@ export default function MapView({
       paint: {
         'circle-radius': crashRadius(2, [2.5, 4.5]),
         'circle-color': COLORS.crash,
-        'circle-opacity': CRASH_OPACITY,
+        'circle-opacity': CRASH_POINT_OPACITY,
         'circle-stroke-color': '#ffffff',
         'circle-stroke-width': 1,
-        'circle-stroke-opacity': CRASH_OPACITY,
+        'circle-stroke-opacity': CRASH_POINT_OPACITY,
       },
     })
     addLayerOrdered(map, {
@@ -673,7 +846,7 @@ export default function MapView({
         'circle-color': 'rgba(0,0,0,0)',
         'circle-stroke-color': COLORS.crash,
         'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 9, 1.4, 15, 2.2],
-        'circle-stroke-opacity': CRASH_OPACITY,
+        'circle-stroke-opacity': CRASH_POINT_OPACITY,
       },
     })
   }
@@ -714,8 +887,12 @@ export default function MapView({
       return
     }
     mapRef.current = map
-    if (import.meta.env.DEV) {
-      // dev-only handle for debugging in the browser console
+    if (import.meta.env.DEV || verifyMap) {
+      // Handle for debugging in the browser console, and for
+      // scripts/verify-map.mjs to drive the map (zoom across the heatmap
+      // handoff) against a real production bundle. Gated on the same
+      // explicit ?verifyMap=1 opt-in as preserveDrawingBuffer above, so no
+      // real visitor ever gets it.
       ;(window as unknown as Record<string, unknown>).__swMap = map
     }
 
