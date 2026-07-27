@@ -183,6 +183,20 @@ export default function AboutPage() {
       </section>
 
       <section>
+        <h2>Putting the two datasets together</h2>
+        <p>
+          Because this site holds both the crash records and the projects with locations attached,
+          it can ask one question neither dataset answers alone: which stretches of road have
+          recorded the most crashes involving someone walking or biking, and which of those have no
+          project this site knows about. That is on the{' '}
+          <a href="#/analysis">corridor analysis page</a>, along with the method and — at some
+          length — what it cannot tell you. In particular a crash count is not a measure of danger,
+          and "no tracked project" means only that this site has no record of one, not that the
+          county has done nothing.
+        </p>
+      </section>
+
+      <section>
         <h2>Data currency</h2>
         <p>
           <strong>

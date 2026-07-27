@@ -39,6 +39,9 @@ const MODE_LABEL: Record<CrashProperties['mode'], string> = {
 type SortKey = 'year' | 'loc' | 'mode' | 'sev' | 'time' | 'light' | 'control' | 'school' | 'hitrun'
 type SortDir = 'asc' | 'desc'
 
+/** Merge travel-direction suffixes, matching scripts/analyze-corridors.mjs. */
+const stripDirection = (loc: string) => loc.replace(/\s+(EB|WB|NB|SB)$/, '').trim()
+
 /** Severity ordered by seriousness so sorting is meaningful, not alphabetical. */
 const SEV_ORDER: Record<CrashSeverity, number> = { fatal: 0, injury: 1, other: 2 }
 
@@ -73,6 +76,10 @@ export default function CrashesPage({ filters, onFiltersChange }: Props) {
       if (!filters.lights.includes(c.light)) return false
       if (filters.trafficControl !== '' && c.trafficControl !== filters.trafficControl) return false
       if (c.timeBand !== '' && !filters.timeBands.includes(c.timeBand)) return false
+      // Road filter, set when the corridor analysis links a row in here.
+      // Matched against the direction-merged name so "US 250" catches both
+      // "US 250 EB" and "US 250 WB", exactly as the analysis groups them.
+      if (filters.road !== '' && stripDirection(c.loc) !== filters.road) return false
       return true
     })
     const dir = sortDir === 'asc' ? 1 : -1
@@ -335,6 +342,22 @@ export default function CrashesPage({ filters, onFiltersChange }: Props) {
           </fieldset>
         </div>
       </section>
+
+      {filters.road !== '' && (
+        <p className="road-filter-note">
+          Filtered to <strong>{filters.road}</strong> — every direction of that road, across its
+          whole length in Henrico. Arrived from the{' '}
+          <a href="#/analysis">corridor analysis</a>, which counts shorter stretches, so it will
+          report fewer crashes than this.{' '}
+          <button
+            type="button"
+            className="btn btn--small"
+            onClick={() => onFiltersChange({ ...filters, road: '' })}
+          >
+            Show all roads
+          </button>
+        </p>
+      )}
 
       <p className="table-summary" role="status">
         Showing <strong>{rows.length.toLocaleString('en-US')}</strong> of{' '}

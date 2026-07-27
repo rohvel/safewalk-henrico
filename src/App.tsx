@@ -20,6 +20,7 @@ import Footer from './components/Footer'
 import HomePage from './pages/HomePage'
 import ProjectsPage from './pages/ProjectsPage'
 import CrashesPage from './pages/CrashesPage'
+import AnalysisPage from './pages/AnalysisPage'
 import AboutPage from './pages/AboutPage'
 import ToolsPage from './pages/ToolsPage'
 import ChangelogPage from './pages/ChangelogPage'
@@ -29,6 +30,7 @@ const TITLES: Record<string, string> = {
   '/': 'SafeWalk Henrico — Tracking promised pedestrian-safety projects',
   '/projects': 'All projects — SafeWalk Henrico',
   '/crashes': 'Reported crashes — SafeWalk Henrico',
+  '/analysis': 'Crashes vs projects by corridor — SafeWalk Henrico',
   '/about': 'About & methodology — SafeWalk Henrico',
   '/tools': 'Existing tools — SafeWalk Henrico',
   '/changelog': 'Changelog — SafeWalk Henrico',
@@ -76,6 +78,8 @@ export default function App() {
         <ProjectsPage filters={filters} onFiltersChange={setFilters} />
       ) : path === '/crashes' ? (
         <CrashesPage filters={filters} onFiltersChange={setFilters} />
+      ) : path === '/analysis' ? (
+        <AnalysisPage filters={filters} onFiltersChange={setFilters} />
       ) : path === '/about' ? (
         <AboutPage />
       ) : path === '/tools' ? (

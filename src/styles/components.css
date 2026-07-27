@@ -1089,6 +1089,82 @@
   font-size: 13.5px;
 }
 
+/* ---------- Corridor analysis ---------- */
+
+/*
+ * The caveat block on the analysis page. Given a visual weight close to the
+ * table itself on purpose: on the one page here that interprets rather than
+ * reports, the limits of the reading are not a footnote to it.
+ */
+.callout {
+  margin: var(--s-4) 0;
+  padding: var(--s-3);
+  background: var(--concrete);
+  border-radius: var(--radius-lg);
+}
+
+.callout--warn {
+  border-left: 4px solid var(--yellow);
+}
+
+.callout h2 {
+  margin-top: 0;
+  font-size: 16px;
+}
+
+.callout ul {
+  margin: 0;
+  padding-left: 1.1em;
+}
+
+.callout li + li {
+  margin-top: var(--s-2);
+}
+
+.method-list li + li {
+  margin-top: var(--s-2);
+}
+
+/* Row label: a <th scope="row">, so it needs the normal cell treatment
+   rather than the bold centred default. */
+.cell-label {
+  text-align: left;
+  font-weight: 600;
+  white-space: normal;
+  min-width: 12rem;
+}
+
+.cell-list {
+  margin: 0;
+  padding-left: 1em;
+}
+
+.cell-muted {
+  color: var(--ink-soft);
+}
+
+.cell-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+/* Explains a pre-applied road filter to someone who arrived from a link,
+   rather than leaving them to wonder why the table looks short. */
+.road-filter-note {
+  margin: var(--s-3) 0 0;
+  padding: var(--s-2) var(--s-3);
+  background: var(--concrete);
+  border-left: 3px solid var(--ink-soft);
+  border-radius: var(--radius);
+  font-size: 13.5px;
+}
+
+.road-filter-note .btn {
+  margin-left: var(--s-2);
+}
+
 /* ---------- Project list text filter ---------- */
 
 .list-filter {

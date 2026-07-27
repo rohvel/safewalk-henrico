@@ -1,5 +1,14 @@
 [
   {
+    "date": "2026-07-26",
+    "entries": [
+      "New corridor analysis page: the stretches of road with the most recorded pedestrian and cyclist crashes, and whether any tracked project falls within 100 m of them.",
+      "Crash records are grouped by VDOT's own route name, then cut into stretches wherever there is a gap of more than 300 m between crashes on that road — a whole road like US 250 runs nine miles and one answer for all of it would mean nothing.",
+      "Crash counts are not a measure of danger, and \"no tracked project\" means only that this site has no record of one. Both limits are stated above the table, not after it.",
+      "Address search on the map, a text filter on the project list, and satellite links on project pages."
+    ]
+  },
+  {
     "date": "2026-07-25",
     "entries": [
       "All six example projects replaced with 7 real Three Chopt District projects, extracted from the county's \"Word on the Street\" newsletters (March–September 2024).",

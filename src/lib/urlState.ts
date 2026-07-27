@@ -95,6 +95,24 @@ export interface Filters {
    * only words the visitor chose to describe a project, never where they are.
    */
   projectQuery: string
+  /**
+   * Crash-table road filter, matched against the direction-merged route name
+   * ("US 250" matches both "US 250 EB" and "US 250 WB"). Set by the corridor
+   * analysis when it links a row into the table. '' = all roads.
+   */
+  road: string
+  /** Corridor-analysis table: sort column, direction, text filter. */
+  analysisSort: string
+  analysisDir: 'asc' | 'desc'
+  analysisQuery: string
+  /** Corridor analysis: show only segments with no tracked project match. */
+  analysisNoProjectOnly: boolean
+  /**
+   * Map camera target as [minLng, minLat, maxLng, maxLat], or null. Lets the
+   * analysis point the existing map at a segment without a second map or a
+   * new marker type. Not personal data — a public road, not an address.
+   */
+  focus: [number, number, number, number] | null
   goalDismissed: boolean
   listOpen: boolean
 }
@@ -178,6 +196,12 @@ export const DEFAULT_FILTERS: Filters = {
   timeBands: [...TIME_BANDS],
   layers: defaultLayers(),
   projectQuery: '',
+  road: '',
+  analysisSort: 'crashes',
+  analysisDir: 'desc',
+  analysisQuery: '',
+  analysisNoProjectOnly: false,
+  focus: null,
   goalDismissed: false,
   listOpen: false,
 }
@@ -257,6 +281,24 @@ export function readFilters(params: URLSearchParams): Filters {
   const q = params.get('q')
   if (q) f.projectQuery = q
 
+  const road = params.get('road')
+  if (road) f.road = road
+
+  const asort = params.get('asort')
+  if (asort) f.analysisSort = asort
+  if (params.get('adir') === 'asc') f.analysisDir = 'asc'
+  const aq = params.get('aq')
+  if (aq) f.analysisQuery = aq
+  f.analysisNoProjectOnly = params.get('agap') === 'only'
+
+  const focus = params.get('focus')
+  if (focus) {
+    const parts = focus.split(',').map(Number)
+    if (parts.length === 4 && parts.every(Number.isFinite)) {
+      f.focus = [parts[0], parts[1], parts[2], parts[3]]
+    }
+  }
+
   f.goalDismissed = params.get('goal') === 'off'
   f.listOpen = params.get('list') === 'open'
   return f
@@ -310,6 +352,12 @@ export function writeFilters(f: Filters, base?: URLSearchParams): URLSearchParam
       : (['projects', 'crashes', 'schools'] as const).filter((k) => f.layers[k]).join(','),
   )
   setOrDelete('q', f.projectQuery.trim() === '' ? null : f.projectQuery.trim())
+  setOrDelete('road', f.road.trim() === '' ? null : f.road.trim())
+  setOrDelete('asort', f.analysisSort === DEFAULT_FILTERS.analysisSort ? null : f.analysisSort)
+  setOrDelete('adir', f.analysisDir === DEFAULT_FILTERS.analysisDir ? null : f.analysisDir)
+  setOrDelete('aq', f.analysisQuery.trim() === '' ? null : f.analysisQuery.trim())
+  setOrDelete('agap', f.analysisNoProjectOnly ? 'only' : null)
+  setOrDelete('focus', f.focus ? f.focus.join(',') : null)
   setOrDelete('goal', f.goalDismissed ? 'off' : null)
   setOrDelete('list', f.listOpen ? 'open' : null)
   return params

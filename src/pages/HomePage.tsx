@@ -328,6 +328,7 @@ export default function HomePage({ filters, onFiltersChange, selected }: Props) 
             filters={filters}
             selected={selected}
             searchLocation={searchPlace?.coords ?? null}
+            focus={filters.focus}
             onMapFailed={() => setMapFailed(true)}
           />
         </Suspense>

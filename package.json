@@ -16,6 +16,7 @@
     "fetch-schools": "node scripts/fetch-schools.mjs",
     "fetch-boundary": "node scripts/fetch-boundary.mjs",
     "geocode-projects": "node scripts/geocode-projects.mjs",
+    "analyze-corridors": "node scripts/analyze-corridors.mjs",
     "format:check": "prettier --check .",
     "make-sample": "node scripts/make-sample-crashes.mjs",
     "verify:map": "node scripts/verify-map.mjs"

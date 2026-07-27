@@ -536,6 +536,12 @@ interface Props {
    * or written to the URL — see MapSearch for why.
    */
   searchLocation: [number, number] | null
+  /**
+   * [minLng, minLat, maxLng, maxLat] to frame on arrival, or null. Used by
+   * the corridor analysis to point this map at a stretch of road without
+   * building a second map or inventing another marker type.
+   */
+  focus: [number, number, number, number] | null
   onMapFailed: () => void
 }
 
@@ -547,6 +553,7 @@ export default function MapView({
   filters,
   selected,
   searchLocation,
+  focus,
   onMapFailed,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -1347,6 +1354,25 @@ export default function MapView({
     if (reducedMotion) map.jumpTo(target)
     else map.flyTo({ ...target, duration: 1200 })
   }, [searchLocation])
+
+  // ----- frame a corridor stretch arrived at from the analysis -----
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || !focus) return
+    const reducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const [minLng, minLat, maxLng, maxLat] = focus
+    map.fitBounds(
+      [
+        [minLng, minLat],
+        [maxLng, maxLat],
+      ],
+      // Generous padding: the stretch should sit inside the frame with its
+      // surroundings visible, not pressed against the edges.
+      { padding: 90, maxZoom: 15, duration: reducedMotion ? 0 : 900 },
+    )
+  }, [focus])
 
   // Remove the pin if this component unmounts mid-search.
   useEffect(

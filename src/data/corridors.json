@@ -1,0 +1,827 @@
+{
+  "generated": "2026-07-27",
+  "method": {
+    "segmentGapMetres": 300,
+    "matchRadiusMetres": 100,
+    "minCrashes": 5
+  },
+  "totals": {
+    "crashes": 976,
+    "crashesWithRoadName": 960,
+    "crashesWithoutRoadName": 16,
+    "segmentsAll": 519,
+    "segmentsPublished": 33,
+    "crashesInPublishedSegments": 321,
+    "projects": 30,
+    "projectsWithLocation": 21,
+    "projectsWithoutLocation": 9,
+    "crashYearMin": 2017,
+    "crashYearMax": 2026
+  },
+  "segments": [
+    {
+      "corridor": "US 250",
+      "crashes": 26,
+      "fatal": 2,
+      "spreadMetres": 1336,
+      "centre": [
+        -77.52732,
+        37.62253
+      ],
+      "bbox": [
+        -77.53178,
+        37.61704,
+        -77.52278,
+        37.62671
+      ],
+      "yearMin": 2017,
+      "yearMax": 2025,
+      "matchedProjects": [],
+      "nearestProjectId": "parham-road-pedestrian-transit-improvements",
+      "nearestProjectName": "Parham Road Pedestrian and Transit Improvements",
+      "nearestProjectMetres": 486,
+      "streetName": "West Broad Street",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "US 250",
+      "crashes": 23,
+      "fatal": 3,
+      "spreadMetres": 958,
+      "centre": [
+        -77.4976,
+        37.58494
+      ],
+      "bbox": [
+        -77.50214,
+        37.58208,
+        -77.49451,
+        37.58861
+      ],
+      "yearMin": 2017,
+      "yearMax": 2025,
+      "matchedProjects": [],
+      "nearestProjectId": "libbie-avenue-road-diet",
+      "nearestProjectName": "Libbie Avenue Road Diet",
+      "nearestProjectMetres": 226,
+      "streetName": "West Broad Street",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "US 250",
+      "crashes": 19,
+      "fatal": 6,
+      "spreadMetres": 444,
+      "centre": [
+        -77.52001,
+        37.61157
+      ],
+      "bbox": [
+        -77.52081,
+        37.60961,
+        -77.51886,
+        37.61329
+      ],
+      "yearMin": 2017,
+      "yearMax": 2025,
+      "matchedProjects": [],
+      "nearestProjectId": "forest-avenue-skipwith-road-intersection",
+      "nearestProjectName": "Forest Avenue and Skipwith Road Intersection Improvements",
+      "nearestProjectMetres": 1721,
+      "streetName": "West Broad Street",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "SR 33",
+      "crashes": 18,
+      "fatal": 2,
+      "spreadMetres": 877,
+      "centre": [
+        -77.36498,
+        37.54617
+      ],
+      "bbox": [
+        -77.36924,
+        37.54458,
+        -77.36012,
+        37.54774
+      ],
+      "yearMin": 2017,
+      "yearMax": 2026,
+      "matchedProjects": [],
+      "nearestProjectId": "creighton-road-realignment",
+      "nearestProjectName": "Creighton Road Realignment and Improvements",
+      "nearestProjectMetres": 1926,
+      "streetName": "Nine Mile Road",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "US 360",
+      "crashes": 16,
+      "fatal": 2,
+      "spreadMetres": 1513,
+      "centre": [
+        -77.39833,
+        37.57376
+      ],
+      "bbox": [
+        -77.4029,
+        37.56719,
+        -77.39471,
+        37.57915
+      ],
+      "yearMin": 2018,
+      "yearMax": 2025,
+      "matchedProjects": [],
+      "nearestProjectId": "creighton-road-realignment",
+      "nearestProjectName": "Creighton Road Realignment and Improvements",
+      "nearestProjectMetres": 2095,
+      "streetName": "Mechanicsville Turnpike",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "US 60",
+      "crashes": 14,
+      "fatal": 0,
+      "spreadMetres": 936,
+      "centre": [
+        -77.37293,
+        37.51841
+      ],
+      "bbox": [
+        -77.37859,
+        37.51827,
+        -77.36799,
+        37.51869
+      ],
+      "yearMin": 2017,
+      "yearMax": 2025,
+      "matchedProjects": [],
+      "nearestProjectId": "rocketts-landing-capital-trail-lighting",
+      "nearestProjectName": "Capital Trail Lighting at Rocketts Landing",
+      "nearestProjectMetres": 3325,
+      "streetName": "Williamsburg Road",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "US 250",
+      "crashes": 13,
+      "fatal": 2,
+      "spreadMetres": 1570,
+      "centre": [
+        -77.61286,
+        37.65161
+      ],
+      "bbox": [
+        -77.62176,
+        37.65,
+        -77.60449,
+        37.65353
+      ],
+      "yearMin": 2020,
+      "yearMax": 2025,
+      "matchedProjects": [],
+      "nearestProjectId": "sadler-road-improvements",
+      "nearestProjectName": "Sadler Road Improvements",
+      "nearestProjectMetres": 1168,
+      "streetName": "West Broad Street",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "US 1",
+      "crashes": 12,
+      "fatal": 2,
+      "spreadMetres": 1132,
+      "centre": [
+        -77.45893,
+        37.63324
+      ],
+      "bbox": [
+        -77.45961,
+        37.62801,
+        -77.45831,
+        37.63814
+      ],
+      "yearMin": 2017,
+      "yearMax": 2025,
+      "matchedProjects": [],
+      "nearestProjectId": "hilliard-road-safety-mobility",
+      "nearestProjectName": "Hilliard Road Safety & Mobility Improvements",
+      "nearestProjectMetres": 1163,
+      "streetName": "Brook Road",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "E Laburnum Ave",
+      "crashes": 12,
+      "fatal": 2,
+      "spreadMetres": 962,
+      "centre": [
+        -77.42712,
+        37.58549
+      ],
+      "bbox": [
+        -77.43067,
+        37.58525,
+        -77.41976,
+        37.58563
+      ],
+      "yearMin": 2017,
+      "yearMax": 2023,
+      "matchedProjects": [],
+      "nearestProjectId": "dumbarton-road-safety-mobility",
+      "nearestProjectName": "Dumbarton Road Safety & Mobility Improvements",
+      "nearestProjectMetres": 2743,
+      "streetName": null,
+      "nameSource": "already-a-street-name"
+    },
+    {
+      "corridor": "US 250",
+      "crashes": 12,
+      "fatal": 1,
+      "spreadMetres": 1811,
+      "centre": [
+        -77.55617,
+        37.63897
+      ],
+      "bbox": [
+        -77.56554,
+        37.6353,
+        -77.54721,
+        37.64268
+      ],
+      "yearMin": 2017,
+      "yearMax": 2025,
+      "matchedProjects": [],
+      "nearestProjectId": "parham-mayland-intersection",
+      "nearestProjectName": "Parham and Mayland Roads Intersection Improvements",
+      "nearestProjectMetres": 1076,
+      "streetName": "West Broad Street",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "SR 5",
+      "crashes": 10,
+      "fatal": 0,
+      "spreadMetres": 919,
+      "centre": [
+        -77.35147,
+        37.44434
+      ],
+      "bbox": [
+        -77.35591,
+        37.44252,
+        -77.3465,
+        37.44606
+      ],
+      "yearMin": 2017,
+      "yearMax": 2026,
+      "matchedProjects": [],
+      "nearestProjectId": "rocketts-landing-capital-trail-lighting",
+      "nearestProjectName": "Capital Trail Lighting at Rocketts Landing",
+      "nearestProjectMetres": 9241,
+      "streetName": "New Market Road",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "S Laburnum Ave",
+      "crashes": 10,
+      "fatal": 0,
+      "spreadMetres": 1076,
+      "centre": [
+        -77.35793,
+        37.52881
+      ],
+      "bbox": [
+        -77.36221,
+        37.52557,
+        -77.35431,
+        37.53294
+      ],
+      "yearMin": 2017,
+      "yearMax": 2025,
+      "matchedProjects": [],
+      "nearestProjectId": "creighton-road-realignment",
+      "nearestProjectName": "Creighton Road Realignment and Improvements",
+      "nearestProjectMetres": 3358,
+      "streetName": null,
+      "nameSource": "already-a-street-name"
+    },
+    {
+      "corridor": "Quioccasin Rd",
+      "crashes": 9,
+      "fatal": 0,
+      "spreadMetres": 379,
+      "centre": [
+        -77.57261,
+        37.60578
+      ],
+      "bbox": [
+        -77.57461,
+        37.60512,
+        -77.57065,
+        37.60646
+      ],
+      "yearMin": 2017,
+      "yearMax": 2025,
+      "matchedProjects": [],
+      "nearestProjectId": "anoka-fordson-traffic-circle",
+      "nearestProjectName": "Anoka Road & Fordson Road Traffic Circle",
+      "nearestProjectMetres": 1982,
+      "streetName": null,
+      "nameSource": "already-a-street-name"
+    },
+    {
+      "corridor": "US 33",
+      "crashes": 8,
+      "fatal": 4,
+      "spreadMetres": 620,
+      "centre": [
+        -77.49531,
+        37.60772
+      ],
+      "bbox": [
+        -77.49635,
+        37.60509,
+        -77.49398,
+        37.61034
+      ],
+      "yearMin": 2018,
+      "yearMax": 2024,
+      "matchedProjects": [],
+      "nearestProjectId": "dumbarton-road-safety-mobility",
+      "nearestProjectName": "Dumbarton Road Safety & Mobility Improvements",
+      "nearestProjectMetres": 271,
+      "streetName": "Staples Mill Road",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "US 1",
+      "crashes": 8,
+      "fatal": 3,
+      "spreadMetres": 296,
+      "centre": [
+        -77.4547,
+        37.60355
+      ],
+      "bbox": [
+        -77.45491,
+        37.60206,
+        -77.45448,
+        37.6047
+      ],
+      "yearMin": 2018,
+      "yearMax": 2026,
+      "matchedProjects": [
+        {
+          "id": "dumbarton-road-safety-mobility",
+          "name": "Dumbarton Road Safety & Mobility Improvements",
+          "metres": 81
+        }
+      ],
+      "nearestProjectId": "dumbarton-road-safety-mobility",
+      "nearestProjectName": "Dumbarton Road Safety & Mobility Improvements",
+      "nearestProjectMetres": 81,
+      "streetName": "Brook Road",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "SR 33",
+      "crashes": 8,
+      "fatal": 2,
+      "spreadMetres": 456,
+      "centre": [
+        -77.37569,
+        37.54102
+      ],
+      "bbox": [
+        -77.37842,
+        37.54075,
+        -77.37338,
+        37.54168
+      ],
+      "yearMin": 2019,
+      "yearMax": 2026,
+      "matchedProjects": [],
+      "nearestProjectId": "creighton-road-realignment",
+      "nearestProjectName": "Creighton Road Realignment and Improvements",
+      "nearestProjectMetres": 2056,
+      "streetName": "Nine Mile Road",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "US 250",
+      "crashes": 8,
+      "fatal": 0,
+      "spreadMetres": 988,
+      "centre": [
+        -77.5096,
+        37.59484
+      ],
+      "bbox": [
+        -77.51307,
+        37.59127,
+        -77.5055,
+        37.59783
+      ],
+      "yearMin": 2017,
+      "yearMax": 2026,
+      "matchedProjects": [],
+      "nearestProjectId": "libbie-avenue-road-diet",
+      "nearestProjectName": "Libbie Avenue Road Diet",
+      "nearestProjectMetres": 199,
+      "streetName": "West Broad Street",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "SR 33",
+      "crashes": 8,
+      "fatal": 0,
+      "spreadMetres": 996,
+      "centre": [
+        -77.32228,
+        37.54047
+      ],
+      "bbox": [
+        -77.32604,
+        37.53722,
+        -77.31931,
+        37.54441
+      ],
+      "yearMin": 2017,
+      "yearMax": 2025,
+      "matchedProjects": [],
+      "nearestProjectId": "creighton-road-realignment",
+      "nearestProjectName": "Creighton Road Realignment and Improvements",
+      "nearestProjectMetres": 4761,
+      "streetName": "East Nine Mile Road",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "US 301",
+      "crashes": 7,
+      "fatal": 0,
+      "spreadMetres": 635,
+      "centre": [
+        -77.44931,
+        37.6063
+      ],
+      "bbox": [
+        -77.45052,
+        37.60421,
+        -77.44742,
+        37.60943
+      ],
+      "yearMin": 2017,
+      "yearMax": 2025,
+      "matchedProjects": [],
+      "nearestProjectId": "dumbarton-road-safety-mobility",
+      "nearestProjectName": "Dumbarton Road Safety & Mobility Improvements",
+      "nearestProjectMetres": 473,
+      "streetName": "Chamberlayne Road",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "W Laburnum Ave",
+      "crashes": 7,
+      "fatal": 0,
+      "spreadMetres": 361,
+      "centre": [
+        -77.43542,
+        37.58493
+      ],
+      "bbox": [
+        -77.4371,
+        37.58477,
+        -77.433,
+        37.58505
+      ],
+      "yearMin": 2017,
+      "yearMax": 2026,
+      "matchedProjects": [],
+      "nearestProjectId": "dumbarton-road-safety-mobility",
+      "nearestProjectName": "Dumbarton Road Safety & Mobility Improvements",
+      "nearestProjectMetres": 2368,
+      "streetName": null,
+      "nameSource": "already-a-street-name"
+    },
+    {
+      "corridor": "SR 33",
+      "crashes": 6,
+      "fatal": 2,
+      "spreadMetres": 181,
+      "centre": [
+        -77.34211,
+        37.55095
+      ],
+      "bbox": [
+        -77.34283,
+        37.55069,
+        -77.34083,
+        37.55104
+      ],
+      "yearMin": 2017,
+      "yearMax": 2023,
+      "matchedProjects": [],
+      "nearestProjectId": "creighton-road-realignment",
+      "nearestProjectName": "Creighton Road Realignment and Improvements",
+      "nearestProjectMetres": 3111,
+      "streetName": "Nine Mile Road",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "US 1",
+      "crashes": 6,
+      "fatal": 1,
+      "spreadMetres": 644,
+      "centre": [
+        -77.45712,
+        37.61435
+      ],
+      "bbox": [
+        -77.4573,
+        37.61154,
+        -77.45689,
+        37.61733
+      ],
+      "yearMin": 2017,
+      "yearMax": 2026,
+      "matchedProjects": [
+        {
+          "id": "hilliard-road-safety-mobility",
+          "name": "Hilliard Road Safety & Mobility Improvements",
+          "metres": 30
+        }
+      ],
+      "nearestProjectId": "hilliard-road-safety-mobility",
+      "nearestProjectName": "Hilliard Road Safety & Mobility Improvements",
+      "nearestProjectMetres": 30,
+      "streetName": "Brook Road",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "Hungary Spring Rd",
+      "crashes": 6,
+      "fatal": 1,
+      "spreadMetres": 490,
+      "centre": [
+        -77.51741,
+        37.63806
+      ],
+      "bbox": [
+        -77.51797,
+        37.6367,
+        -77.51625,
+        37.64089
+      ],
+      "yearMin": 2019,
+      "yearMax": 2026,
+      "matchedProjects": [],
+      "nearestProjectId": "parham-road-pedestrian-transit-improvements",
+      "nearestProjectName": "Parham Road Pedestrian and Transit Improvements",
+      "nearestProjectMetres": 798,
+      "streetName": null,
+      "nameSource": "already-a-street-name"
+    },
+    {
+      "corridor": "US 33",
+      "crashes": 6,
+      "fatal": 1,
+      "spreadMetres": 503,
+      "centre": [
+        -77.50541,
+        37.62758
+      ],
+      "bbox": [
+        -77.50699,
+        37.62605,
+        -77.50441,
+        37.63009
+      ],
+      "yearMin": 2020,
+      "yearMax": 2024,
+      "matchedProjects": [],
+      "nearestProjectId": "parham-landmark-intersection-improvements",
+      "nearestProjectName": "Parham Road & Landmark Road Intersection Improvements",
+      "nearestProjectMetres": 346,
+      "streetName": "Staples Mill Road",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "US 360",
+      "crashes": 6,
+      "fatal": 1,
+      "spreadMetres": 400,
+      "centre": [
+        -77.40562,
+        37.56294
+      ],
+      "bbox": [
+        -77.40661,
+        37.56124,
+        -77.40466,
+        37.56451
+      ],
+      "yearMin": 2017,
+      "yearMax": 2024,
+      "matchedProjects": [],
+      "nearestProjectId": "creighton-road-realignment",
+      "nearestProjectName": "Creighton Road Realignment and Improvements",
+      "nearestProjectMetres": 2143,
+      "streetName": "Mechanicsville Turnpike",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "SR 157",
+      "crashes": 6,
+      "fatal": 0,
+      "spreadMetres": 603,
+      "centre": [
+        -77.59087,
+        37.60476
+      ],
+      "bbox": [
+        -77.59137,
+        37.60201,
+        -77.59021,
+        37.60735
+      ],
+      "yearMin": 2017,
+      "yearMax": 2024,
+      "matchedProjects": [],
+      "nearestProjectId": "raintree-drive-sidewalk",
+      "nearestProjectName": "Raintree Drive Sidewalk",
+      "nearestProjectMetres": 724,
+      "streetName": "Gaskins Road",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "Glenside Dr",
+      "crashes": 6,
+      "fatal": 0,
+      "spreadMetres": 481,
+      "centre": [
+        -77.49958,
+        37.61358
+      ],
+      "bbox": [
+        -77.50239,
+        37.61351,
+        -77.49693,
+        37.61368
+      ],
+      "yearMin": 2018,
+      "yearMax": 2025,
+      "matchedProjects": [],
+      "nearestProjectId": "dumbarton-road-safety-mobility",
+      "nearestProjectName": "Dumbarton Road Safety & Mobility Improvements",
+      "nearestProjectMetres": 1231,
+      "streetName": null,
+      "nameSource": "already-a-street-name"
+    },
+    {
+      "corridor": "Willow Lawn Dr",
+      "crashes": 6,
+      "fatal": 0,
+      "spreadMetres": 412,
+      "centre": [
+        -77.49786,
+        37.58333
+      ],
+      "bbox": [
+        -77.4999,
+        37.58137,
+        -77.49683,
+        37.58416
+      ],
+      "yearMin": 2019,
+      "yearMax": 2026,
+      "matchedProjects": [],
+      "nearestProjectId": "monument-avenue-sidewalk",
+      "nearestProjectName": "Monument Avenue Sidewalk",
+      "nearestProjectMetres": 558,
+      "streetName": null,
+      "nameSource": "already-a-street-name"
+    },
+    {
+      "corridor": "US 60",
+      "crashes": 5,
+      "fatal": 2,
+      "spreadMetres": 647,
+      "centre": [
+        -77.35879,
+        37.5182
+      ],
+      "bbox": [
+        -77.36334,
+        37.51803,
+        -77.35603,
+        37.51847
+      ],
+      "yearMin": 2017,
+      "yearMax": 2023,
+      "matchedProjects": [],
+      "nearestProjectId": "rocketts-landing-capital-trail-lighting",
+      "nearestProjectName": "Capital Trail Lighting at Rocketts Landing",
+      "nearestProjectMetres": 4661,
+      "streetName": "Williamsburg Road",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "US 33",
+      "crashes": 5,
+      "fatal": 1,
+      "spreadMetres": 341,
+      "centre": [
+        -77.51513,
+        37.64023
+      ],
+      "bbox": [
+        -77.51624,
+        37.63885,
+        -77.51387,
+        37.64127
+      ],
+      "yearMin": 2018,
+      "yearMax": 2024,
+      "matchedProjects": [],
+      "nearestProjectId": "parham-landmark-intersection-improvements",
+      "nearestProjectName": "Parham Road & Landmark Road Intersection Improvements",
+      "nearestProjectMetres": 890,
+      "streetName": "Staples Mill Road",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "US 33",
+      "crashes": 5,
+      "fatal": 1,
+      "spreadMetres": 504,
+      "centre": [
+        -77.50969,
+        37.63457
+      ],
+      "bbox": [
+        -77.51134,
+        37.63275,
+        -77.50848,
+        37.63668
+      ],
+      "yearMin": 2018,
+      "yearMax": 2023,
+      "matchedProjects": [],
+      "nearestProjectId": "parham-landmark-intersection-improvements",
+      "nearestProjectName": "Parham Road & Landmark Road Intersection Improvements",
+      "nearestProjectMetres": 163,
+      "streetName": "Staples Mill Road",
+      "nameSource": "ref-match"
+    },
+    {
+      "corridor": "E Laburnum Ave",
+      "crashes": 5,
+      "fatal": 1,
+      "spreadMetres": 323,
+      "centre": [
+        -77.38879,
+        37.57468
+      ],
+      "bbox": [
+        -77.39019,
+        37.57391,
+        -77.38694,
+        37.57526
+      ],
+      "yearMin": 2017,
+      "yearMax": 2023,
+      "matchedProjects": [],
+      "nearestProjectId": "creighton-road-realignment",
+      "nearestProjectName": "Creighton Road Realignment and Improvements",
+      "nearestProjectMetres": 1618,
+      "streetName": null,
+      "nameSource": "already-a-street-name"
+    },
+    {
+      "corridor": "US 33",
+      "crashes": 5,
+      "fatal": 0,
+      "spreadMetres": 320,
+      "centre": [
+        -77.49721,
+        37.61461
+      ],
+      "bbox": [
+        -77.49798,
+        37.61344,
+        -77.49654,
+        37.61608
+      ],
+      "yearMin": 2017,
+      "yearMax": 2024,
+      "matchedProjects": [],
+      "nearestProjectId": "dumbarton-road-safety-mobility",
+      "nearestProjectName": "Dumbarton Road Safety & Mobility Improvements",
+      "nearestProjectMetres": 1200,
+      "streetName": "Staples Mill Road",
+      "nameSource": "ref-match"
+    }
+  ]
+}
