@@ -15,3 +15,9 @@ tmp-*
 
 # Raw VDOT statewide exports worked with locally — never committed
 *.xlsx
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
